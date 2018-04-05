@@ -1,0 +1,28 @@
+{
+    "name": "userfrosting/uniformresourcelocator",
+    "type": "library",
+    "description": "Uniform Resource Locator module for UserFrosting",
+    "keywords": ["userfrosting", "Uniform Resource Locator", "URI", "StreamWrapper"],
+    "homepage": "https://github.com/userfrosting/UniformResourceLocator",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Louis Charette"
+        },
+        {
+            "name": "Alexander Weissman",
+            "homepage": "https://alexanderweissman.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+	"require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "UserFrosting\\UniformResourceLocator\\": "src"
+        }
+    }
+}

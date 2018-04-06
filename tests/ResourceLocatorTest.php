@@ -10,6 +10,8 @@ namespace UserFrosting\UniformResourceLocator;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
+use UserFrosting\UniformResourceLocator\Exception\PathNotFoundException;
 
 /**
  * Tests for ResourceLocator
@@ -156,6 +158,27 @@ class ResourceLocatorTest extends TestCase
         $locator->reset();
         $this->assertCount(0, $locator->getPaths());
         $this->assertCount(0, $locator->getLocations());
+    }
+
+
+    /**
+     * Test PathNotFoundException
+     * @expectedException \UserFrosting\UniformResourceLocator\Exception\PathNotFoundException
+     */
+    public function testPathNotFoundException()
+    {
+        $locator = new ResourceLocator;
+        $locator->getPath('etc');
+    }
+
+    /**
+     * Test LocationNotFoundException
+     * @expectedException \UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException
+     */
+    public function testLocationNotFoundException()
+    {
+        $locator = new ResourceLocator;
+        $locator->getLocation('etc');
     }
 
     /**

@@ -8,8 +8,8 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
-use UserFrosting\UniformResourceLocator\LocationNotFoundException;
-use UserFrosting\UniformResourceLocator\PathNotFoundException;
+use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
+use UserFrosting\UniformResourceLocator\Exception\PathNotFoundException;
 
 /**
  * ResourceLocator Class
@@ -218,10 +218,18 @@ class ResourceLocator
         return $this;
     }
 
-
-    public function findResource()
+    /**
+     * Find highest priority instance from a resource.
+     *
+     * @param  string $uri Input URI to be searched
+     * @throws \BadMethodCallException
+     * @return string The ressource path
+     */
+    public function findResource($uri)
     {
-
+        if (!is_string($uri)) {
+            throw new \BadMethodCallException('Invalid parameter $uri.');
+        }
     }
 
     public function findResources()
@@ -229,6 +237,11 @@ class ResourceLocator
 
     }
 
+    /**
+     * List all ressources found at a given path
+     *
+     * @return array The ressources list
+     */
     public function listResources()
     {
 

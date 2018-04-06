@@ -6,7 +6,7 @@
  * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/licenses/UserFrosting.md (MIT License)
  */
 
-namespace UserFrosting\UniformResourceLocator;
+namespace UserFrosting\UniformResourceLocator\Exception;
 
 /**
  * LocationNotFoundException Used when a Location is not registered.

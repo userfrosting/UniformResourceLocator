@@ -52,9 +52,11 @@ A consequence of using URIs for identifying resources is that they are wrapped a
 echo file_get_contents('config://routing/wdt.json');
 ```
 
-## Shared location
+## Shared path
 
-A shared location is a path, outside of our packages structure, where we can find shared resources. To use our office building analogy, it's like the parking garage. Cars can't be found on floors, they belong to the garage. They can also be associated to or used by any floor. In a software environment, this can be seen as a directory used to write log files for example. A log is not tied to a specific framework or location. They can all write info to it.
+A shared path lives outside of our packages structure, where we can find shared resources. To use our office building analogy, it's like the parking garage. Cars can't be found on floors, they belong to the garage. They can also be associated to or used by any floor. So when searching for cars, we won't even looks at the different floors. In other words, a shared path is not influenced by the locations.
+
+In a software environment, this can be seen as a directory used to write log files for example. A log is not tied to a specific framework or location. They can all write info to it.
 
 ## Resource model
 

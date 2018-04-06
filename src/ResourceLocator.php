@@ -8,7 +8,8 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
-use Illuminate\Support\Collection;
+use UserFrosting\UniformResourceLocator\LocationNotFoundException;
+use UserFrosting\UniformResourceLocator\PathNotFoundException;
 
 /**
  * ResourceLocator Class
@@ -22,12 +23,12 @@ class ResourceLocator
     /**
      * @var array The list of registered paths
      */
-    protected $paths;
+    protected $paths = [];
 
     /**
      * @var array The list of registered paths
      */
-    protected $locations;
+    protected $locations = [];
 
     /**
      * @var string The location base path
@@ -37,7 +38,7 @@ class ResourceLocator
     /**
      * Constructor
      *
-     * @param string $basePath (default '')
+     * @param string|null $basePath (default null)
      */
     public function __construct($basePath = '')
     {
@@ -45,16 +46,15 @@ class ResourceLocator
     }
 
     /**
-     * Add a new ResourcePath to the path list
+     * Add an exisitng ResourcePath to the path list
      *
      * @param ResourcePath $path
      */
     public function addPath(ResourcePath $path)
     {
-        $this->paths[] = $path;
+        $this->paths[$path->getScheme()] = $path;
 
-        // Register the path as a stream wrapper
-        $this->setupStreamWrapper($path);
+        return $this;
     }
 
     /**
@@ -69,42 +69,33 @@ class ResourceLocator
     {
         $path = new ResourcePath($scheme, $path, $shared);
         $this->addPath($path);
+        return $this;
     }
 
-    public function addLocation(ResourceLocation $location)
+    /**
+     * Unregister the specified path
+     *
+     * @param  string $scheme The path scheme
+     * @return $this
+     */
+    public function removePath($scheme)
     {
-        $this->locations[] = $location;
+        unset($this->paths[$scheme]);
+        return $this;
     }
 
-    public function registerLocation($name, $path = null)
+    /**
+     * @param string $scheme The path scheme
+     * @return ResourcePath
+     * @throws PathNotFoundException If path is not registered
+     */
+    public function getPath($scheme)
     {
-        $location = new ResourceLocation($name, $path);
-        $this->addLocation($location);
-    }
-
-    public function findResource()
-    {
-
-    }
-
-    public function findResources()
-    {
-
-    }
-
-    public function listResources()
-    {
-
-    }
-
-    protected function setupStreamWrapper(ResourcePath $path)
-    {
-
-    }
-
-    protected function unsetStreamWrapper()
-    {
-
+        if ($this->pathExist($scheme)) {
+            return $this->paths[$scheme];
+        } else {
+            throw new PathNotFoundException;
+        }
     }
 
     /**
@@ -121,11 +112,69 @@ class ResourceLocator
      */
     public function getPathsList()
     {
-        $paths = new Collection($this->getPaths());
-        $paths = $paths->mapWithKeys(function ($path, $key) {
-            return [$path->getScheme() => $path->getPath()];
-        });
-        return $paths->all();
+        return array_keys($this->paths);
+    }
+
+    /**
+     * Returns true if a path has been defined
+     *
+     * @param  string $scheme The path scheme
+     * @return bool
+     */
+    public function pathExist($scheme)
+    {
+        return isset($this->paths[$scheme]);
+    }
+
+    /**
+     * Add an existing RessourceLocation instance to the location list
+     *
+     * @param ResourceLocation $location
+     */
+    public function addLocation(ResourceLocation $location)
+    {
+        $this->locations[$location->getName()] = $location;
+        return $this;
+    }
+
+    /**
+     * Register a new location
+     *
+     * @param  string $name The location name
+     * @param  string $path The location base path (default null)
+     * @return $this
+     */
+    public function registerLocation($name, $path = null)
+    {
+        $location = new ResourceLocation($name, $path);
+        $this->addLocation($location);
+        return $this;
+    }
+
+    /**
+     * Unregister the specified location
+     *
+     * @param  string $name The location name
+     * @return $this
+     */
+    public function removeLocation($name)
+    {
+        unset($this->locations[$name]);
+        return $this;
+    }
+
+    /**
+     * @param string $name The location name
+     * @return ResourceLocation
+     * @throws LocationNotFoundException If location is not registered
+     */
+    public function getLocation($name)
+    {
+        if ($this->locationExist($name)) {
+            return $this->locations[$name];
+        } else {
+            throw new LocationNotFoundException;
+        }
     }
 
     /**
@@ -143,11 +192,46 @@ class ResourceLocator
      */
     public function getLocationsList()
     {
-        $locations = new Collection($this->getLocations());
-        $locations = $locations->mapWithKeys(function ($location) {
-            return [$location->getName() => $location->getPath()];
-        });
-        return $locations->all();
+        return array_keys($this->locations);
+    }
+
+    /**
+     * Returns true if a location has been defined
+     *
+     * @param  string $name The location name
+     * @return bool
+     */
+    public function locationExist($name)
+    {
+        return isset($this->locations[$name]);
+    }
+
+    /**
+     * Reset locator by removing all the registered paths and locations.
+     *
+     * @return $this
+     */
+    public function reset()
+    {
+        $this->paths = [];
+        $this->locations = [];
+        return $this;
+    }
+
+
+    public function findResource()
+    {
+
+    }
+
+    public function findResources()
+    {
+
+    }
+
+    public function listResources()
+    {
+
     }
 
     /**
@@ -159,7 +243,7 @@ class ResourceLocator
     }
 
     /**
-     * @param string $basePath
+     * @param string|null $basePath
      *
      * @return static
      */

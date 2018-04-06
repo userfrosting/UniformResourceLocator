@@ -42,8 +42,21 @@ class ResourcePath
     public function __construct($scheme = "", $path = "", $shared = false)
     {
         $this->setScheme($scheme);
-        $this->getPath($path);
+        $this->setPath($path);
         $this->setShared($shared);
+
+        // Register the path as a stream wrapper
+        $this->setupStreamWrapper();
+    }
+
+    protected function setupStreamWrapper()
+    {
+
+    }
+
+    protected function unsetStreamWrapper()
+    {
+
     }
 
     /**

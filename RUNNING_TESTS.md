@@ -18,7 +18,7 @@ If you don't have composer, you need to install it:
 Once the prerequisites are installed, run the tests from the project root directory:
 
 ```
-phpunit --bootstrap tests/bootstrap.php tests
+vendor/bin/phpunit --bootstrap tests/bootstrap.php tests
 ```
 
 

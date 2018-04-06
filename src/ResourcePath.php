@@ -32,9 +32,18 @@ class ResourcePath
      */
     protected $shared;
 
-    public function __construct()
+    /**
+     * Constructor
+     *
+     * @param string  $scheme
+     * @param string  $path
+     * @param bool    $shared
+     */
+    public function __construct($scheme = "", $path = "", $shared = false)
     {
-
+        $this->setScheme($scheme);
+        $this->getPath($path);
+        $this->setShared($shared);
     }
 
     /**
@@ -65,7 +74,7 @@ class ResourcePath
     }
 
     /**
-     * @param string $path
+     * @param string $path (default null)
      *
      * @return static
      */

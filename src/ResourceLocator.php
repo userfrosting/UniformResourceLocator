@@ -8,6 +8,8 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
+use Illuminate\Support\Collection;
+
 /**
  * ResourceLocator Class
  *
@@ -32,19 +34,41 @@ class ResourceLocator
      */
     protected $basePath;
 
+    /**
+     * Constructor
+     *
+     * @param string $basePath (default '')
+     */
     public function __construct($basePath = '')
     {
         $this->setBasePath($basePath);
     }
 
+    /**
+     * Add a new ResourcePath to the path list
+     *
+     * @param ResourcePath $path
+     */
     public function addPath(ResourcePath $path)
     {
         $this->paths[] = $path;
+
+        // Register the path as a stream wrapper
+        $this->setupStreamWrapper($path);
     }
 
-    public function registerPath($scheme, $path, $shared = false)
+    /**
+     * Register a new path
+     *
+     * @param  string  $scheme
+     * @param  string  $path (default null)
+     * @param  bool    $shared (default false)
+     * @return void
+     */
+    public function registerPath($scheme, $path = null, $shared = false)
     {
-
+        $path = new ResourcePath($scheme, $path, $shared);
+        $this->addPath($path);
     }
 
     public function addLocation(ResourceLocation $location)
@@ -52,9 +76,10 @@ class ResourceLocator
         $this->locations[] = $location;
     }
 
-    public function registerLocation($name, $path)
+    public function registerLocation($name, $path = null)
     {
-
+        $location = new ResourceLocation($name, $path);
+        $this->addLocation($location);
     }
 
     public function findResource()
@@ -72,7 +97,7 @@ class ResourceLocator
 
     }
 
-    protected function setupStreamWrapper()
+    protected function setupStreamWrapper(ResourcePath $path)
     {
 
     }
@@ -91,11 +116,38 @@ class ResourceLocator
     }
 
     /**
+     * Return a list of all the path scheme registered
+     * @return array An array of registered scheme => location
+     */
+    public function getPathsList()
+    {
+        $paths = new Collection($this->getPaths());
+        $paths = $paths->mapWithKeys(function ($path, $key) {
+            return [$path->getScheme() => $path->getPath()];
+        });
+        return $paths->all();
+    }
+
+    /**
      * @return array
      */
     public function getLocations()
     {
         return $this->locations;
+    }
+
+    /**
+     * Return a list of all the locations registered
+     *
+     * @return array An array of registered name => location
+     */
+    public function getLocationsList()
+    {
+        $locations = new Collection($this->getLocations());
+        $locations = $locations->mapWithKeys(function ($location) {
+            return [$location->getName() => $location->getPath()];
+        });
+        return $locations->all();
     }
 
     /**

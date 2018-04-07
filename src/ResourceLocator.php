@@ -185,7 +185,7 @@ class ResourceLocator
      */
     public function getLocations()
     {
-        return $this->locations;
+        return array_reverse($this->locations);
     }
 
     /**
@@ -195,7 +195,7 @@ class ResourceLocator
      */
     public function listLocations()
     {
-        return array_keys($this->locations);
+        return array_keys(array_reverse($this->locations));
     }
 
     /**

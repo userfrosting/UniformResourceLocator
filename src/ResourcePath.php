@@ -104,7 +104,7 @@ class ResourcePath
     /**
      * @return bool
      */
-    public function getShared()
+    public function isShared()
     {
         return $this->shared;
     }

@@ -27,7 +27,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertInstanceOf(ResourcePath::Class, $path);
         $this->assertEquals('', $path->getScheme());
         $this->assertEquals('', $path->getPath());
-        $this->assertFalse($path->getShared());
+        $this->assertFalse($path->isShared());
 
         // Set/get scheme, path and shared properties
         $path->setScheme('foo');
@@ -37,13 +37,13 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('/bar', $path->getPath());
 
         $path->setShared(true);
-        $this->assertTrue($path->getShared());
+        $this->assertTrue($path->isShared());
 
         // Now try again with the info in the constructor
         $path = new ResourcePath('bar', '/foo', true);
         $this->assertEquals('bar', $path->getScheme());
         $this->assertEquals('/foo', $path->getPath());
-        $this->assertTrue($path->getShared());
+        $this->assertTrue($path->isShared());
 
         // When no path is defined, the name should be used
         $path = new ResourcePath('etc');
@@ -145,7 +145,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('blah', $locations['blah']->getPath());
 
         // ...listLocations
-        $this->assertEquals(['foo', 'bar', 'blah'], $locator->listLocations());
+        $this->assertEquals(['blah', 'bar', 'foo'], $locator->listLocations());
 
         // ...removeLocation
         $locator->removeLocation('bar');

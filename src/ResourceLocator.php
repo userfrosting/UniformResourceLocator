@@ -8,8 +8,11 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
+use UserFrosting\UniformResourceLocator\ResourcePath;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\PathNotFoundException;
+use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
 
 /**
  * ResourceLocator Class
@@ -204,6 +207,19 @@ class ResourceLocator
     public function locationExist($name)
     {
         return isset($this->locations[$name]);
+    }
+
+    /**
+     * Return a resource instance
+     *
+     * @param  string $uri
+     * @return ResourceInterface
+     */
+    public function getResource($uri)
+    {
+        $path = $this->findResource($uri);
+
+        //...!TODO
     }
 
     /**

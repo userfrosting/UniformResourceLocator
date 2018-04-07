@@ -10,8 +10,7 @@ namespace UserFrosting\UniformResourceLocator;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
-use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
-use UserFrosting\UniformResourceLocator\Exception\PathNotFoundException;
+use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
 
 /**
  * Tests for ResourceLocator
@@ -227,6 +226,15 @@ class ResourceLocatorTest extends TestCase
         $swContent = file_get_contents('cars://cars.json');
         $pathContent = file_get_contents($path);
         $this->assertEquals($swContent, $pathContent);
+
+        // getInstance
+        $resource = $locator->getResource('cars://cars.json');
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
+
+        // Test content...
+        // Test Path...
+        // Test Location...
+
     }
 
     /**

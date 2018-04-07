@@ -19,5 +19,23 @@ use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
  */
 class ClassResource implements ResourceInterface
 {
-    
+    public function getLocation()
+    {
+
+    }
+
+    public function getPath()
+    {
+
+    }
+
+    public function getNamespace()
+    {
+
+    }
+
+    public function getInstance()
+    {
+        
+    }
 }

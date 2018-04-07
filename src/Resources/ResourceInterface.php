@@ -17,5 +17,6 @@ namespace UserFrosting\UniformResourceLocator\Resources;
  */
 interface ResourceInterface
 {
-
+    public function getLocation();
+    public function getPath();
 }

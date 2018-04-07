@@ -19,5 +19,18 @@ use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
  */
 class FileResource implements ResourceInterface
 {
+    public function getLocation()
+    {
 
+    }
+
+    public function getPath()
+    {
+
+    }
+
+    public function getContent()
+    {
+        
+    }
 }

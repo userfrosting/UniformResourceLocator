@@ -194,15 +194,76 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('Floor3', 'Floors/Floor3');
 
         // Register the paths
-        $locator->registerPath('file'); // Search path -> Building/Floors/{floorX}/file
+        $locator->registerPath('files'); // Search path -> Building/Floors/{floorX}/file
         $locator->registerPath('conf', 'config'); // Search path -> Building/Floors/{floorX}/config
         $locator->registerPath('cars', 'Garage/cars', true); // Search path -> Building/Garage/cars
 
-        
+        // We start by gettings cars (shared path)
+        $this->sharedPathTest($locator);
 
-        // We start by gettings cars. Here, we should only get the cars from the Garage.
-        // Cars defined by the "Floor3" shoudn't be listed here
+        // We now looks into the Floors (non-shared path)
+        $this->normalPathTest($locator);
+    }
 
+    /**
+     * subtest for the shared path (Garage) of the "Building" file structure
+     * @param ResourceLocator $locator
+     */
+    protected function sharedPathTest(ResourceLocator $locator)
+    {
+        // Find the `car.json` location. Should be from the Garage.
+        $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $locator->findResource('cars://cars.json'));
+        $this->assertEquals([__DIR__ . '/Building/Garage/cars/cars.json'], $locator->findResources('cars://cars.json'));
+
+        // Should also work with simple path (non file uri)
+        $this->assertEquals(__DIR__ . '/Building/Garage/cars', $locator->findResource('cars://'));
+        $this->assertEquals([__DIR__ . '/Building/Garage/cars'], $locator->findResources('cars://'));
+
+        // Listing all ressources should only list the Garage one (not the Floor3 one)
+        $this->assertEquals([__DIR__ . '/Building/Garage/cars/cars.json'], $locator->listResources('cars://'));
+
+        // We also test the stream wrapper works
+        $path = $locator->findResource('cars://cars.json');
+        $swContent = file_get_contents('cars://cars.json');
+        $pathContent = file_get_contents($path);
+        $this->assertEquals($swContent, $pathContent);
+    }
+
+    /**
+     * subtest for the normal path (Floors) of the "Building" file structure
+     * @param ResourceLocator $locator
+     */
+    protected function normalPathTest(ResourceLocator $locator)
+    {
+        // Looking for the `test.json` file.
         // The config file should never be found when looking for files
+        $this->assertEquals(__DIR__ . '/Building/Floors/Floor3/files/test.json', $locator->findResource('files://test.json'));
+        $this->assertEquals([
+            __DIR__ . '/Building/Floors/Floor3/files/test.json',
+            __DIR__ . '/Building/Floors/Floor2/files/test.json',
+            __DIR__ . '/Building/Floors/Floor/files/test.json'
+        ], $locator->findResources('files://test.json'));
+
+        // Should also work with simple path (non file uri)
+        $this->assertEquals(__DIR__ . '/Building/Floors/Floor3/files', $locator->findResource('files://'));
+        $this->assertEquals([
+            __DIR__ . '/Building/Floors/Floor3/files',
+            __DIR__ . '/Building/Floors/Floor2/files',
+            __DIR__ . '/Building/Floors/Floor/files'
+        ], $locator->findResources('files://'));
+
+        // When listing all ressources found in `files`, we should get
+        // `test.json` from Floor3 and `foo.json` from floor2. `blah.json`
+        // from the Grage shoudn't be there because it's shared (?)
+        $this->assertEquals([
+            __DIR__ . '/Building/Floors/Floor3/files/test.json',
+            __DIR__ . '/Building/Floors/Floor2/files/foo.json'
+        ], $locator->listResources('files://'));
+
+        // We also test the stream wrapper works
+        $path = $locator->findResource('files://test.json');
+        $swContent = file_get_contents('files://test.json');
+        $pathContent = file_get_contents($path);
+        $this->assertEquals($swContent, $pathContent);
     }
 }

@@ -220,8 +220,10 @@ class ResourceLocator
 
     /**
      * Find highest priority instance from a resource.
+     * For example, if looking for a `test.json` ressource, only the top priority
+     *  instance of `test.json` found will be returned.
      *
-     * @param  string $uri Input URI to be searched
+     * @param  string $uri Input URI to be searched (can be a file or path)
      * @throws \BadMethodCallException
      * @return string The ressource path
      */
@@ -232,17 +234,28 @@ class ResourceLocator
         }
     }
 
-    public function findResources()
+    /**
+     * Find all instances from a resource.
+     * For example, if looking for a `test.json` ressource, all instance
+     * of `test.json` found will be listed.
+     *
+     * @param string $uri Input URI to be searched (can be a file or path)
+     * @return array An array of all the ressources path
+     */
+    public function findResources($uri)
     {
 
     }
 
     /**
-     * List all ressources found at a given path
+     * List all ressources found at a given path.
+     * Same as listing all file in a directory, except here all topmost
+     * ressources will be returned when considering all locations
      *
+     * @param string $uri Input URI to be searched (can be a path ONLY)
      * @return array The ressources list
      */
-    public function listResources()
+    public function listResources($uri)
     {
 
     }

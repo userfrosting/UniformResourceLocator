@@ -294,18 +294,17 @@ class ResourceLocatorTest extends TestCase
      * and avoid introduciton a breaking change, this package should be compatible
      * with RocketTheme UniformResourceLocator. We test this here
      *
-     * @param  ResourceLocator $locator [description]
-     * @return [type] [description]
+     * @param  ResourceLocator $locator Our locator
      */
     protected function rocketThemeUniformResourceLocatorCompatibility(ResourceLocator $locator)
     {
         // Setup old locator
-        $url = new \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator(__DIR__ . '/Building');
-        $url->addPath('cars', '', 'Garage/cars');
-        $url->addPath('files', '', 'Floors/Floor/files');
-        $url->addPath('files', '', 'Floors/Floor2/files');
-        $url->addPath('files', '', 'Floors/Floor3/files');
-        /*\RocketTheme\Toolbox\StreamWrapper\ReadOnlyStream::setLocator($url);
+        $toolBox = new \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator(__DIR__ . '/Building');
+        $toolBox->addPath('cars', '', 'Garage/cars');
+        $toolBox->addPath('files', '', 'Floors/Floor/files');
+        $toolBox->addPath('files', '', 'Floors/Floor2/files');
+        $toolBox->addPath('files', '', 'Floors/Floor3/files');
+        /*\RocketTheme\Toolbox\StreamWrapper\ReadOnlyStream::setLocator($toolBox);
 
         $streams = [
             'cars' => '\\RocketTheme\\Toolbox\\StreamWrapper\\ReadOnlyStream',
@@ -323,43 +322,23 @@ class ResourceLocatorTest extends TestCase
         $sb = new \RocketTheme\Toolbox\StreamWrapper\StreamBuilder($streams);*/
 
         $this->assertEquals(
-            $url->findResource('cars://cars.json'),
+            $toolBox->findResource('cars://cars.json'),
             $locator->findResource('cars://cars.json')
         );
 
         $this->assertEquals(
-            $url->findResources('cars://cars.json'),
+            $toolBox->findResources('cars://cars.json'),
             $locator->findResources('cars://cars.json')
         );
 
         $this->assertEquals(
-            $url->findResource('files://test.json'),
+            $toolBox->findResource('files://test.json'),
             $locator->findResource('files://test.json')
         );
 
         $this->assertEquals(
-            $url->findResources('files://test.json'),
+            $toolBox->findResources('files://test.json'),
             $locator->findResources('files://test.json')
         );
-
-        /*echo "\n -->>\n";
-        echo "\n"; print_r($url->findResource('cars://cars.json'));
-        echo "\n"; print_r($url->findResources('cars://cars.json'));
-        echo "\n"; print_r($url->normalize('cars://cars.json'));
-        echo "\n <<-->>";
-        echo "\n"; print_r($url->findResource('cars://'));
-        echo "\n"; print_r($url->findResources('cars://'));
-        echo "\n"; print_r($url->normalize('cars://'));
-        echo "\n<<---\n";
-
-        echo "\n -->>\n";
-        echo "\n"; print_r($url->findResource('files://test.json'));
-        echo "\n"; print_r($url->findResources('files://test.json'));
-        echo "\n"; print_r($url->normalize('files://test.json'));
-        echo "\n <<-->>";
-        echo "\n"; print_r($url->findResource('files://'));
-        echo "\n"; print_r($url->findResources('files://'));
-        echo "\n"; print_r($url->normalize('files://'));
-        echo "\n<<---\n";*/
     }
 }

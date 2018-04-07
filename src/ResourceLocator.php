@@ -226,6 +226,19 @@ class ResourceLocator
     }
 
     /**
+     * List all ressources found at a given path.
+     * Same as listing all file in a directory, except here all topmost
+     * ressources will be returned when considering all locations
+     *
+     * @param string $uri Input URI to be searched (can be a path ONLY)
+     * @return array The ressources list
+     */
+    public function listResources($uri)
+    {
+
+    }
+
+    /**
      * Reset locator by removing all the registered paths and locations.
      *
      * @return $this
@@ -425,19 +438,6 @@ class ResourceLocator
             }
         //}
         return $results;
-    }
-
-    /**
-     * List all ressources found at a given path.
-     * Same as listing all file in a directory, except here all topmost
-     * ressources will be returned when considering all locations
-     *
-     * @param string $uri Input URI to be searched (can be a path ONLY)
-     * @return array The ressources list
-     */
-    public function listResources($uri)
-    {
-
     }
 
     /**

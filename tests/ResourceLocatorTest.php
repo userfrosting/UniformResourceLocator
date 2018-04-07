@@ -110,8 +110,8 @@ class ResourceLocatorTest extends TestCase
         $this->assertInstanceOf(ResourcePath::class, $paths['bar']);
         $this->assertEquals('/foo', $paths['bar']->getPath());
 
-        // ...getPathsList
-        $this->assertEquals(['bar', 'foo'], $locator->getPathsList());
+        // ...listPaths
+        $this->assertEquals(['bar', 'foo'], $locator->listPaths());
 
         // ...removePath
         $locator->removePath('bar');
@@ -141,8 +141,8 @@ class ResourceLocatorTest extends TestCase
         $this->assertInstanceOf(ResourceLocation::class, $locations['blah']);
         $this->assertEquals('blah', $locations['blah']->getPath());
 
-        // ...getLocationsList
-        $this->assertEquals(['foo', 'bar', 'blah'], $locator->getLocationsList());
+        // ...listLocations
+        $this->assertEquals(['foo', 'bar', 'blah'], $locator->listLocations());
 
         // ...removeLocation
         $locator->removeLocation('bar');

@@ -110,7 +110,7 @@ class ResourceLocator
      * Return a list of all the path scheme registered
      * @return array An array of registered scheme => location
      */
-    public function getPathsList()
+    public function listPaths()
     {
         return array_keys($this->paths);
     }
@@ -190,7 +190,7 @@ class ResourceLocator
      *
      * @return array An array of registered name => location
      */
-    public function getLocationsList()
+    public function listLocations()
     {
         return array_keys($this->locations);
     }

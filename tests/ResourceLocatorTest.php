@@ -23,7 +23,7 @@ class ResourceLocatorTest extends TestCase
     public function testResourcePath()
     {
         // Test instance & default values
-        $path = new ResourcePath;
+        $path = new ResourcePath('');
         $this->assertInstanceOf(ResourcePath::Class, $path);
         $this->assertEquals('', $path->getScheme());
         $this->assertEquals('', $path->getPath());
@@ -45,6 +45,10 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('/foo', $path->getPath());
         $this->assertTrue($path->getShared());
 
+        // When no path is defined, the name should be used
+        $path = new ResourcePath('etc');
+        $this->assertEquals('etc', $path->getScheme());
+        $this->assertEquals('etc', $path->getPath());
 
         // Test streamwrapper
         // !TODO
@@ -56,7 +60,7 @@ class ResourceLocatorTest extends TestCase
     public function testResourceLocation()
     {
         // Test instance & default values
-        $location = new ResourceLocation;
+        $location = new ResourceLocation('');
         $this->assertInstanceOf(ResourceLocation::Class, $location);
         $this->assertEquals('', $location->getName());
         $this->assertEquals('', $location->getPath());

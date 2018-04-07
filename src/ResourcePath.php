@@ -39,8 +39,12 @@ class ResourcePath
      * @param string  $path
      * @param bool    $shared
      */
-    public function __construct($scheme = "", $path = "", $shared = false)
+    public function __construct($scheme, $path = null, $shared = false)
     {
+        if (is_null($path)) {
+            $path = $scheme;
+        }
+
         $this->setScheme($scheme);
         $this->setPath($path);
         $this->setShared($shared);

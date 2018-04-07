@@ -31,10 +31,14 @@ class ResourceLocation
      * Constructor
      *
      * @param string $name
-     * @param string|null $path 
+     * @param string|null $path
      */
-    public function __construct($name = "", $path = null)
+    public function __construct($name, $path = null)
     {
+        if (is_null($path)) {
+            $path = $name;
+        }
+
         $this->setName($name);
         $this->setPath($path);
     }
@@ -73,10 +77,6 @@ class ResourceLocation
      */
     public function setPath($path = null)
     {
-        if (is_null($path)) {
-            $path = $this->getName();
-        }
-
         $this->path = $path;
         return $this;
     }

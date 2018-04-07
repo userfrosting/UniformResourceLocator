@@ -38,6 +38,9 @@ class ResourceLocator
      */
     protected $basePath;
 
+
+    protected $cache = [];
+
     /**
      * Constructor
      *
@@ -235,6 +238,75 @@ class ResourceLocator
     }
 
     /**
+     * Returns the canonicalized URI on success. The resulting path will have no '/./' or '/../' components.
+     * Trailing delimiter `/` is kept.
+     *
+     * By default (if $throwException parameter is not set to true) returns false on failure.
+     *
+     * @param string $uri
+     * @param bool $throwException
+     * @param bool $splitStream
+     * @return string|array|bool
+     * @throws \BadMethodCallException
+     */
+    public function normalize($uri, $throwException = false, $splitStream = false)
+    {
+        if (!is_string($uri)) {
+            if ($throwException) {
+                throw new \BadMethodCallException('Invalid parameter $uri.');
+            } else {
+                return false;
+            }
+        }
+        $uri = preg_replace('|\\\|u', '/', $uri);
+        $segments = explode('://', $uri, 2);
+        $path = array_pop($segments);
+        $scheme = array_pop($segments) ?: 'file';
+        if ($path) {
+            $path = preg_replace('|\\\|u', '/', $path);
+            $parts = explode('/', $path);
+            $list = [];
+            foreach ($parts as $i => $part) {
+                if ($part === '..') {
+                    $part = array_pop($list);
+                    if ($part === null || $part === '' || (!$list && strpos($part, ':'))) {
+                        if ($throwException) {
+                            throw new \BadMethodCallException('Invalid parameter $uri.');
+                        } else {
+                            return false;
+                        }
+                    }
+                } elseif (($i && $part === '') || $part === '.') {
+                    continue;
+                } else {
+                    $list[] = $part;
+                }
+            }
+            if (($l = end($parts)) === '' || $l === '.' || $l === '..') {
+                $list[] = '';
+            }
+            $path = implode('/', $list);
+        }
+        return $splitStream ? [$scheme, $path] : ($scheme !== 'file' ? "{$scheme}://{$path}" : $path);
+    }
+
+    /**
+     * Returns true if uri is resolvable by using locator.
+     *
+     * @param  string $uri
+     * @return bool
+     */
+    /*public function isStream($uri)
+    {
+        try {
+            list ($scheme,) = $this->normalize($uri, true, true);
+        } catch (\Exception $e) {
+            return false;
+        }
+        return $this->schemeExists($scheme);
+    }*/
+
+    /**
      * Find highest priority instance from a resource.
      * For example, if looking for a `test.json` ressource, only the top priority
      *  instance of `test.json` found will be returned.
@@ -243,11 +315,9 @@ class ResourceLocator
      * @throws \BadMethodCallException
      * @return string The ressource path
      */
-    public function findResource($uri)
+    public function findResource($uri, $absolute = true, $first = false)
     {
-        if (!is_string($uri)) {
-            throw new \BadMethodCallException('Invalid parameter $uri.');
-        }
+        return $this->findCached($uri, false, $absolute, $first);
     }
 
     /**
@@ -258,9 +328,103 @@ class ResourceLocator
      * @param string $uri Input URI to be searched (can be a file or path)
      * @return array An array of all the ressources path
      */
-    public function findResources($uri)
+    public function findResources($uri, $absolute = true, $all = false)
     {
+         return $this->findCached($uri, true, $absolute, $all);
+    }
 
+    protected function findCached($uri, $array, $absolute, $all)
+    {
+        if (!is_string($uri)) {
+            throw new \BadMethodCallException('Invalid parameter $uri.');
+        }
+
+        // Local caching: make sure that the function gets only called at once for each file.
+        $key = $uri .'@'. (int) $array . (int) $absolute . (int) $all;
+        if (!isset($this->cache[$key])) {
+            try {
+                list ($scheme, $file) = $this->normalize($uri, true, true);
+                if (!$file && $scheme === 'file') {
+                    $file = $this->basePath;
+                }
+                $this->cache[$key] = $this->find($scheme, $file, $array, $absolute, $all);
+            } catch (\BadMethodCallException $e) {
+                $this->cache[$key] =  $array ? [] : false;
+            }
+        }
+        return $this->cache[$key];
+    }
+
+    protected function buildLocationPaths(ResourcePath $path)
+    {
+        if ($path->isShared()) {
+            // Path is shared. We return it's value
+            return [$path->getPath()];
+        }
+
+        $list = [];
+        foreach ($this->getLocations() as $location) {
+            $list[] = trim($location->getPath(), '/') . '/' . $path->getPath();
+        }
+
+        return $list;
+    }
+
+    protected function find($scheme, $file, $array, $absolute, $all)
+    {
+        //echo "\nFINDING :: $scheme -- $file";
+        if (!$this->pathExist($scheme)) {
+            throw new \InvalidArgumentException("Invalid resource {$scheme}://");
+        }
+        $results = $array ? [] : false;
+        $pathResource = $this->getPath($scheme);
+        //echo "\nPATH RESOURCE :: " . print_r($pathResource, true);
+        $paths = $this->buildLocationPaths($pathResource);
+        //echo "\nPATHS :: " . print_r($paths, true);
+        //foreach ($this->schemes[$scheme] as $prefix => $paths) {
+            /*if ($prefix && strpos($file, $prefix) !== 0) {
+                continue;
+            }*/
+            // Remove prefix from filename.
+            $prefix = '';
+            $filename = '/' . trim($file, '\/');
+            foreach ($paths as $path) {
+                if (is_array($path)) {
+                    // Handle scheme lookup.
+                    $relPath = trim($path[1] . $filename, '/');
+                    $found = $this->find($path[0], $relPath, $array, $absolute, $all);
+                    if ($found) {
+                        if (!$array) {
+                            return $found;
+                        }
+                        $results = array_merge($results, $found);
+                    }
+                } else {
+                    // TODO: We could provide some extra information about the path to remove preg_match().
+                    // Check absolute paths for both unix and windows
+                    if (!$path || !preg_match('`^/|\w+:`', $path)) {
+                        // Handle relative path lookup.
+                        $relPath = trim($path . $filename, '/');
+                        $fullPath = $this->basePath . '/' . $relPath;
+                    } else {
+                        // Handle absolute path lookup.
+                        $fullPath = rtrim($path . $filename, '/');
+                        if (!$absolute) {
+                            throw new \RuntimeException("UniformResourceLocator: Absolute stream path with relative lookup not allowed ({$prefix})", 500);
+                        }
+                    }
+                    //echo "\nFULLPATH :: $fullPath";
+                    if ($all || file_exists($fullPath)) {
+                        $current = $absolute ? $fullPath : $relPath;
+                        if (!$array) {
+                            return $current;
+                        }
+                        $results[] = $current;
+                    }
+                }
+            }
+        //}
+        return $results;
     }
 
     /**

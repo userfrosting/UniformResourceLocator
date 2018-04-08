@@ -394,7 +394,7 @@ class ResourceLocator
      * @param  ResourceScheme $scheme The scheme to search for
      * @return array The search paths based on this stream and all available locations
      */
-    protected function searchPaths(ResourceScheme $scheme)
+    protected function searchPaths(ResourcePath $path)
     {
         if ($path->isShared()) {
             // Path is shared. We return it's value

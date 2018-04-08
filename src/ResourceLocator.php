@@ -38,7 +38,9 @@ class ResourceLocator
      */
     protected $basePath;
 
-
+    /**
+     * @var array Locale cache store of found resources
+     */
     protected $cache = [];
 
     /**
@@ -230,7 +232,7 @@ class ResourceLocator
      * Same as listing all file in a directory, except here all topmost
      * ressources will be returned when considering all locations
      *
-     * @param string $uri Input URI to be searched (can be a path ONLY)
+     * @param string $uri Input URI to be searched (can be a uri/path ONLY)
      * @return array The ressources list
      */
     public function listResources($uri)
@@ -251,9 +253,9 @@ class ResourceLocator
     }
 
     /**
-     * Returns the canonicalized URI on success. The resulting path will have no '/./' or '/../' components.
-     * Trailing delimiter `/` is kept.
-     *
+     * Returns the canonicalized URI on success.
+     * The resulting path will have no '/./' or '/../' components. Trailing delimiter `/` is kept.
+     * Can also split the `scheme` for the `path` part of the uri if $splitStream parameter is set to true
      * By default (if $throwException parameter is not set to true) returns false on failure.
      *
      * @param string $uri
@@ -320,11 +322,13 @@ class ResourceLocator
     }*/
 
     /**
-     * Find highest priority instance from a resource.
+     * Find highest priority instance from a resource. Return the path for said resource
      * For example, if looking for a `test.json` ressource, only the top priority
-     *  instance of `test.json` found will be returned.
+     * instance of `test.json` found will be returned.
      *
-     * @param  string $uri Input URI to be searched (can be a file or path)
+     * @param  string $uri Input URI to be searched (can be a file or directory)
+     * @param  bool $absolute Whether to return absolute path.
+     * @param  bool $first Whether to return first path even if it doesn't exist.
      * @throws \BadMethodCallException
      * @return string The ressource path
      */
@@ -334,26 +338,40 @@ class ResourceLocator
     }
 
     /**
-     * Find all instances from a resource.
+     * Find all instances from a resource. Return an array of paths for said resource
      * For example, if looking for a `test.json` ressource, all instance
      * of `test.json` found will be listed.
      *
-     * @param string $uri Input URI to be searched (can be a file or path)
+     * @param  string $uri Input URI to be searched (can be a file or directory)
+     * @param  bool $absolute Whether to return absolute path.
+     * @param  bool $all Whether to return all paths even if they don't exist.
      * @return array An array of all the ressources path
      */
     public function findResources($uri, $absolute = true, $all = false)
     {
-         return $this->findCached($uri, true, $absolute, $all);
+        return $this->findCached($uri, true, $absolute, $all);
     }
 
+    /**
+     * Find a resource from the cached properties
+     *
+     * @param  string $uri Input URI to be searched (file or directory)
+     * @param  bool $array Return an array or a single path
+     * @param  bool $absolute Whether to return absolute path.
+     * @param  bool $all Whether to return all paths even if they don't exist.
+     * @return array|string The ressource path or an array of all the ressources path
+     */
     protected function findCached($uri, $array, $absolute, $all)
     {
+        // Validate arguments until php7 comes around
         if (!is_string($uri)) {
             throw new \BadMethodCallException('Invalid parameter $uri.');
         }
 
         // Local caching: make sure that the function gets only called at once for each file.
+        // We create a key based on the submitted arguments
         $key = $uri .'@'. (int) $array . (int) $absolute . (int) $all;
+
         if (!isset($this->cache[$key])) {
             try {
                 list ($scheme, $file) = $this->normalize($uri, true, true);
@@ -362,13 +380,21 @@ class ResourceLocator
                 }
                 $this->cache[$key] = $this->find($scheme, $file, $array, $absolute, $all);
             } catch (\BadMethodCallException $e) {
+                // If something couldn't be found, return false or empty array
                 $this->cache[$key] =  $array ? [] : false;
             }
         }
         return $this->cache[$key];
     }
 
-    protected function buildLocationPaths(ResourcePath $path)
+    /**
+     * Build the search path out of the defined scheme and locations.
+     * If the scheme is shared, we don't need to involve locations and can return it's path directly
+     *
+     * @param  ResourceScheme $scheme The scheme to search for
+     * @return array The search paths based on this stream and all available locations
+     */
+    protected function searchPaths(ResourceScheme $scheme)
     {
         if ($path->isShared()) {
             // Path is shared. We return it's value
@@ -383,16 +409,27 @@ class ResourceLocator
         return $list;
     }
 
+    /**
+     * Returns path of a file (or directory) based on a search uri
+     *
+     * @param  string $scheme The scheme to search in
+     * @param  string $file The file to search for
+     * @param  bool $array Return an array or a single path
+     * @param  bool $absolute Whether to return absolute path.
+     * @param  bool $all Whether to return all paths even if they don't exist.
+     * @throws \InvalidArgumentException
+     * @return string|array Found
+     */
     protected function find($scheme, $file, $array, $absolute, $all)
     {
-        //echo "\nFINDING :: $scheme -- $file";
         if (!$this->pathExist($scheme)) {
             throw new \InvalidArgumentException("Invalid resource {$scheme}://");
         }
+
         $results = $array ? [] : false;
         $pathResource = $this->getPath($scheme);
         //echo "\nPATH RESOURCE :: " . print_r($pathResource, true);
-        $paths = $this->buildLocationPaths($pathResource);
+        $paths = $this->searchPaths($pathResource);
         //echo "\nPATHS :: " . print_r($paths, true);
         //foreach ($this->schemes[$scheme] as $prefix => $paths) {
             /*if ($prefix && strpos($file, $prefix) !== 0) {

@@ -125,6 +125,10 @@ class ResourceLocatorTest extends TestCase
         $this->assertFalse($locator->pathExist('bar'));
         $this->assertFalse($locator->pathExist('etc'));
 
+        // ...isStream
+        $this->assertFalse($locator->isStream('cars://foo'));
+        $this->assertTrue($locator->isStream('foo://cars'));
+
 
         // Test location manipulation
         $location = new ResourceLocation('foo', '/bar');

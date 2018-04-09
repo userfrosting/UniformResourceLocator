@@ -308,18 +308,18 @@ class ResourceLocator
     /**
      * Returns true if uri is resolvable by using locator.
      *
-     * @param  string $uri
-     * @return bool
+     * @param  string $uri URI to test
+     * @return bool True if is resolvable
      */
-    /*public function isStream($uri)
+    public function isStream($uri)
     {
         try {
             list ($scheme,) = $this->normalize($uri, true, true);
         } catch (\Exception $e) {
             return false;
         }
-        return $this->schemeExists($scheme);
-    }*/
+        return $this->pathExist($scheme);
+    }
 
     /**
      * Find highest priority instance from a resource. Return the path for said resource

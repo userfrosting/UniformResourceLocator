@@ -204,10 +204,10 @@ class ResourceLocatorTest extends TestCase
         $this->rocketThemeUniformResourceLocatorCompatibility($locator);
 
         // We start by gettings cars (shared path)
-        //$this->sharedPathTest($locator);
+        $this->sharedPathTest($locator);
 
         // We now looks into the Floors (non-shared path)
-        //$this->normalPathTest($locator);
+        $this->normalPathTest($locator);
     }
 
     /**
@@ -218,7 +218,6 @@ class ResourceLocatorTest extends TestCase
     {
         // Find the `car.json` location. Should be from the Garage.
         $ress = $locator->findResource('cars://cars.json');
-        echo "\n\n FOUND RESSOURCE :: $ress";
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $ress);
         $this->assertEquals([__DIR__ . '/Building/Garage/cars/cars.json'], $locator->findResources('cars://cars.json'));
 

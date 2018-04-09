@@ -34,14 +34,14 @@ class ResourceLocator
     protected $locations = [];
 
     /**
-     * @var string The location base path
-     */
-    protected $basePath;
-
-    /**
      * @var array Locale cache store of found resources
      */
     protected $cache = [];
+
+    /**
+     * @var string The location base path
+     */
+    protected $basePath;
 
     /**
      * Constructor
@@ -391,13 +391,13 @@ class ResourceLocator
      * Build the search path out of the defined scheme and locations.
      * If the scheme is shared, we don't need to involve locations and can return it's path directly
      *
-     * @param  ResourceScheme $scheme The scheme to search for
+     * @param  ResourcePath $path The scheme to search for
      * @return array The search paths based on this stream and all available locations
      */
     protected function searchPaths(ResourcePath $path)
     {
+        // Path is shared. We return it's value
         if ($path->isShared()) {
-            // Path is shared. We return it's value
             return [$path->getPath()];
         }
 
@@ -422,58 +422,53 @@ class ResourceLocator
      */
     protected function find($scheme, $file, $array, $absolute, $all)
     {
+        // Make sure path exist
         if (!$this->pathExist($scheme)) {
             throw new \InvalidArgumentException("Invalid resource {$scheme}://");
         }
 
+        // Prepare result depending on $array parameter
         $results = $array ? [] : false;
+
+        // Get path resource
         $pathResource = $this->getPath($scheme);
-        //echo "\nPATH RESOURCE :: " . print_r($pathResource, true);
+
+        // Get all search paths using all locations
         $paths = $this->searchPaths($pathResource);
-        //echo "\nPATHS :: " . print_r($paths, true);
-        //foreach ($this->schemes[$scheme] as $prefix => $paths) {
-            /*if ($prefix && strpos($file, $prefix) !== 0) {
-                continue;
-            }*/
-            // Remove prefix from filename.
-            $prefix = '';
-            $filename = '/' . trim($file, '\/');
-            foreach ($paths as $path) {
-                if (is_array($path)) {
-                    // Handle scheme lookup.
-                    $relPath = trim($path[1] . $filename, '/');
-                    $found = $this->find($path[0], $relPath, $array, $absolute, $all);
-                    if ($found) {
-                        if (!$array) {
-                            return $found;
-                        }
-                        $results = array_merge($results, $found);
-                    }
-                } else {
-                    // TODO: We could provide some extra information about the path to remove preg_match().
-                    // Check absolute paths for both unix and windows
-                    if (!$path || !preg_match('`^/|\w+:`', $path)) {
-                        // Handle relative path lookup.
-                        $relPath = trim($path . $filename, '/');
-                        $fullPath = $this->basePath . '/' . $relPath;
-                    } else {
-                        // Handle absolute path lookup.
-                        $fullPath = rtrim($path . $filename, '/');
-                        if (!$absolute) {
-                            throw new \RuntimeException("UniformResourceLocator: Absolute stream path with relative lookup not allowed ({$prefix})", 500);
-                        }
-                    }
-                    //echo "\nFULLPATH :: $fullPath";
-                    if ($all || file_exists($fullPath)) {
-                        $current = $absolute ? $fullPath : $relPath;
-                        if (!$array) {
-                            return $current;
-                        }
-                        $results[] = $current;
-                    }
+
+        // Get filename
+        $filename = '/' . trim($file, '\/');
+
+        // Pass each search paths
+        foreach ($paths as $path) {
+
+            // Check if path from the ResourcePath is absolute or relative
+            // for both unix and windows
+            if (!preg_match('`^/|\w+:`', $path)) {
+                // Handle relative path lookup.
+                $relPath = trim($path . $filename, '/');
+                $fullPath = $this->basePath . '/' . $relPath;
+            } else {
+                // Handle absolute path lookup.
+                $fullPath = rtrim($path . $filename, '/');
+
+                // If we have an absolute path and don't want an absolute
+                // result, we are in a in dead end
+                if (!$absolute) {
+                    throw new \RuntimeException("Absolute stream path with relative lookup not allowed", 500);
                 }
             }
-        //}
+
+            // Add the result to the list if the path exist, unless we want all results
+            if ($all || file_exists($fullPath)) {
+                $current = $absolute ? $fullPath : $relPath;
+                if (!$array) {
+                    return $current;
+                }
+                $results[] = $current;
+            }
+        }
+
         return $results;
     }
 

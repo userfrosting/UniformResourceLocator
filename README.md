@@ -26,13 +26,13 @@ The locator is the tool used to find resources. It know how many floor there is,
 
 Locations are possible places resources could be. Typically, each framework or package in our project will be added to the location list. Locations are the floors of our office building. It's assumed here each package (each floor) has the same structure.
 
-### Path
+### Stream
 
-A path is the definition of what you are looking for. It's the question you ask the receptionist when you're looking for someone.
+A stream is the definition of what you are looking for. It's the question you ask the receptionist when you're looking for someone.
 
-A path is composed of a **scheme** and a **path**. The **scheme** defines what we are looking for. Are we looking for a person, a conference room, a picture, a template, etc. The **path** is the location of this element inside the location. Where, on each floor, we find people (at desks), picture (in the album) or the templates (in `/style/template`).
+A stream is composed of a **scheme** and a **path**. The **scheme** defines what we are looking for. Are we looking for a person, a conference room, a picture, a template, etc. The **path** is the location of this element inside the location. Where, on each floor, we find people (at desks), picture (in the album) or the templates (in `/style/template`).
 
-The path themselves creates a Uniform Resource Identifiers or **URI** in the form of `schema://path`. URIs are a very strong concept that decouples resource location completely from the mechanisms of individual frameworks or in this case, locations. Furthermore, context-specific scheme can be used to simply a search path. For example, instead of `file://Bundle/WebProfilerBundle/Resources/config/routing/wdt.json`, a `config` scheme can be used to regroup everything related to the `Bundle/WebProfilerBundle/Resources/config` path: `config://routing/wdt.json`.
+The streams themselves creates a Uniform Resource Identifiers or **URI** in the form of `schema://path`. URIs are a very strong concept that decouples resource location completely from the mechanisms of individual frameworks or in this case, locations. Furthermore, context-specific scheme can be used to simply a search path. For example, instead of `file://Bundle/WebProfilerBundle/Resources/config/routing/wdt.json`, a `config` scheme can be used to regroup everything related to the `Bundle/WebProfilerBundle/Resources/config` path: `config://routing/wdt.json`.
 
 ### Resource
 
@@ -52,9 +52,9 @@ A consequence of using URIs for identifying resources is that they are wrapped a
 echo file_get_contents('config://routing/wdt.json');
 ```
 
-## Shared path
+## Shared stream
 
-A shared path lives outside of our packages structure, where we can find shared resources. To use our office building analogy, it's like the parking garage. Cars can't be found on floors, they belong to the garage. They can also be associated to or used by any floor. So when searching for cars, we won't even looks at the different floors. In other words, a shared path is not influenced by the locations.
+A shared stream lives outside of our packages structure, where we can find shared resources. To use our office building analogy, it's like the parking garage. Cars can't be found on floors, they belong to the garage. They can also be associated to or used by any floor. So when searching for cars, we won't even looks at the different floors. In other words, a shared stream is not influenced by the locations.
 
 In a software environment, this can be seen as a directory used to write log files for example. A log is not tied to a specific framework or location. They can all write info to it.
 
@@ -78,22 +78,22 @@ When getting info about a particular resource, the locator will typically return
 
 ## Creating the Locator
 
-## Adding Paths
+## Adding Streams
 
-### Registering a path
-
-```
-$path = new ResourcePath();
-$path->setScheme(...);
-$path->setPath(...);
-$path->setShared(...);
-$locator->addPath($path); 
-```
-
-### Creating a new path
+### Registering a stream
 
 ```
-$locator->registerPath($scheme, $path, $shared); 
+$stream = new ResourceStream();
+$stream->setScheme(...);
+$stream->setPath(...);
+$stream->setShared(...);
+$locator->addStream($stream); 
+```
+
+### Creating a new stream
+
+```
+$locator->registerStream($scheme, $path, $shared); 
 ```
 
 ## Adding Locations

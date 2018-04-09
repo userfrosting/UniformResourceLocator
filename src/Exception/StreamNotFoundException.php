@@ -9,11 +9,11 @@
 namespace UserFrosting\UniformResourceLocator\Exception;
 
 /**
- * PathNotFoundException Used when a path is not registered.
+ * StreamNotFoundException Used when a path is not registered.
  *
  * @author Louis Charette
  */
-class PathNotFoundException extends \Exception
+class StreamNotFoundException extends \Exception
 {
 
 }

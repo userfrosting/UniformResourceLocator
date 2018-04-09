@@ -9,13 +9,13 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourcePath Class
+ * ResourceStream Class
  *
  * [Description]
  *
  * @author    Louis Charette
  */
-class ResourcePath
+class ResourceStream
 {
     /**
      * @var string The path scheme

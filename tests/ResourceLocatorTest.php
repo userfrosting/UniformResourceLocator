@@ -18,37 +18,37 @@ use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
 class ResourceLocatorTest extends TestCase
 {
     /**
-     * Test ResourcePath Class
+     * Test ResourceStream Class
      */
-    public function testResourcePath()
+    public function testResourceStream()
     {
         // Test instance & default values
-        $path = new ResourcePath('');
-        $this->assertInstanceOf(ResourcePath::Class, $path);
-        $this->assertEquals('', $path->getScheme());
-        $this->assertEquals('', $path->getPath());
-        $this->assertFalse($path->isShared());
+        $stream = new ResourceStream('');
+        $this->assertInstanceOf(ResourceStream::Class, $stream);
+        $this->assertEquals('', $stream->getScheme());
+        $this->assertEquals('', $stream->getPath());
+        $this->assertFalse($stream->isShared());
 
         // Set/get scheme, path and shared properties
-        $path->setScheme('foo');
-        $this->assertEquals('foo', $path->getScheme());
+        $stream->setScheme('foo');
+        $this->assertEquals('foo', $stream->getScheme());
 
-        $path->setPath('/bar');
-        $this->assertEquals('/bar', $path->getPath());
+        $stream->setPath('/bar');
+        $this->assertEquals('/bar', $stream->getPath());
 
-        $path->setShared(true);
-        $this->assertTrue($path->isShared());
+        $stream->setShared(true);
+        $this->assertTrue($stream->isShared());
 
         // Now try again with the info in the constructor
-        $path = new ResourcePath('bar', '/foo', true);
-        $this->assertEquals('bar', $path->getScheme());
-        $this->assertEquals('/foo', $path->getPath());
-        $this->assertTrue($path->isShared());
+        $stream = new ResourceStream('bar', '/foo', true);
+        $this->assertEquals('bar', $stream->getScheme());
+        $this->assertEquals('/foo', $stream->getPath());
+        $this->assertTrue($stream->isShared());
 
         // When no path is defined, the name should be used
-        $path = new ResourcePath('etc');
-        $this->assertEquals('etc', $path->getScheme());
-        $this->assertEquals('etc', $path->getPath());
+        $stream = new ResourceStream('etc');
+        $this->assertEquals('etc', $stream->getScheme());
+        $this->assertEquals('etc', $stream->getPath());
 
         // Test streamwrapper
         // !TODO
@@ -96,34 +96,34 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals(__DIR__ . '/Building', $locator2->getBasePath());
 
 
-        // Test path manipulation...
-        $path = new ResourcePath('bar', '/foo');
-        $locator->addPath($path);
-        $locator->registerPath('foo', '/bar');
+        // Test stream manipulation...
+        $stream = new ResourceStream('bar', '/foo');
+        $locator->addStream($stream);
+        $locator->registerStream('foo', '/bar');
 
-        // ...getPath
-        $barPath = $locator->getPath('bar');
-        $this->assertInstanceOf(ResourcePath::class, $barPath);
-        $this->assertEquals('/foo', $barPath->getPath());
+        // ...getStream
+        $barStream = $locator->getStream('bar');
+        $this->assertInstanceOf(ResourceStream::class, $barStream);
+        $this->assertEquals('/foo', $barStream->getPath());
 
-        // ...getPaths
-        $paths = $locator->getPaths();
-        $this->assertInternalType('array', $paths);
-        $this->assertCount(2, $paths);
-        $this->assertInstanceOf(ResourcePath::class, $paths['bar']);
-        $this->assertEquals('/foo', $paths['bar']->getPath());
+        // ...getStreams
+        $streams = $locator->getStreams();
+        $this->assertInternalType('array', $streams);
+        $this->assertCount(2, $streams);
+        $this->assertInstanceOf(ResourceStream::class, $streams['bar']);
+        $this->assertEquals('/foo', $streams['bar']->getPath());
 
-        // ...listPaths
-        $this->assertEquals(['bar', 'foo'], $locator->listPaths());
+        // ...listStreams
+        $this->assertEquals(['bar', 'foo'], $locator->listStreams());
 
-        // ...removePath
-        $locator->removePath('bar');
-        $this->assertCount(1, $locator->getPaths());
+        // ...removeStream
+        $locator->removeStream('bar');
+        $this->assertCount(1, $locator->getStreams());
 
-        // ...pathExist
-        $this->assertTrue($locator->pathExist('foo'));
-        $this->assertFalse($locator->pathExist('bar'));
-        $this->assertFalse($locator->pathExist('etc'));
+        // ...schemeExist
+        $this->assertTrue($locator->schemeExist('foo'));
+        $this->assertFalse($locator->schemeExist('bar'));
+        $this->assertFalse($locator->schemeExist('etc'));
 
         // ...isStream
         $this->assertFalse($locator->isStream('cars://foo'));
@@ -155,7 +155,7 @@ class ResourceLocatorTest extends TestCase
         $locator->removeLocation('bar');
         $this->assertCount(2, $locator->getLocations());
 
-        // ...pathExist
+        // ...locationExist
         $this->assertTrue($locator->locationExist('foo'));
         $this->assertFalse($locator->locationExist('bar'));
         $this->assertFalse($locator->locationExist('etc'));
@@ -163,18 +163,18 @@ class ResourceLocatorTest extends TestCase
 
         // Test reset
         $locator->reset();
-        $this->assertCount(0, $locator->getPaths());
+        $this->assertCount(0, $locator->getStreams());
         $this->assertCount(0, $locator->getLocations());
     }
 
     /**
-     * Test PathNotFoundException
-     * @expectedException \UserFrosting\UniformResourceLocator\Exception\PathNotFoundException
+     * Test StreamNotFoundException
+     * @expectedException \UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException
      */
-    public function testPathNotFoundException()
+    public function testStreamNotFoundException()
     {
         $locator = new ResourceLocator;
-        $locator->getPath('etc');
+        $locator->getStream('etc');
     }
 
     /**
@@ -199,33 +199,33 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('Floor2', 'Floors/Floor2');
         $locator->registerLocation('Floor3', 'Floors/Floor3');
 
-        // Register the paths
-        $locator->registerPath('files'); // Search path -> Building/Floors/{floorX}/file
-        $locator->registerPath('conf', 'config'); // Search path -> Building/Floors/{floorX}/config
-        $locator->registerPath('cars', 'Garage/cars', true); // Search path -> Building/Garage/cars
+        // Register the streams
+        $locator->registerStream('files'); // Search path -> Building/Floors/{floorX}/file
+        $locator->registerStream('conf', 'config'); // Search path -> Building/Floors/{floorX}/config
+        $locator->registerStream('cars', 'Garage/cars', true); // Search path -> Building/Garage/cars
 
         // Test backward compatibility
         $this->rocketThemeUniformResourceLocatorCompatibility($locator);
 
-        // We start by gettings cars (shared path)
-        $this->sharedPathTest($locator);
+        // We start by gettings cars (shared stream)
+        $this->sharedStreamTest($locator);
 
-        // We now looks into the Floors (non-shared path)
-        $this->normalPathTest($locator);
+        // We now looks into the Floors (non-shared stream)
+        $this->normalStreamTest($locator);
     }
 
     /**
-     * subtest for the shared path (Garage) of the "Building" file structure
+     * subtest for the shared stream (Garage) of the "Building" file structure
      * @param ResourceLocator $locator
      */
-    protected function sharedPathTest(ResourceLocator $locator)
+    protected function sharedStreamTest(ResourceLocator $locator)
     {
         // Find the `car.json` location. Should be from the Garage.
         $ress = $locator->findResource('cars://cars.json');
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $ress);
         $this->assertEquals([__DIR__ . '/Building/Garage/cars/cars.json'], $locator->findResources('cars://cars.json'));
 
-        // Should also work with simple path (non file uri)
+        // Should also work with simple stream (non file uri)
         $this->assertEquals(__DIR__ . '/Building/Garage/cars', $locator->findResource('cars://'));
         $this->assertEquals([__DIR__ . '/Building/Garage/cars'], $locator->findResources('cars://'));
 
@@ -255,10 +255,10 @@ class ResourceLocatorTest extends TestCase
     }
 
     /**
-     * subtest for the normal path (Floors) of the "Building" file structure
+     * subtest for the normal stream (Floors) of the "Building" file structure
      * @param ResourceLocator $locator
      */
-    protected function normalPathTest(ResourceLocator $locator)
+    protected function normalStreamTest(ResourceLocator $locator)
     {
         // Looking for the `test.json` file.
         // The config file should never be found when looking for files

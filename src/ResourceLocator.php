@@ -8,10 +8,10 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
-use UserFrosting\UniformResourceLocator\ResourcePath;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
-use UserFrosting\UniformResourceLocator\Exception\PathNotFoundException;
+use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
 use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
 
 /**
@@ -24,12 +24,12 @@ use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
 class ResourceLocator
 {
     /**
-     * @var array The list of registered paths
+     * @var array The list of registered streams
      */
-    protected $paths = [];
+    protected $streams = [];
 
     /**
-     * @var array The list of registered paths
+     * @var array The list of registered locations
      */
     protected $locations = [];
 
@@ -54,84 +54,84 @@ class ResourceLocator
     }
 
     /**
-     * Add an exisitng ResourcePath to the path list
+     * Add an exisitng ResourceStream to the stream list
      *
-     * @param ResourcePath $path
+     * @param ResourceStream $stream
      */
-    public function addPath(ResourcePath $path)
+    public function addStream(ResourceStream $stream)
     {
-        $this->paths[$path->getScheme()] = $path;
+        $this->streams[$stream->getScheme()] = $stream;
 
         return $this;
     }
 
     /**
-     * Register a new path
+     * Register a new stream
      *
      * @param  string  $scheme
      * @param  string  $path (default null)
      * @param  bool    $shared (default false)
      * @return void
      */
-    public function registerPath($scheme, $path = null, $shared = false)
+    public function registerStream($scheme, $path = null, $shared = false)
     {
-        $path = new ResourcePath($scheme, $path, $shared);
-        $this->addPath($path);
+        $stream = new ResourceStream($scheme, $path, $shared);
+        $this->addStream($stream);
         return $this;
     }
 
     /**
-     * Unregister the specified path
+     * Unregister the specified stream
      *
-     * @param  string $scheme The path scheme
+     * @param  string $scheme The stream scheme
      * @return $this
      */
-    public function removePath($scheme)
+    public function removeStream($scheme)
     {
-        unset($this->paths[$scheme]);
+        unset($this->streams[$scheme]);
         return $this;
     }
 
     /**
-     * @param string $scheme The path scheme
-     * @return ResourcePath
-     * @throws PathNotFoundException If path is not registered
+     * @param string $scheme The stream scheme
+     * @return ResourceStream
+     * @throws StreamNotFoundException If stream is not registered
      */
-    public function getPath($scheme)
+    public function getStream($scheme)
     {
-        if ($this->pathExist($scheme)) {
-            return $this->paths[$scheme];
+        if ($this->schemeExist($scheme)) {
+            return $this->streams[$scheme];
         } else {
-            throw new PathNotFoundException;
+            throw new StreamNotFoundException;
         }
     }
 
     /**
      * @return array
      */
-    public function getPaths()
+    public function getStreams()
     {
-        return $this->paths;
+        return $this->streams;
     }
 
     /**
-     * Return a list of all the path scheme registered
+     * Return a list of all the stream scheme registered
      * @return array An array of registered scheme => location
      */
-    public function listPaths()
+    public function listStreams()
     {
-        return array_keys($this->paths);
+        return array_keys($this->streams);
     }
 
     /**
-     * Returns true if a path has been defined
+     * Returns true if a stream has been defined
      *
-     * @param  string $scheme The path scheme
+     * @param  string $scheme The stream scheme
      * @return bool
      */
-    public function pathExist($scheme)
+    public function schemeExist($scheme)
     {
-        return isset($this->paths[$scheme]);
+        return isset($this->streams[$scheme]);
     }
 
     /**
@@ -228,7 +228,7 @@ class ResourceLocator
     }
 
     /**
-     * List all ressources found at a given path.
+     * List all ressources found at a given uri.
      * Same as listing all file in a directory, except here all topmost
      * ressources will be returned when considering all locations
      *
@@ -241,13 +241,13 @@ class ResourceLocator
     }
 
     /**
-     * Reset locator by removing all the registered paths and locations.
+     * Reset locator by removing all the registered streams and locations.
      *
      * @return $this
      */
     public function reset()
     {
-        $this->paths = [];
+        $this->streams = [];
         $this->locations = [];
         return $this;
     }
@@ -318,7 +318,7 @@ class ResourceLocator
         } catch (\Exception $e) {
             return false;
         }
-        return $this->pathExist($scheme);
+        return $this->schemeExist($scheme);
     }
 
     /**
@@ -388,22 +388,22 @@ class ResourceLocator
     }
 
     /**
-     * Build the search path out of the defined scheme and locations.
+     * Build the search path out of the defined strean and locations.
      * If the scheme is shared, we don't need to involve locations and can return it's path directly
      *
-     * @param  ResourcePath $path The scheme to search for
+     * @param  ResourceStream $stream The stream to search for
      * @return array The search paths based on this stream and all available locations
      */
-    protected function searchPaths(ResourcePath $path)
+    protected function searchPaths(ResourceStream $stream)
     {
-        // Path is shared. We return it's value
-        if ($path->isShared()) {
-            return [$path->getPath()];
+        // Stream is shared. We return it's value
+        if ($stream->isShared()) {
+            return [$stream->getPath()];
         }
 
         $list = [];
         foreach ($this->getLocations() as $location) {
-            $list[] = trim($location->getPath(), '/') . '/' . $path->getPath();
+            $list[] = trim($location->getPath(), '/') . '/' . $stream->getPath();
         }
 
         return $list;
@@ -422,19 +422,19 @@ class ResourceLocator
      */
     protected function find($scheme, $file, $array, $absolute, $all)
     {
-        // Make sure path exist
-        if (!$this->pathExist($scheme)) {
+        // Make sure stream exist
+        if (!$this->schemeExist($scheme)) {
             throw new \InvalidArgumentException("Invalid resource {$scheme}://");
         }
 
         // Prepare result depending on $array parameter
         $results = $array ? [] : false;
 
-        // Get path resource
-        $pathResource = $this->getPath($scheme);
+        // Get stream resource
+        $streamResource = $this->getStream($scheme);
 
         // Get all search paths using all locations
-        $paths = $this->searchPaths($pathResource);
+        $paths = $this->searchPaths($streamResource);
 
         // Get filename
         $filename = '/' . trim($file, '\/');
@@ -442,7 +442,7 @@ class ResourceLocator
         // Pass each search paths
         foreach ($paths as $path) {
 
-            // Check if path from the ResourcePath is absolute or relative
+            // Check if path from the ResourceStream is absolute or relative
             // for both unix and windows
             if (!preg_match('`^/|\w+:`', $path)) {
                 // Handle relative path lookup.

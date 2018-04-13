@@ -8,6 +8,8 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
+use UserFrosting\UniformResourceLocator\ResourceLocation;
+
 /**
  * Resource Class
  *
@@ -36,7 +38,14 @@ class Resource
 
     //protected $uri;
 
-    public function __construct($absolutePath = '', $relPath = '', $location = null)
+    /**
+     * Constructor
+     *
+     * @param string $absolutePath Resource absolute path
+     * @param string $relPath Resource relative path
+     * @param ResourceLocation|null $location Resource location
+     */
+    public function __construct($absolutePath = '', $relPath = '', ResourceLocation $location = null)
     {
         $this->relPath = $relPath;
         $this->absolutePath = $absolutePath;

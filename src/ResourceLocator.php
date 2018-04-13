@@ -13,7 +13,6 @@ use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
-use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
 
 /**
  * ResourceLocator Class

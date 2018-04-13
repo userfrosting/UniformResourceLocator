@@ -226,6 +226,9 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $resource->getAbsolutePath());
         $this->assertEquals('Garage/cars/cars.json', $resource->getRelPath());
         $this->assertNull($resource->getLocation());
+        $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
+        $this->assertEquals('cars', $resource->getStream()->getScheme());
+        $this->assertEquals('Garage/cars', $resource->getStream()->getPath());
 
         // Find same result with many ressources
         $resources = $locator->getResources('cars://cars.json');

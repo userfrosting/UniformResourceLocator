@@ -34,21 +34,24 @@ class Resource
      */
     protected $relPath;
 
-    //protected $stream;
-
-    //protected $uri;
+    /**
+     * @var ResourceStream $stream
+     */
+    protected $stream;
 
     /**
      * Constructor
      *
      * @param string $absolutePath Resource absolute path
      * @param string $relPath Resource relative path
+     * @param ResourceStream|null $stream Resource stream
      * @param ResourceLocation|null $location Resource location
      */
-    public function __construct($absolutePath = '', $relPath = '', ResourceLocation $location = null)
+    public function __construct($absolutePath = '', $relPath = '', ResourceStream $stream = null, ResourceLocation $location = null)
     {
         $this->relPath = $relPath;
         $this->absolutePath = $absolutePath;
+        $this->stream = $stream;
         $this->location = $location;
     }
 
@@ -106,6 +109,25 @@ class Resource
     public function setRelPath($relPath)
     {
         $this->relPath = $relPath;
+        return $this;
+    }
+
+    /**
+     * @return ResourceStream
+     */
+    public function getStream()
+    {
+        return $this->stream;
+    }
+
+    /**
+     * @param ResourceStream $stream
+     *
+     * @return static
+     */
+    public function setStream(ResourceStream $stream)
+    {
+        $this->stream = $stream;
         return $this;
     }
 }

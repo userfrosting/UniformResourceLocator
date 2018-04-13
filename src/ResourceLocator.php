@@ -486,7 +486,7 @@ class ResourceLocator
 
             // Add the result to the list if the path exist, unless we want all results
             if ($all || file_exists($fullPath)) {
-                $currentResource = new Resource($fullPath, $relPath, $location);
+                $currentResource = new Resource($fullPath, $relPath, $streamResource, $location);
                 if (!$array) {
                     return $currentResource;
                 }

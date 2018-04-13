@@ -8,6 +8,7 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
+use Illuminate\Filesystem\Filesystem;
 use UserFrosting\UniformResourceLocator\Resource;
 use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
@@ -44,6 +45,11 @@ class ResourceLocator
     protected $basePath;
 
     /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
      * Constructor
      *
      * @param string|null $basePath (default null)
@@ -51,6 +57,7 @@ class ResourceLocator
     public function __construct($basePath = '')
     {
         $this->setBasePath($basePath);
+        $this->filesystem = new Filesystem;
     }
 
     /**
@@ -252,7 +259,19 @@ class ResourceLocator
      */
     public function listResources($uri)
     {
+        $list = [];
+        $directories = $this->getResources($uri);
+        $directories = array_reverse($directories);
 
+        foreach ($directories as $directory) {
+            $files = $this->filesystem->allFiles($directory->getAbsolutePath());
+            foreach ($files as $file) {
+                $resource = new Resource($directory->getStream(), $directory->getLocation(), $file->getPathname());
+                $list[$file->getFilename()] = $resource;
+            }
+        }
+
+        return array_values($list);
     }
 
     /**
@@ -485,7 +504,7 @@ class ResourceLocator
             }
 
             // Add the result to the list if the path exist, unless we want all results
-            if ($all || file_exists($fullPath)) {
+            if ($all || $this->filesystem->exists($fullPath)) {
                 $currentResource = new Resource($streamResource, $location, $fullPath, $relPath);
                 if (!$array) {
                     return $currentResource;

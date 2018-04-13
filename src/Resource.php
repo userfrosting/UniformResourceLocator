@@ -13,7 +13,7 @@ use UserFrosting\UniformResourceLocator\ResourceLocation;
 /**
  * Resource Class
  *
- * [Description]
+ * Contains information about a resource
  *
  * @author    Louis Charette
  */
@@ -99,6 +99,16 @@ class Resource
     public function getAbsolutePath()
     {
         return $this->absolutePath;
+    }
+
+    /**
+     * Magic function to convert the class into the resource absolute path
+     *
+     * @return string The resource absolute path
+     */
+    public function __toString()
+    {
+        return $this->getAbsolutePath();
     }
 
     /**

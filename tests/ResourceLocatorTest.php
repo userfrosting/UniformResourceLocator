@@ -226,6 +226,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $resource->getAbsolutePath());
         $this->assertEquals('Garage/cars/cars.json', $resource->getRelPath());
         $this->assertNull($resource->getLocation());
+        $this->assertEquals('cars://cars.json', $resource->getUri());
         $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
         $this->assertEquals('cars', $resource->getStream()->getScheme());
         $this->assertEquals('Garage/cars', $resource->getStream()->getPath());
@@ -235,6 +236,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertInternalType('array', $resources);
         $this->assertInstanceOf(Resource::class, $resources[0]);
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $resources[0]->getAbsolutePath());
+        $this->assertEquals('cars://cars.json', $resources[0]->getUri());
 
         // Same tests, for `findResource` & `findResources`
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $locator->findResource('cars://cars.json'));
@@ -277,6 +279,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertInstanceOf(Resource::class, $resource);
         $this->assertEquals(__DIR__ . '/Building/Floors/Floor3/files/test.json', $resource->getAbsolutePath());
         $this->assertEquals('Floors/Floor3/files/test.json', $resource->getRelPath());
+        $this->assertEquals('files://test.json', $resource->getUri());
         $this->assertEquals('Floor3', $resource->getLocation()->getName());
         $this->assertEquals('Floors/Floor3', $resource->getLocation()->getPath());
 
@@ -287,6 +290,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertInstanceOf(Resource::class, $resource);
         $this->assertEquals(__DIR__ . '/Building/Floors/Floor2/files/test.json', $resource->getAbsolutePath());
         $this->assertEquals('Floors/Floor2/files/test.json', $resource->getRelPath());
+        $this->assertEquals('files://test.json', $resource->getUri());
         $this->assertEquals('Floor2', $resource->getLocation()->getName());
         $this->assertEquals('Floors/Floor2', $resource->getLocation()->getPath());
 

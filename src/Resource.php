@@ -42,17 +42,36 @@ class Resource
     /**
      * Constructor
      *
+     * @param ResourceStream $stream Resource stream
+     * @param ResourceLocation|null $location Resource location
      * @param string $absolutePath Resource absolute path
      * @param string $relPath Resource relative path
-     * @param ResourceStream|null $stream Resource stream
-     * @param ResourceLocation|null $location Resource location
      */
-    public function __construct($absolutePath = '', $relPath = '', ResourceStream $stream = null, ResourceLocation $location = null)
+    public function __construct(ResourceStream $stream, ResourceLocation $location = null, $absolutePath = '', $relPath = '')
     {
-        $this->relPath = $relPath;
-        $this->absolutePath = $absolutePath;
         $this->stream = $stream;
         $this->location = $location;
+        $this->relPath = $relPath;
+        $this->absolutePath = $absolutePath;
+    }
+
+    /**
+     * Get Resource URI
+     * @return string
+     */
+    public function getUri()
+    {
+        $stream = $this->stream;
+
+        // Remove stream path from relative path
+        $path = str_replace($stream->getPath(), '', $this->relPath);
+
+        // Also remove location path
+        if (!is_null($this->location)) {
+            $path = str_replace($this->location->getPath(), '', $path);
+        }
+
+        return $stream->getScheme() . '://' . ltrim($path, '/');
     }
 
     /**

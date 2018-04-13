@@ -68,10 +68,11 @@ class Resource
 
         // Also remove location path
         if (!is_null($this->location)) {
-            $path = str_replace($this->location->getPath(), '', $path);
+            $locationPath = trim($this->location->getPath(), '/');
+            $path = str_replace($locationPath, '', $path);
         }
 
-        return $stream->getScheme() . '://' . ltrim($path, '/');
+        return $stream->getScheme() . '://' . trim($path, '/');
     }
 
     /**

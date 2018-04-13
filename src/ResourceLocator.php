@@ -459,7 +459,7 @@ class ResourceLocator
 
         $list = [];
         foreach ($this->getLocations() as $location) {
-            $path = trim($location->getPath(), '/') . '/' . $stream->getPath();
+            $path = trim($location->getPath(), '/') . '/' . trim($stream->getPath(), '/');
             $list[$path] = $location;
         }
 

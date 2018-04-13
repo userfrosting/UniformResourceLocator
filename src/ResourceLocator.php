@@ -266,7 +266,14 @@ class ResourceLocator
         foreach ($directories as $directory) {
             $files = $this->filesystem->allFiles($directory->getAbsolutePath());
             foreach ($files as $file) {
-                $resource = new Resource($directory->getStream(), $directory->getLocation(), $file->getPathname());
+
+                // Calculate the relative path
+                $fullPath = $file->getPathname();
+                $relPath = str_replace($this->basePath, '', $fullPath);
+                $relPath = ltrim($relPath, '/');
+
+                // Create the ressource and add it to the list
+                $resource = new Resource($directory->getStream(), $directory->getLocation(), $fullPath, $relPath);
                 $list[$file->getFilename()] = $resource;
             }
         }

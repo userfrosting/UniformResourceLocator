@@ -258,6 +258,8 @@ class ResourceLocatorTest extends TestCase
         $this->assertCount(1, $list);
         $this->assertInstanceOf(Resource::class, $list[0]);
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $list[0]);
+        $this->assertEquals('Garage/cars/cars.json', $list[0]->getRelPath());
+        $this->assertEquals('cars://cars.json', $list[0]->getUri());
 
         // We also test the stream wrapper works
         /*
@@ -313,15 +315,17 @@ class ResourceLocatorTest extends TestCase
 
         // When listing all ressources found in `files`, we should get
         // `test.json` from Floor3 and `foo.json` from floor2. `blah.json`
-        // from the Grage shoudn't be there because it's shared (?)
+        // from the Grage shoudn't be there because it's shared
         $list = $locator->listResources('files://');
         $this->assertCount(2, $list);
         $this->assertEquals([
             __DIR__ . '/Building/Floors/Floor3/files/test.json',
             __DIR__ . '/Building/Floors/Floor2/files/foo.json'
         ], $list);
-        $this->assertInstanceOf(Resource::class, $list[1]);
-        $this->assertEquals('Floor2', $list[1]->getLocation()->getName());
+        $this->assertInstanceOf(Resource::class, $list[0]);
+        $this->assertEquals('Floor3', $list[0]->getLocation()->getName());
+        $this->assertEquals('Floors/Floor3/files/test.json', $list[0]->getRelPath());
+        $this->assertEquals('files://test.json', $list[0]->getUri());
 
         // We also test the stream wrapper works
         /*$path = $locator->findResource('files://test.json');

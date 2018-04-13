@@ -8,6 +8,7 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
+use UserFrosting\UniformResourceLocator\Resource;
 use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
@@ -172,6 +173,8 @@ class ResourceLocator
     }
 
     /**
+     * Get a location instance based on it's name
+     *
      * @param string $name The location name
      * @return ResourceLocation
      * @throws LocationNotFoundException If location is not registered
@@ -186,6 +189,8 @@ class ResourceLocator
     }
 
     /**
+     * Get a a list of all registered locations
+     *
      * @return array
      */
     public function getLocations()
@@ -194,7 +199,7 @@ class ResourceLocator
     }
 
     /**
-     * Return a list of all the locations registered
+     * Return a list of all the locations registered by name
      *
      * @return array An array of registered name => location
      */
@@ -217,14 +222,25 @@ class ResourceLocator
     /**
      * Return a resource instance
      *
-     * @param  string $uri
-     * @return ResourceInterface
+     * @param  string $uri   Input URI to be searched (can be a file/path)
+     * @param  bool   $first Whether to return first path even if it doesn't exist.
+     * @return Resource
      */
-    public function getResource($uri)
+    public function getResource($uri, $first = false)
     {
-        $path = $this->findResource($uri);
+        return $this->findCached($uri, false, $first);
+    }
 
-        //...!TODO
+    /**
+     * Return a list of resources instances
+     *
+     * @param  string $uri Input URI to be searched (can be a file/path)
+     * @param  bool   $all Whether to return all paths even if they don't exist.
+     * @return array  Array of Resource
+     */
+    public function getResources($uri, $all = false)
+    {
+        return $this->findCached($uri, true, $all);
     }
 
     /**
@@ -334,7 +350,13 @@ class ResourceLocator
      */
     public function findResource($uri, $absolute = true, $first = false)
     {
-        return $this->findCached($uri, false, $absolute, $first);
+        $resource = $this->getResource($uri, $first);
+
+        if ($absolute) {
+            return $resource->getAbsolutePath();
+        } else {
+            return $resource->getRelPath();
+        }
     }
 
     /**
@@ -349,7 +371,17 @@ class ResourceLocator
      */
     public function findResources($uri, $absolute = true, $all = false)
     {
-        return $this->findCached($uri, true, $absolute, $all);
+        $reources = $this->getResources($uri, $all);
+
+        $paths = [];
+        foreach ($reources as $resource) {
+            if ($absolute) {
+                $paths[] = $resource->getAbsolutePath();
+            } else {
+                $paths[] = $resource->getRelPath();
+            }
+        }
+        return $paths;
     }
 
     /**
@@ -357,11 +389,10 @@ class ResourceLocator
      *
      * @param  string $uri Input URI to be searched (file or directory)
      * @param  bool $array Return an array or a single path
-     * @param  bool $absolute Whether to return absolute path.
      * @param  bool $all Whether to return all paths even if they don't exist.
      * @return array|string The ressource path or an array of all the ressources path
      */
-    protected function findCached($uri, $array, $absolute, $all)
+    protected function findCached($uri, $array, $all)
     {
         // Validate arguments until php7 comes around
         if (!is_string($uri)) {
@@ -370,7 +401,7 @@ class ResourceLocator
 
         // Local caching: make sure that the function gets only called at once for each file.
         // We create a key based on the submitted arguments
-        $key = $uri .'@'. (int) $array . (int) $absolute . (int) $all;
+        $key = $uri .'@'. (int) $array . (int) $all;
 
         if (!isset($this->cache[$key])) {
             try {
@@ -378,7 +409,7 @@ class ResourceLocator
                 if (!$file && $scheme === 'file') {
                     $file = $this->basePath;
                 }
-                $this->cache[$key] = $this->find($scheme, $file, $array, $absolute, $all);
+                $this->cache[$key] = $this->find($scheme, $file, $array, $all);
             } catch (\BadMethodCallException $e) {
                 // If something couldn't be found, return false or empty array
                 $this->cache[$key] =  $array ? [] : false;
@@ -398,12 +429,13 @@ class ResourceLocator
     {
         // Stream is shared. We return it's value
         if ($stream->isShared()) {
-            return [$stream->getPath()];
+            return [$stream->getPath() => null];
         }
 
         $list = [];
         foreach ($this->getLocations() as $location) {
-            $list[] = trim($location->getPath(), '/') . '/' . $stream->getPath();
+            $path = trim($location->getPath(), '/') . '/' . $stream->getPath();
+            $list[$path] = $location;
         }
 
         return $list;
@@ -415,12 +447,11 @@ class ResourceLocator
      * @param  string $scheme The scheme to search in
      * @param  string $file The file to search for
      * @param  bool $array Return an array or a single path
-     * @param  bool $absolute Whether to return absolute path.
      * @param  bool $all Whether to return all paths even if they don't exist.
      * @throws \InvalidArgumentException
      * @return string|array Found
      */
-    protected function find($scheme, $file, $array, $absolute, $all)
+    protected function find($scheme, $file, $array, $all)
     {
         // Make sure stream exist
         if (!$this->schemeExist($scheme)) {
@@ -440,7 +471,7 @@ class ResourceLocator
         $filename = '/' . trim($file, '\/');
 
         // Pass each search paths
-        foreach ($paths as $path) {
+        foreach ($paths as $path => $location) {
 
             // Check if path from the ResourceStream is absolute or relative
             // for both unix and windows
@@ -450,22 +481,17 @@ class ResourceLocator
                 $fullPath = $this->basePath . '/' . $relPath;
             } else {
                 // Handle absolute path lookup.
+                $relPath = null; // Can't have a relative path if an absolute one was found
                 $fullPath = rtrim($path . $filename, '/');
-
-                // If we have an absolute path and don't want an absolute
-                // result, we are in a in dead end
-                if (!$absolute) {
-                    throw new \RuntimeException("Absolute stream path with relative lookup not allowed", 500);
-                }
             }
 
             // Add the result to the list if the path exist, unless we want all results
             if ($all || file_exists($fullPath)) {
-                $current = $absolute ? $fullPath : $relPath;
+                $currentResource = new Resource($fullPath, $relPath, $location);
                 if (!$array) {
-                    return $current;
+                    return $currentResource;
                 }
-                $results[] = $current;
+                $results[] = $currentResource;
             }
         }
 

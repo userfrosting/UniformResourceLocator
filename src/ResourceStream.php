@@ -11,7 +11,7 @@ namespace UserFrosting\UniformResourceLocator;
 /**
  * ResourceStream Class
  *
- * [Description]
+ * The representation of a stream
  *
  * @author    Louis Charette
  */
@@ -48,19 +48,6 @@ class ResourceStream
         $this->setScheme($scheme);
         $this->setPath($path);
         $this->setShared($shared);
-
-        // Register the path as a stream wrapper
-        $this->setupStreamWrapper();
-    }
-
-    protected function setupStreamWrapper()
-    {
-
-    }
-
-    protected function unsetStreamWrapper()
-    {
-
     }
 
     /**

@@ -11,7 +11,7 @@ namespace UserFrosting\UniformResourceLocator;
 /**
  * ResourceLocation Class
  *
- * [Description]
+ * The representation of a location
  *
  * @author    Louis Charette
  */

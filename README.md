@@ -6,9 +6,9 @@ The _Uniform Resource Locator_ module handles resource aggregation and stream wr
 
 # Problem to solve
 
-It's easy to find files when they are located in a single place. It's another task when looking for files scattered across multiple directory. Step into the world of package and dependencies and the nightmare worsen.
+It's easy to find files when they are located in a single place. It's another task when looking for files scattered across multiple directory. Step into the world of package and dependencies and the nightmare begins.
 
---- insert graph here ---
+![images/Graph.png]
 
 It's like trying to find someone in a one story house vs. a 25 stories office building when you don't know on which floor the person is. This package goal is to help you locate things in that office building without having to search floor by floor each time. In other words, it is a way of aggregating many search paths together.
 
@@ -20,7 +20,7 @@ Let's start by defining terms used in this context.
 
 ### Locator
 
-The locator is the tool used to find resources. It know how many floor there is, what can be found on those floor and will actually search the floor for the resource. It's like the receptionist of the office building that tell you on what floor the person is.
+The locator is the tool used to find resources. It know how many floor there is, what can be found on those floor and will actually search the floor for the resource. It's like the receptionist of the office building that tell you where to find the person you're looking for for.
 
 ### Location
 
@@ -28,11 +28,9 @@ Locations are possible places resources could be. Typically, each framework or p
 
 ### Stream
 
-A stream is the definition of what you are looking for. It's the question you ask the receptionist when you're looking for someone.
+A stream is the definition of what we can find. A stream is composed of a **scheme** and a **path**. The **scheme** defines what we are looking for. Are we looking for a person, a conference room, a picture, a template, etc. The **path** is the location of this element inside the location. Where, on each floor, we find people (at desks), picture (in the album) or the templates (in `/style/template`).
 
-A stream is composed of a **scheme** and a **path**. The **scheme** defines what we are looking for. Are we looking for a person, a conference room, a picture, a template, etc. The **path** is the location of this element inside the location. Where, on each floor, we find people (at desks), picture (in the album) or the templates (in `/style/template`).
-
-The streams themselves creates a Uniform Resource Identifiers or **URI** in the form of `schema://path`. URIs are a very strong concept that decouples resource location completely from the mechanisms of individual frameworks or in this case, locations. Furthermore, context-specific scheme can be used to simply a search path. For example, instead of `file://Bundle/WebProfilerBundle/Resources/config/routing/wdt.json`, a `config` scheme can be used to regroup everything related to the `Bundle/WebProfilerBundle/Resources/config` path: `config://routing/wdt.json`.
+The streams themselves creates a Uniform Resource Identifiers or **URI** in the form of `schema://path`. URIs are a very strong concept that decouples resource location completely from the mechanisms of individual frameworks or in this case, locations. Furthermore, context-specific scheme can be used to simply a search path. For example, instead of `file://Bundle/WebProfilerBundle/Resources/config/routing/wdt.json`, a `config` scheme can be used to regroup everything related to the `Bundle/WebProfilerBundle/Resources/config` path: `config://routing/wdt.json`. To relate to our office building metaphor, the URI is the question you ask the receptionist when you're looking for someone.
 
 ### Resource
 
@@ -60,19 +58,7 @@ In a software environment, this can be seen as a directory used to write log fil
 
 ## Resource model
 
-When getting info about a particular resource, the locator will typically return instance of the resource model. This model is essentially a representation of a file and it's metadata. Those metadata can be used to get the full path of the resource (to load said resource) or an instance of it (the content of the file or a class instance for example). It can also be used to get more detailed informations it's actual path, including in which location the file was found. When dealing with a class resource, the class namespace can also be found in the metadata.
-
-### File resource model
-
-!TODO
-
-### Class resource model
-
-!TODO
-
-### Creating a custom resource model
-
-!TODO
+When getting info about a particular resource, the locator will typically return instance of the **Resource** model. This model is essentially a representation of a file/location and it's metadata. Those metadata can be used to get the path of the resource. It can also be used to get more detailed informations including in which location the file was found.
 
 # Usage
 

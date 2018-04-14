@@ -262,12 +262,10 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('cars://cars.json', $list[0]->getUri());
 
         // We also test the stream wrapper works
-        /*
         $path = $locator->findResource('cars://cars.json');
         $swContent = file_get_contents('cars://cars.json');
         $pathContent = file_get_contents($path);
         $this->assertEquals($swContent, $pathContent);
-        */
     }
 
     /**
@@ -328,10 +326,10 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('files://test.json', $list[0]->getUri());
 
         // We also test the stream wrapper works
-        /*$path = $locator->findResource('files://test.json');
+        $path = $locator->findResource('files://test.json');
         $swContent = file_get_contents('files://test.json');
         $pathContent = file_get_contents($path);
-        $this->assertEquals($swContent, $pathContent);*/
+        $this->assertEquals($swContent, $pathContent);
     }
 
     /**
@@ -349,7 +347,7 @@ class ResourceLocatorTest extends TestCase
         $toolBox->addPath('files', '', 'Floors/Floor/files');
         $toolBox->addPath('files', '', 'Floors/Floor2/files');
         $toolBox->addPath('files', '', 'Floors/Floor3/files');
-        /*\RocketTheme\Toolbox\StreamWrapper\ReadOnlyStream::setLocator($toolBox);
+        \RocketTheme\Toolbox\StreamWrapper\ReadOnlyStream::setLocator($toolBox);
 
         $streams = [
             'cars' => '\\RocketTheme\\Toolbox\\StreamWrapper\\ReadOnlyStream',
@@ -364,7 +362,7 @@ class ResourceLocatorTest extends TestCase
             }
         }
 
-        $sb = new \RocketTheme\Toolbox\StreamWrapper\StreamBuilder($streams);*/
+        $sb = new \RocketTheme\Toolbox\StreamWrapper\StreamBuilder($streams);
 
         $this->assertEquals(
             $toolBox->findResource('cars://cars.json'),
@@ -385,5 +383,11 @@ class ResourceLocatorTest extends TestCase
             $toolBox->findResources('files://test.json'),
             $locator->findResources('files://test.json')
         );
+
+        // We also test the stream wrapper works
+        $path = $locator->findResource('files://test.json');
+        $swContent = file_get_contents('files://test.json');
+        $pathContent = file_get_contents($path);
+        $this->assertEquals($swContent, $pathContent);
     }
 }

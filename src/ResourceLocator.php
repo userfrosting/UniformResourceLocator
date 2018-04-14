@@ -14,6 +14,9 @@ use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
+use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface;
+use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
+use RocketTheme\Toolbox\StreamWrapper\Stream;
 
 /**
  * ResourceLocator Class
@@ -22,7 +25,7 @@ use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
  *
  * @author    Louis Charette
  */
-class ResourceLocator
+class ResourceLocator implements ResourceLocatorInterface
 {
     /**
      * @var array The list of registered streams
@@ -50,6 +53,11 @@ class ResourceLocator
     protected $filesystem;
 
     /**
+     * @var StreamBuilder
+     */
+    protected $streamBuilder;
+
+    /**
      * Constructor
      *
      * @param string|null $basePath (default null)
@@ -58,6 +66,25 @@ class ResourceLocator
     {
         $this->setBasePath($basePath);
         $this->filesystem = new Filesystem;
+
+        // Setup stream
+        Stream::setLocator($this);
+
+        // Get the builder
+        $this->streamBuilder = new StreamBuilder();
+    }
+
+    /**
+     * @param  string $uri
+     * @return string|bool
+     * @throws \BadMethodCallException
+     */
+    public function __invoke($uri)
+    {
+        if (!is_string($uri)) {
+            throw new \BadMethodCallException('Invalid parameter $uri.');
+        }
+        return $this->findCached($uri, false, false);
     }
 
     /**
@@ -68,8 +95,35 @@ class ResourceLocator
     public function addStream(ResourceStream $stream)
     {
         $this->streams[$stream->getScheme()] = $stream;
+        $this->setupStreamWrapper($stream->getScheme());
 
         return $this;
+    }
+
+    /**
+     * Register the scheme as a php stream wrapper
+     *
+     * @param  string $scheme The stream scheme
+     */
+    protected function setupStreamWrapper($scheme)
+    {
+        // First unset the sheme
+        $this->unsetStreamWrapper($scheme);
+
+        // register the scheme as a stream wrapper
+        $this->streamBuilder->add($scheme, Stream::class);
+    }
+
+    /**
+     * Unset a php stream wrapper
+     *
+     * @param string $scheme The stream scheme
+     */
+    protected function unsetStreamWrapper($scheme)
+    {
+        if (in_array($scheme, stream_get_wrappers())) {
+            stream_wrapper_unregister($scheme);
+        }
     }
 
     /**

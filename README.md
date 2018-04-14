@@ -8,7 +8,7 @@ The _Uniform Resource Locator_ module handles resource aggregation and stream wr
 
 It's easy to find files when they are located in a single place. It's another task when looking for files scattered across multiple directory. Step into the world of package and dependencies and the nightmare begins.
 
-![images/Graph.png]
+![](images/Graph.png)
 
 It's like trying to find someone in a one story house vs. a 25 stories office building when you don't know on which floor the person is. This package goal is to help you locate things in that office building without having to search floor by floor each time. In other words, it is a way of aggregating many search paths together.
 

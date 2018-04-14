@@ -149,7 +149,11 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function removeStream($scheme)
     {
-        unset($this->streams[$scheme]);
+        if (isset($this->streams[$scheme])) {
+            $this->unsetStreamWrapper($scheme);
+            unset($this->streams[$scheme]);
+        }
+
         return $this;
     }
 

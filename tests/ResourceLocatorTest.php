@@ -314,7 +314,7 @@ class ResourceLocatorTest extends TestCase
 
         // When listing all ressources found in `files`, we should get
         // `test.json` from Floor3 and `foo.json` from floor2. `blah.json`
-        // from the Grage shoudn't be there because it's shared
+        // from the Garage shoudn't be there because it's shared
         $list = $locator->listResources('files://');
         $this->assertCount(2, $list);
         $this->assertEquals([
@@ -327,15 +327,18 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('files://test.json', $list[0]->getUri());
 
         // findResources & listResources should work fine with the prefix
-        /*$this->assertEquals(__DIR__ . '/Building/upload/data/files/foo.json', $locator->findResource('files://data/foo.json'));
-        $this->assertEquals([__DIR__ . '/Building/upload/data/files/foo.json'], $locator->findResources('files://data/foo.json'));
+        $this->assertEquals(__DIR__ . '/Building/upload/data/files/foo.json', $locator->findResource('files://data/foo.json'));
+        $this->assertEquals([
+            __DIR__ . '/Building/upload/data/files/foo.json',
+            __DIR__ . '/Building/Floors/Floor2/files/data/foo.json'
+        ], $locator->findResources('files://data/foo.json'));
         $list = $locator->listResources('files://data');
         $this->assertCount(1, $list);
         $this->assertEquals([__DIR__ . '/Building/upload/data/files/foo.json'], $list);
         $this->assertInstanceOf(Resource::class, $list[0]);
-        $this->assertIsNull($list[0]->getLocation());
+        $this->assertNull($list[0]->getLocation());
         $this->assertEquals('upload/data/files/foo.json', $list[0]->getRelPath());
-        $this->assertEquals('files://data/foo.json', $list[0]->getUri());*/
+        $this->assertEquals('files://data/foo.json', $list[0]->getUri());
 
         // We also test the stream wrapper works
         $path = $locator->findResource('files://test.json');

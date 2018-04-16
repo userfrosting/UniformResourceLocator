@@ -563,8 +563,9 @@ class ResourceLocator implements ResourceLocatorInterface
             $paths = $this->searchPaths($stream);
 
             // Get filename
-            $filename = '/' . trim($file, '\/');
-
+            // Remove prefix from filename.
+            $filename = '/' . trim(substr($file, strlen($prefix)), '\/');
+            
             // Pass each search paths
             foreach ($paths as $path => $location) {
 

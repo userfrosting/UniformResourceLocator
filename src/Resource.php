@@ -72,7 +72,10 @@ class Resource
             $path = str_replace($locationPath, '', $path);
         }
 
-        return $stream->getScheme() . '://' . trim($path, '/');
+        // Adds the stream prefix
+        $prefix = ($stream->getPrefix() != '') ? $stream->getPrefix() . '/' : '';
+
+        return $stream->getScheme() . '://' . $prefix . trim($path, '/');
     }
 
     /**

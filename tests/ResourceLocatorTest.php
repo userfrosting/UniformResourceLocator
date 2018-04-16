@@ -40,7 +40,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertTrue($stream->isShared());
 
         // Now try again with the info in the constructor
-        $stream = new ResourceStream('bar', '/foo', true);
+        $stream = new ResourceStream('bar', '', '/foo', true);
         $this->assertEquals('bar', $stream->getScheme());
         $this->assertEquals('/foo', $stream->getPath());
         $this->assertTrue($stream->isShared());
@@ -97,9 +97,9 @@ class ResourceLocatorTest extends TestCase
 
 
         // Test stream manipulation...
-        $stream = new ResourceStream('bar', '/foo');
+        $stream = new ResourceStream('bar', '', '/foo');
         $locator->addStream($stream);
-        $locator->registerStream('foo', '/bar');
+        $locator->registerStream('foo', '', '/bar');
 
         // ...getStream
         $barStream = $locator->getStream('bar');
@@ -201,8 +201,8 @@ class ResourceLocatorTest extends TestCase
 
         // Register the streams
         $locator->registerStream('files'); // Search path -> Building/Floors/{floorX}/file
-        $locator->registerStream('conf', 'config'); // Search path -> Building/Floors/{floorX}/config
-        $locator->registerStream('cars', 'Garage/cars', true); // Search path -> Building/Garage/cars
+        $locator->registerStream('conf', '', 'config'); // Search path -> Building/Floors/{floorX}/config
+        $locator->registerStream('cars', '', 'Garage/cars', true); // Search path -> Building/Garage/cars
 
         // Test backward compatibility
         $this->rocketThemeUniformResourceLocatorCompatibility($locator);

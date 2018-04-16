@@ -130,13 +130,14 @@ class ResourceLocator implements ResourceLocatorInterface
      * Register a new stream
      *
      * @param  string  $scheme
+     * @param  string  $prefix (default '')
      * @param  string  $path (default null)
      * @param  bool    $shared (default false)
      * @return void
      */
-    public function registerStream($scheme, $path = null, $shared = false)
+    public function registerStream($scheme, $prefix = '', $path = null, $shared = false)
     {
-        $stream = new ResourceStream($scheme, $path, $shared);
+        $stream = new ResourceStream($scheme, $prefix, $path, $shared);
         $this->addStream($stream);
         return $this;
     }

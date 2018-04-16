@@ -79,7 +79,7 @@ $locator->addStream($stream); 
 ### Creating a new stream
 
 ```
-$locator->registerStream($scheme, $path, $shared); 
+$locator->registerStream($scheme, $prefix, $path, $shared); 
 ```
 
 ## Adding Locations

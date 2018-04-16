@@ -103,15 +103,15 @@ class ResourceLocatorTest extends TestCase
 
         // ...getStream
         $barStream = $locator->getStream('bar');
-        $this->assertInstanceOf(ResourceStream::class, $barStream);
-        $this->assertEquals('/foo', $barStream->getPath());
+        $this->assertInstanceOf(ResourceStream::class, $barStream['']);
+        $this->assertEquals('/foo', $barStream['']->getPath());
 
         // ...getStreams
         $streams = $locator->getStreams();
         $this->assertInternalType('array', $streams);
         $this->assertCount(2, $streams);
-        $this->assertInstanceOf(ResourceStream::class, $streams['bar']);
-        $this->assertEquals('/foo', $streams['bar']->getPath());
+        $this->assertInstanceOf(ResourceStream::class, $streams['bar']['']);
+        $this->assertEquals('/foo', $streams['bar']['']->getPath());
 
         // ...listStreams
         $this->assertEquals(['bar', 'foo'], $locator->listStreams());
@@ -201,6 +201,7 @@ class ResourceLocatorTest extends TestCase
 
         // Register the streams
         $locator->registerStream('files'); // Search path -> Building/Floors/{floorX}/file
+        $locator->registerStream('files', 'data', 'upload/data/files', true); // Search path -> Building/upload/data/files/
         $locator->registerStream('conf', '', 'config'); // Search path -> Building/Floors/{floorX}/config
         $locator->registerStream('cars', '', 'Garage/cars', true); // Search path -> Building/Garage/cars
 
@@ -324,6 +325,17 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('Floor3', $list[0]->getLocation()->getName());
         $this->assertEquals('Floors/Floor3/files/test.json', $list[0]->getRelPath());
         $this->assertEquals('files://test.json', $list[0]->getUri());
+
+        // findResources & listResources should work fine with the prefix
+        /*$this->assertEquals(__DIR__ . '/Building/upload/data/files/foo.json', $locator->findResource('files://data/foo.json'));
+        $this->assertEquals([__DIR__ . '/Building/upload/data/files/foo.json'], $locator->findResources('files://data/foo.json'));
+        $list = $locator->listResources('files://data');
+        $this->assertCount(1, $list);
+        $this->assertEquals([__DIR__ . '/Building/upload/data/files/foo.json'], $list);
+        $this->assertInstanceOf(Resource::class, $list[0]);
+        $this->assertIsNull($list[0]->getLocation());
+        $this->assertEquals('upload/data/files/foo.json', $list[0]->getRelPath());
+        $this->assertEquals('files://data/foo.json', $list[0]->getUri());*/
 
         // We also test the stream wrapper works
         $path = $locator->findResource('files://test.json');

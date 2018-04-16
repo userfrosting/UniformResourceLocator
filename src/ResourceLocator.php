@@ -94,8 +94,11 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function addStream(ResourceStream $stream)
     {
-        $this->streams[$stream->getScheme()] = $stream;
+        $this->streams[$stream->getScheme()][$stream->getPrefix()] = $stream;
         $this->setupStreamWrapper($stream->getScheme());
+
+        // Sort in reverse order to get longer prefixes to be matched first.
+        krsort($this->streams[$stream->getScheme()]);
 
         return $this;
     }
@@ -166,7 +169,7 @@ class ResourceLocator implements ResourceLocatorInterface
     public function getStream($scheme)
     {
         if ($this->schemeExist($scheme)) {
-            return $this->streams[$scheme];
+            return $this->streams[$scheme]; // TODO ???
         } else {
             throw new StreamNotFoundException;
         }
@@ -436,6 +439,10 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         $resource = $this->getResource($uri, $first);
 
+        if (!$resource) {
+            return false;
+        }
+
         if ($absolute) {
             return $resource->getAbsolutePath();
         } else {
@@ -545,37 +552,42 @@ class ResourceLocator implements ResourceLocatorInterface
         // Prepare result depending on $array parameter
         $results = $array ? [] : false;
 
-        // Get stream resource
-        $streamResource = $this->getStream($scheme);
+        foreach ($this->streams[$scheme] as $prefix => $stream) {
 
-        // Get all search paths using all locations
-        $paths = $this->searchPaths($streamResource);
-
-        // Get filename
-        $filename = '/' . trim($file, '\/');
-
-        // Pass each search paths
-        foreach ($paths as $path => $location) {
-
-            // Check if path from the ResourceStream is absolute or relative
-            // for both unix and windows
-            if (!preg_match('`^/|\w+:`', $path)) {
-                // Handle relative path lookup.
-                $relPath = trim($path . $filename, '/');
-                $fullPath = $this->basePath . '/' . $relPath;
-            } else {
-                // Handle absolute path lookup.
-                $relPath = null; // Can't have a relative path if an absolute one was found
-                $fullPath = rtrim($path . $filename, '/');
+            // Make sure the prefix match
+            if ($prefix && strpos($file, $prefix) !== 0) {
+                continue;
             }
 
-            // Add the result to the list if the path exist, unless we want all results
-            if ($all || $this->filesystem->exists($fullPath)) {
-                $currentResource = new Resource($streamResource, $location, $fullPath, $relPath);
-                if (!$array) {
-                    return $currentResource;
+            // Get all search paths using all locations
+            $paths = $this->searchPaths($stream);
+
+            // Get filename
+            $filename = '/' . trim($file, '\/');
+
+            // Pass each search paths
+            foreach ($paths as $path => $location) {
+
+                // Check if path from the ResourceStream is absolute or relative
+                // for both unix and windows
+                if (!preg_match('`^/|\w+:`', $path)) {
+                    // Handle relative path lookup.
+                    $relPath = trim($path . $filename, '/');
+                    $fullPath = $this->basePath . '/' . $relPath;
+                } else {
+                    // Handle absolute path lookup.
+                    $relPath = null; // Can't have a relative path if an absolute one was found
+                    $fullPath = rtrim($path . $filename, '/');
                 }
-                $results[] = $currentResource;
+
+                // Add the result to the list if the path exist, unless we want all results
+                if ($all || $this->filesystem->exists($fullPath)) {
+                    $currentResource = new Resource($stream, $location, $fullPath, $relPath);
+                    if (!$array) {
+                        return $currentResource;
+                    }
+                    $results[] = $currentResource;
+                }
             }
         }
 

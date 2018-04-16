@@ -82,6 +82,56 @@ $locator->addStream($stream); 
 $locator->registerStream($scheme, $prefix, $path, $shared); 
 ```
 
+### Using prefix
+
+#### Prefix and shared streams
+
+When working with shared streams, prefix can be used to manually define a subpath. Let's look at different stream defined using the `cars` scheme :
+
+| Prefix | Path                  | Uri                    | Search                                 | Real Path                     |
+|--------|-----------------------|------------------------|----------------------------------------|-------------------------------|
+|        | Building/cars/        | cars://police/blah.txt | police/blah.txt in Building/cars       | Building/cars/police/blah.txt |
+| police | Building/cars/police/ | cars://police/blah.txt | blah.txt in Building/cars/police       | Building/cars/police/blah.txt |
+| rental | Rental/               | cars://rental/blah.txt | blah.txt in Rental/                    | Rental/blah.txt               |
+
+You can see how a `prefix` can be used so the `cars://rental` Uri act as a proxy for the `/Rental` directory. Note on the above table, the first two rows result in the same file being found. Of course this is basically useless, but it shows why you should be careful with prefix and what it's not. Note that a prefix will always overwrite a normal path (one without a prefix).
+
+This also means if there's a file located in `Building/cars/rental/blah.txt` (the first search path), the `cars://rental/blah.txt` Uri won't return the `rental/blah.txt` file from the prefix-less search path. Instead, `blah.txt` will be returned from the `rental` prefix search path.
+
+#### Prefix and non shared streams
+
+Of course, prefix can also be used with non shared streams. Using the some streams :
+
+| Prefix | Path               |
+|--------|--------------------|
+|        | files/             |
+| data   | upload/data/files/ |
+
+The resulting search paths will take the `Floors` locations into account :
+
+| Uri                    | Search Path                        |
+|------------------------|------------------------------------|
+| files://test.json      | Floors/{floorX}/files/             |
+| files://data/test.json | Floors/{floorX}/upload/data/files/ |
+
+#### Prefix and mixed streams
+
+Shared and non shared streams can also be mixed when using prefix :
+
+| Prefix | Path               | Shared |
+|--------|--------------------|--------|
+|        | files/             | no     |
+| data   | upload/data/files/ | yes    |
+
+The resulting search paths will then be :
+
+| Uri                    | Search Path            |
+|------------------------|------------------------|
+| files://test.json      | Floors/{floorX}/files/ |
+| files://data/test.json | upload/data/files/     |
+
+In other words
+
 ## Adding Locations
 
 ### Registering a location

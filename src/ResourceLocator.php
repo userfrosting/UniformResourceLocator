@@ -146,6 +146,23 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
+     * AddPath function. Used to preserve compatibility with RocketTheme/Toolbox
+     *
+     * @param string  $scheme
+     * @param string  $prefix
+     * @param string|array  $paths
+     * @param bool|string $override True to add path as override, string
+     * @param bool $force    True to add paths even if them do not exist.
+     * @deprecated
+     */
+    public function addPath($scheme, $prefix, $paths, $override = false, $force = false)
+    {
+        foreach((array) $paths as $path) {
+            $this->registerStream($scheme, $prefix, $path);
+        }
+    }
+
+    /**
      * Unregister the specified stream
      *
      * @param  string $scheme The stream scheme

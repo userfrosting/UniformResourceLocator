@@ -10,7 +10,6 @@ namespace UserFrosting\UniformResourceLocator;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
-use UserFrosting\UniformResourceLocator\Resources\ResourceInterface;
 
 /**
  * Tests for ResourceLocator
@@ -103,15 +102,16 @@ class ResourceLocatorTest extends TestCase
 
         // ...getStream
         $barStream = $locator->getStream('bar');
-        $this->assertInstanceOf(ResourceStream::class, $barStream['']);
-        $this->assertEquals('/foo', $barStream['']->getPath());
+        $this->assertInternalType('array', $barStream);
+        $this->assertInstanceOf(ResourceStream::class, $barStream[''][0]);
+        $this->assertEquals('/foo', $barStream[''][0]->getPath());
 
         // ...getStreams
         $streams = $locator->getStreams();
         $this->assertInternalType('array', $streams);
         $this->assertCount(2, $streams);
-        $this->assertInstanceOf(ResourceStream::class, $streams['bar']['']);
-        $this->assertEquals('/foo', $streams['bar']['']->getPath());
+        $this->assertInstanceOf(ResourceStream::class, $streams['bar'][''][0]);
+        $this->assertEquals('/foo', $streams['bar'][''][0]->getPath());
 
         // ...listStreams
         $this->assertEquals(['bar', 'foo'], $locator->listStreams());
@@ -404,5 +404,24 @@ class ResourceLocatorTest extends TestCase
         $swContent = file_get_contents('files://test.json');
         $pathContent = file_get_contents($path);
         $this->assertEquals($swContent, $pathContent);
+    }
+
+    public function testAddPath()
+    {
+        $locator = new ResourceLocator(__DIR__ . '/Building');
+
+        // Let's try doing this manually using an array of paths
+        // Last path has priority
+        $locator->registerStream('files', '', [
+            'Floors/Floor/files',
+            'Floors/Floor2/files',
+            'Floors/Floor3/files'
+        ], true);
+
+        $this->assertCount(3, $locator->getStream('files')['']);
+
+        $resource = $locator->getResource('files://test.json');
+        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertEquals(__DIR__ . '/Building/Floors/Floor3/files/test.json', $resource);
     }
 }

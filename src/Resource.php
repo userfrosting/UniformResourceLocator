@@ -79,6 +79,36 @@ class Resource
     }
 
     /**
+     * Extract the resource filename
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return pathinfo($this->relPath, PATHINFO_FILENAME);
+    }
+
+    /**
+     * Extract the trailing name component
+     *
+     * @return string
+     */
+    public function getBasename()
+    {
+        return pathinfo($this->relPath, PATHINFO_BASENAME);
+    }
+
+    /**
+     * Extract the resource extension
+     *
+     * @return string
+     */
+    public function getExtension()
+    {
+        return pathinfo($this->relPath, PATHINFO_EXTENSION);
+    }
+
+    /**
      * @return ResourceLocation
      */
     public function getLocation()

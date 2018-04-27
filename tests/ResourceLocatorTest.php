@@ -48,9 +48,6 @@ class ResourceLocatorTest extends TestCase
         $stream = new ResourceStream('etc');
         $this->assertEquals('etc', $stream->getScheme());
         $this->assertEquals('etc', $stream->getPath());
-
-        // Test streamwrapper
-        // !TODO
     }
 
     /**
@@ -261,6 +258,11 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $list[0]);
         $this->assertEquals('Garage/cars/cars.json', $list[0]->getRelPath());
         $this->assertEquals('cars://cars.json', $list[0]->getUri());
+
+        // Test resource file info getter
+        $this->assertEquals('cars', $list[0]->getFilename());
+        $this->assertEquals('cars.json', $list[0]->getBasename());
+        $this->assertEquals('json', $list[0]->getExtension());
 
         // We also test the stream wrapper works
         $path = $locator->findResource('cars://cars.json');

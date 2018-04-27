@@ -318,9 +318,10 @@ class ResourceLocatorTest extends TestCase
         // `test.json` from Floor3 and `foo.json` from floor2. `blah.json`
         // from the Garage shoudn't be there because it's shared
         $list = $locator->listResources('files://');
-        $this->assertCount(2, $list);
+        $this->assertCount(3, $list);
         $this->assertEquals([
             __DIR__ . '/Building/Floors/Floor3/files/test.json',
+            __DIR__ . '/Building/Floors/Floor/files/test/blah.json',
             __DIR__ . '/Building/Floors/Floor2/files/foo.json'
         ], $list);
         $this->assertInstanceOf(Resource::class, $list[0]);
@@ -341,6 +342,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertNull($list[0]->getLocation());
         $this->assertEquals('upload/data/files/foo.json', $list[0]->getRelPath());
         $this->assertEquals('files://data/foo.json', $list[0]->getUri());
+        $this->assertEquals('foo.json', $list[0]->getBasePath());
 
         // We also test the stream wrapper works
         $path = $locator->findResource('files://test.json');
@@ -406,6 +408,20 @@ class ResourceLocatorTest extends TestCase
         $swContent = file_get_contents('files://test.json');
         $pathContent = file_get_contents($path);
         $this->assertEquals($swContent, $pathContent);
+    }
+
+    /**
+     * Additionnal test to make sure `getBasePath` works correctly
+     *
+     * @param  ResourceLocator $locator Our locator
+     *
+     * @depends testBuildingLocator
+     */
+    public function testGetBasePath(ResourceLocator $locator)
+    {
+        $resource = $locator->getResource('files://test/blah.json');
+        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertEquals('test/blah.json', $resource->getBasePath());
     }
 
     public function testAddPath()

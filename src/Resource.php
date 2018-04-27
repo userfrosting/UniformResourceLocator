@@ -79,12 +79,12 @@ class Resource
     public function getBasePath()
     {
         // Remove stream path from relative path
-        $path = str_replace($this->stream->getPath(), '', $this->relPath);
+        $path = str_replace($this->stream->getPath() . '/', '', $this->relPath);
 
         // Also remove location path
         if (!is_null($this->location)) {
             $locationPath = trim($this->location->getPath(), '/');
-            $path = str_replace($locationPath, '', $path);
+            $path = str_replace($locationPath . '/', '', $path);
         }
 
         return $path;

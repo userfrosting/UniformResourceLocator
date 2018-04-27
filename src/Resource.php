@@ -57,14 +57,29 @@ class Resource
 
     /**
      * Get Resource URI
+     *
      * @return string
      */
     public function getUri()
     {
-        $stream = $this->stream;
+        $path = $this->getBasePath();
 
+        // Adds the stream prefix
+        $prefix = ($this->stream->getPrefix() != '') ? $this->stream->getPrefix() . '/' : '';
+
+        return $this->stream->getScheme() . '://' . $prefix . trim($path, '/');
+    }
+
+    /**
+     * Get the resource base path, aka the path that comes after the `://`
+     * and without the prefix
+     *
+     * @return string
+     */
+    public function getBasePath()
+    {
         // Remove stream path from relative path
-        $path = str_replace($stream->getPath(), '', $this->relPath);
+        $path = str_replace($this->stream->getPath(), '', $this->relPath);
 
         // Also remove location path
         if (!is_null($this->location)) {
@@ -72,10 +87,7 @@ class Resource
             $path = str_replace($locationPath, '', $path);
         }
 
-        // Adds the stream prefix
-        $prefix = ($stream->getPrefix() != '') ? $stream->getPrefix() . '/' : '';
-
-        return $stream->getScheme() . '://' . $prefix . trim($path, '/');
+        return $path;
     }
 
     /**

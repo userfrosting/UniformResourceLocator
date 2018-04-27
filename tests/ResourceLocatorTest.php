@@ -202,21 +202,16 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('conf', '', 'config'); // Search path -> Building/Floors/{floorX}/config
         $locator->registerStream('cars', '', 'Garage/cars', true); // Search path -> Building/Garage/cars
 
-        // Test backward compatibility
-        $this->rocketThemeUniformResourceLocatorCompatibility($locator);
-
-        // We start by gettings cars (shared stream)
-        $this->sharedStreamTest($locator);
-
-        // We now looks into the Floors (non-shared stream)
-        $this->normalStreamTest($locator);
+        return $locator;
     }
 
     /**
      * subtest for the shared stream (Garage) of the "Building" file structure
      * @param ResourceLocator $locator
+     *
+     * @depends testBuildingLocator
      */
-    protected function sharedStreamTest(ResourceLocator $locator)
+    public function testSharedStreamTest(ResourceLocator $locator)
     {
         // Find the `car.json` resource. Should be from the Garage.
         $resource = $locator->getResource('cars://cars.json');
@@ -258,24 +253,21 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $list[0]);
         $this->assertEquals('Garage/cars/cars.json', $list[0]->getRelPath());
         $this->assertEquals('cars://cars.json', $list[0]->getUri());
+        $this->assertEquals('cars.json', $list[0]->getBasePath());
 
         // Test resource file info getter
         $this->assertEquals('cars', $list[0]->getFilename());
         $this->assertEquals('cars.json', $list[0]->getBasename());
         $this->assertEquals('json', $list[0]->getExtension());
-
-        // We also test the stream wrapper works
-        $path = $locator->findResource('cars://cars.json');
-        $swContent = file_get_contents('cars://cars.json');
-        $pathContent = file_get_contents($path);
-        $this->assertEquals($swContent, $pathContent);
     }
 
     /**
      * subtest for the normal stream (Floors) of the "Building" file structure
      * @param ResourceLocator $locator
+     *
+     * @depends testBuildingLocator
      */
-    protected function normalStreamTest(ResourceLocator $locator)
+    public function testNormalStreamTest(ResourceLocator $locator)
     {
         // Looking for the `test.json` file.
         // The config file should never be found when looking for files
@@ -343,12 +335,6 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('upload/data/files/foo.json', $list[0]->getRelPath());
         $this->assertEquals('files://data/foo.json', $list[0]->getUri());
         $this->assertEquals('foo.json', $list[0]->getBasePath());
-
-        // We also test the stream wrapper works
-        $path = $locator->findResource('files://test.json');
-        $swContent = file_get_contents('files://test.json');
-        $pathContent = file_get_contents($path);
-        $this->assertEquals($swContent, $pathContent);
     }
 
     /**
@@ -357,8 +343,10 @@ class ResourceLocatorTest extends TestCase
      * with RocketTheme UniformResourceLocator. We test this here
      *
      * @param  ResourceLocator $locator Our locator
+     *
+     * @depends testBuildingLocator
      */
-    protected function rocketThemeUniformResourceLocatorCompatibility(ResourceLocator $locator)
+    public function testRocketThemeUniformResourceLocatorCompatibility(ResourceLocator $locator)
     {
         // Setup old locator
         $toolBox = new \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator(__DIR__ . '/Building');
@@ -366,22 +354,6 @@ class ResourceLocatorTest extends TestCase
         $toolBox->addPath('files', '', 'Floors/Floor/files');
         $toolBox->addPath('files', '', 'Floors/Floor2/files');
         $toolBox->addPath('files', '', 'Floors/Floor3/files');
-        \RocketTheme\Toolbox\StreamWrapper\ReadOnlyStream::setLocator($toolBox);
-
-        $streams = [
-            'cars' => '\\RocketTheme\\Toolbox\\StreamWrapper\\ReadOnlyStream',
-            'files' => '\\RocketTheme\\Toolbox\\StreamWrapper\\ReadOnlyStream'
-        ];
-
-        // Before registering them, we need to unregister any that where previously registered.
-        // This will cause error when two scripts are run in succession from the CLI
-        foreach ($streams as $scheme => $handler) {
-            if (in_array($scheme, stream_get_wrappers())) {
-                stream_wrapper_unregister($scheme);
-            }
-        }
-
-        $sb = new \RocketTheme\Toolbox\StreamWrapper\StreamBuilder($streams);
 
         $this->assertEquals(
             $toolBox->findResource('cars://cars.json'),
@@ -402,8 +374,28 @@ class ResourceLocatorTest extends TestCase
             $toolBox->findResources('files://test.json'),
             $locator->findResources('files://test.json')
         );
+    }
 
-        // We also test the stream wrapper works
+    /**
+     * test the stream wrapper works
+     *
+     * @param  ResourceLocator $locator
+     *
+     * @depends testBuildingLocator
+     */
+    public function testStreamWrapper(ResourceLocator $locator)
+    {
+        // Starts with `cars`
+        $this->assertTrue($locator->getStreamBuilder()->isStream('cars'));
+
+        $path = $locator->findResource('cars://cars.json');
+        $swContent = file_get_contents('cars://cars.json');
+        $pathContent = file_get_contents($path);
+        $this->assertEquals($swContent, $pathContent);
+
+        // Now do the other one
+        $this->assertTrue($locator->getStreamBuilder()->isStream('files'));
+
         $path = $locator->findResource('files://test.json');
         $swContent = file_get_contents('files://test.json');
         $pathContent = file_get_contents($path);

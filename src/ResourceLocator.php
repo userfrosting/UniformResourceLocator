@@ -113,7 +113,12 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     protected function setupStreamWrapper($scheme)
     {
-        // First unset the sheme
+        // Make sure stream does not already exist
+        if ($this->streamBuilder->isStream($scheme)) {
+            return;
+        }
+
+        // First unset the sheme. Prevent issue if someone else already registered it
         $this->unsetStreamWrapper($scheme);
 
         // register the scheme as a stream wrapper
@@ -127,6 +132,8 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     protected function unsetStreamWrapper($scheme)
     {
+        $this->streamBuilder->remove($scheme);
+
         if (in_array($scheme, stream_get_wrappers())) {
             stream_wrapper_unregister($scheme);
         }
@@ -625,6 +632,14 @@ class ResourceLocator implements ResourceLocatorInterface
         }
 
         return $results;
+    }
+
+    /**
+     * @return StreamBuilder
+     */
+    public function getStreamBuilder()
+    {
+        return $this->streamBuilder;
     }
 
     /**

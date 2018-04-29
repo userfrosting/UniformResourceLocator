@@ -67,7 +67,7 @@ class Resource
         // Adds the stream prefix
         $prefix = ($this->stream->getPrefix() != '') ? $this->stream->getPrefix() . '/' : '';
 
-        return $this->stream->getScheme() . '://' . $prefix . trim($path, '/');
+        return $this->stream->getScheme() . '://' . $prefix . $path;
     }
 
     /**
@@ -83,7 +83,7 @@ class Resource
 
         // Also remove location path
         if (!is_null($this->location)) {
-            $locationPath = trim($this->location->getPath(), '/');
+            $locationPath = $this->location->getPath();
             $path = str_replace($locationPath . '/', '', $path);
         }
 

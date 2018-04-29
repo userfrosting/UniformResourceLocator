@@ -191,16 +191,19 @@ class ResourceLocatorTest extends TestCase
     {
         $locator = new ResourceLocator(__DIR__ . '/Building');
 
-        // Register the floors
-        $locator->registerLocation('Floor1', 'Floors/Floor');
-        $locator->registerLocation('Floor2', 'Floors/Floor2');
+        // Register the floors.
+        // Note the missing `/` at the end. This shound't make any difference.
+        // But at the beggining should produce error, because it produce an absolute path
+        $locator->registerLocation('Floor1', 'Floors/Floor/');
+        $locator->registerLocation('Floor2', 'Floors/Floor2/');
         $locator->registerLocation('Floor3', 'Floors/Floor3');
 
         // Register the streams
+        // Again, use different `/` at the end
         $locator->registerStream('files'); // Search path -> Building/Floors/{floorX}/file
         $locator->registerStream('files', 'data', 'upload/data/files', true); // Search path -> Building/upload/data/files/
         $locator->registerStream('conf', '', 'config'); // Search path -> Building/Floors/{floorX}/config
-        $locator->registerStream('cars', '', 'Garage/cars', true); // Search path -> Building/Garage/cars
+        $locator->registerStream('cars', '', 'Garage/cars/', true); // Search path -> Building/Garage/cars
 
         return $locator;
     }

@@ -91,7 +91,7 @@ class ResourceStream
      */
     public function setPath($path)
     {
-        $this->path = $path;
+        $this->path = rtrim($path, '/');
         return $this;
     }
 

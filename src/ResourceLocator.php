@@ -376,6 +376,13 @@ class ResourceLocator implements ResourceLocatorInterface
             }
         }
 
+        // Sort files. Filesystem can return inconsistant order sometime
+        // Without sorting, the order of the resources would be by locations
+        $list = array_sort($list, function($resource)
+        {
+            return $resource->getBasePath();
+        });
+
         return array_values($list);
     }
 

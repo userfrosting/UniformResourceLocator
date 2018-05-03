@@ -315,14 +315,14 @@ class ResourceLocatorTest extends TestCase
         $list = $locator->listResources('files://');
         $this->assertCount(3, $list);
         $this->assertEquals([
+            __DIR__ . '/Building/Floors/Floor2/files/foo.json',
             __DIR__ . '/Building/Floors/Floor3/files/test.json',
-            __DIR__ . '/Building/Floors/Floor/files/test/blah.json',
-            __DIR__ . '/Building/Floors/Floor2/files/foo.json'
+            __DIR__ . '/Building/Floors/Floor/files/test/blah.json'
         ], $list);
         $this->assertInstanceOf(Resource::class, $list[0]);
-        $this->assertEquals('Floor3', $list[0]->getLocation()->getName());
-        $this->assertEquals('Floors/Floor3/files/test.json', $list[0]->getRelPath());
-        $this->assertEquals('files://test.json', $list[0]->getUri());
+        $this->assertEquals('Floor3', $list[1]->getLocation()->getName());
+        $this->assertEquals('Floors/Floor3/files/test.json', $list[1]->getRelPath());
+        $this->assertEquals('files://test.json', $list[1]->getUri());
 
         // findResources & listResources should work fine with the prefix
         $this->assertEquals(__DIR__ . '/Building/upload/data/files/foo.json', $locator->findResource('files://data/foo.json'));

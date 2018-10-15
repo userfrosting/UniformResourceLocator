@@ -220,14 +220,14 @@ class BuildingLocatorTest extends TestCase
         $list = $locator->listResources('files://');
         $this->assertCount(3, $list);
         $this->assertEquals([
+            __DIR__ . '/Building/Floors/Floor/files/test/blah.json',
             __DIR__ . '/Building/Floors/Floor2/files/foo.json',
-            __DIR__ . '/Building/Floors/Floor3/files/test.json',
-            __DIR__ . '/Building/Floors/Floor/files/test/blah.json'
-        ], $list);
+            __DIR__ . '/Building/Floors/Floor3/files/test.json'
+        ], array_map('strval', $list));
         $this->assertInstanceOf(Resource::class, $list[0]);
-        $this->assertEquals('Floor3', $list[1]->getLocation()->getName());
-        $this->assertEquals('Floors/Floor3/files/test.json', $list[1]->getRelPath());
-        $this->assertEquals('files://test.json', $list[1]->getUri());
+        $this->assertEquals('Floor3', $list[2]->getLocation()->getName());
+        $this->assertEquals('Floors/Floor3/files/test.json', $list[2]->getRelPath());
+        $this->assertEquals('files://test.json', $list[2]->getUri());
     }
 
     /**
@@ -242,13 +242,13 @@ class BuildingLocatorTest extends TestCase
         $list = $locator->listResources('files://', true);
         $this->assertCount(6, $list);
         $this->assertEquals([
+            __DIR__ . '/Building/Floors/Floor/files/test.json',
+            __DIR__ . '/Building/Floors/Floor/files/test/blah.json',
             __DIR__ . '/Building/Floors/Floor2/files/data/foo.json',
             __DIR__ . '/Building/Floors/Floor2/files/foo.json',
-            __DIR__ . '/Building/Floors/Floor/files/test.json',
             __DIR__ . '/Building/Floors/Floor2/files/test.json',
             __DIR__ . '/Building/Floors/Floor3/files/test.json',
-            __DIR__ . '/Building/Floors/Floor/files/test/blah.json'
-        ], $list);
+        ], array_map('strval', $list));
     }
 
     /**
@@ -280,7 +280,7 @@ class BuildingLocatorTest extends TestCase
         $this->assertEquals([
             __DIR__ . '/Building/Floors/Floor2/files/data/foo.json',
             __DIR__ . '/Building/upload/data/files/foo.json'
-        ], $list);
+        ], array_map('strval', $list));
     }
 
     /**

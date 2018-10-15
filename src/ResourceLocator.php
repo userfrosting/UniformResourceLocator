@@ -386,7 +386,7 @@ class ResourceLocator implements ResourceLocatorInterface
         // Without sorting, the order of the resources would be by locations
         $list = array_sort($list, function($resource)
         {
-            return $resource->getBasePath();
+            return $resource->getAbsolutePath();
         });
 
         return array_values($list);

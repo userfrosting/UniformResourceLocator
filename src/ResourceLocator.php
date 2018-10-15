@@ -353,9 +353,10 @@ class ResourceLocator implements ResourceLocatorInterface
      * ressources will be returned when considering all locations
      *
      * @param string $uri Input URI to be searched (can be a uri/path ONLY)
+     * @param bool $all If true, all resources will be returned, not only topmost ones
      * @return array The ressources list
      */
-    public function listResources($uri)
+    public function listResources($uri, $all = false)
     {
         $list = [];
         $directories = $this->getResources($uri);
@@ -372,7 +373,12 @@ class ResourceLocator implements ResourceLocatorInterface
 
                 // Create the ressource and add it to the list
                 $resource = new Resource($directory->getStream(), $directory->getLocation(), $fullPath, $relPath);
-                $list[$file->getFilename()] = $resource;
+
+                if ($all) {
+                    $list[] = $resource;
+                } else {
+                    $list[$file->getFilename()] = $resource;
+                }
             }
         }
 

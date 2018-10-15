@@ -124,6 +124,18 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     * Subtest for listResources with all results
+     * @param ResourceLocator $locator
+     *
+     * @depends testBuildingLocator
+     */
+    public function testSharedStreamTest_listAllResources(ResourceLocator $locator)
+    {
+        $list = $locator->listResources('cars://', true);
+        $this->assertCount(1, $list);
+    }
+
+    /**
      * subtest for the normal stream (Floors) of the "Building" file structure
      * @param ResourceLocator $locator
      *
@@ -219,6 +231,27 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     * Same test, but listing all ressources. So same thing, everyting in the
+     * floors, but nothing from the garage
+     *
+     * @param ResourceLocator $locator
+     * @depends testNormalStreamTest
+     */
+    public function testNormalStreamTest_listAllResources(ResourceLocator $locator)
+    {
+        $list = $locator->listResources('files://', true);
+        $this->assertCount(6, $list);
+        $this->assertEquals([
+            __DIR__ . '/Building/Floors/Floor2/files/data/foo.json',
+            __DIR__ . '/Building/Floors/Floor2/files/foo.json',
+            __DIR__ . '/Building/Floors/Floor/files/test.json',
+            __DIR__ . '/Building/Floors/Floor2/files/test.json',
+            __DIR__ . '/Building/Floors/Floor3/files/test.json',
+            __DIR__ . '/Building/Floors/Floor/files/test/blah.json'
+        ], $list);
+    }
+
+    /**
      * findResources & listResources should work fine with the prefix
      *
      * @param ResourceLocator $locator
@@ -240,6 +273,14 @@ class BuildingLocatorTest extends TestCase
         $this->assertEquals('upload/data/files/foo.json', $list[0]->getRelPath());
         $this->assertEquals('files://data/foo.json', $list[0]->getUri());
         $this->assertEquals('foo.json', $list[0]->getBasePath());
+
+        // When listing all ressources, we will see both `foo.json` files
+        $list = $locator->listResources('files://data', true);
+        $this->assertCount(2, $list);
+        $this->assertEquals([
+            __DIR__ . '/Building/Floors/Floor2/files/data/foo.json',
+            __DIR__ . '/Building/upload/data/files/foo.json'
+        ], $list);
     }
 
     /**

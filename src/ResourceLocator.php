@@ -157,7 +157,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
             // Invert arrays list. Last path has priority
             $paths = array_reverse((array) $paths);
-            foreach($paths as $path) {
+            foreach ($paths as $path) {
                 $stream = new ResourceStream($scheme, $prefix, $path, $shared);
                 $this->addStream($stream);
             }
@@ -384,8 +384,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
         // Sort files. Filesystem can return inconsistant order sometime
         // Without sorting, the order of the resources would be by locations
-        $list = array_sort($list, function($resource)
-        {
+        $list = array_sort($list, function ($resource) {
             return $resource->getAbsolutePath();
         });
 

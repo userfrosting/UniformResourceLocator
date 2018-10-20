@@ -22,7 +22,7 @@ class ResourceStreamTest extends TestCase
     {
         // Test instance & default values
         $stream = new ResourceStream('');
-        $this->assertInstanceOf(ResourceStream::Class, $stream);
+        $this->assertInstanceOf(ResourceStream::class, $stream);
         $this->assertEquals('', $stream->getScheme());
         $this->assertEquals('', $stream->getPath());
         $this->assertFalse($stream->isShared());

@@ -22,7 +22,7 @@ class ResourceLocationTest extends TestCase
     {
         // Test instance & default values
         $location = new ResourceLocation('');
-        $this->assertInstanceOf(ResourceLocation::Class, $location);
+        $this->assertInstanceOf(ResourceLocation::class, $location);
         $this->assertEquals('', $location->getName());
         $this->assertEquals('', $location->getPath());
 

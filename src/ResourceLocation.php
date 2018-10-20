@@ -77,7 +77,7 @@ class ResourceLocation
      */
     public function setPath($path = null)
     {
-        $this->path = $path;
+        $this->path = rtrim($path, '/');
         return $this;
     }
 }

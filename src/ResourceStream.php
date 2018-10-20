@@ -28,6 +28,11 @@ class ResourceStream
     protected $path;
 
     /**
+     * @var string The stream prefix
+     */
+    protected $prefix;
+
+    /**
      * @var bool Is the path shared? If yes, it won't be affected by locations
      */
     protected $shared;
@@ -36,16 +41,18 @@ class ResourceStream
      * Constructor
      *
      * @param string  $scheme
+     * @param string  $prefix
      * @param string  $path
      * @param bool    $shared
      */
-    public function __construct($scheme, $path = null, $shared = false)
+    public function __construct($scheme, $prefix = '', $path = null, $shared = false)
     {
         if (is_null($path)) {
             $path = $scheme;
         }
 
         $this->setScheme($scheme);
+        $this->setPrefix($prefix);
         $this->setPath($path);
         $this->setShared($shared);
     }
@@ -84,7 +91,26 @@ class ResourceStream
      */
     public function setPath($path)
     {
-        $this->path = $path;
+        $this->path = rtrim($path, '/');
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
         return $this;
     }
 

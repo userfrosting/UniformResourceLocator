@@ -57,22 +57,67 @@ class Resource
 
     /**
      * Get Resource URI
+     *
      * @return string
      */
     public function getUri()
     {
-        $stream = $this->stream;
+        $path = $this->getBasePath();
 
+        // Adds the stream prefix
+        $prefix = ($this->stream->getPrefix() != '') ? $this->stream->getPrefix() . '/' : '';
+
+        return $this->stream->getScheme() . '://' . $prefix . $path;
+    }
+
+    /**
+     * Get the resource base path, aka the path that comes after the `://`
+     * and without the prefix
+     *
+     * @return string
+     */
+    public function getBasePath()
+    {
         // Remove stream path from relative path
-        $path = str_replace($stream->getPath(), '', $this->relPath);
+        $path = str_replace($this->stream->getPath() . '/', '', $this->relPath);
 
         // Also remove location path
         if (!is_null($this->location)) {
-            $locationPath = trim($this->location->getPath(), '/');
-            $path = str_replace($locationPath, '', $path);
+            $locationPath = $this->location->getPath();
+            $path = str_replace($locationPath . '/', '', $path);
         }
 
-        return $stream->getScheme() . '://' . trim($path, '/');
+        return $path;
+    }
+
+    /**
+     * Extract the resource filename
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return pathinfo($this->relPath, PATHINFO_FILENAME);
+    }
+
+    /**
+     * Extract the trailing name component
+     *
+     * @return string
+     */
+    public function getBasename()
+    {
+        return pathinfo($this->relPath, PATHINFO_BASENAME);
+    }
+
+    /**
+     * Extract the resource extension
+     *
+     * @return string
+     */
+    public function getExtension()
+    {
+        return pathinfo($this->relPath, PATHINFO_EXTENSION);
     }
 
     /**

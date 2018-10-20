@@ -64,7 +64,10 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function __construct($basePath = '')
     {
+        // Set base path
         $this->setBasePath($basePath);
+
+        // Get a Filesystem instance
         $this->filesystem = new Filesystem;
 
         // Setup stream
@@ -84,7 +87,7 @@ class ResourceLocator implements ResourceLocatorInterface
         if (!is_string($uri)) {
             throw new \BadMethodCallException('Invalid parameter $uri.');
         }
-        return $this->findCached($uri, false, false);
+        return $this->findResource($uri, true);
     }
 
     /**
@@ -94,8 +97,11 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function addStream(ResourceStream $stream)
     {
-        $this->streams[$stream->getScheme()] = $stream;
+        $this->streams[$stream->getScheme()][$stream->getPrefix()][] = $stream;
         $this->setupStreamWrapper($stream->getScheme());
+
+        // Sort in reverse order to get longer prefixes to be matched first.
+        krsort($this->streams[$stream->getScheme()]);
 
         return $this;
     }
@@ -107,7 +113,12 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     protected function setupStreamWrapper($scheme)
     {
-        // First unset the sheme
+        // Make sure stream does not already exist
+        if ($this->streamBuilder->isStream($scheme)) {
+            return;
+        }
+
+        // First unset the sheme. Prevent issue if someone else already registered it
         $this->unsetStreamWrapper($scheme);
 
         // register the scheme as a stream wrapper
@@ -121,6 +132,8 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     protected function unsetStreamWrapper($scheme)
     {
+        $this->streamBuilder->remove($scheme);
+
         if (in_array($scheme, stream_get_wrappers())) {
             stream_wrapper_unregister($scheme);
         }
@@ -130,15 +143,42 @@ class ResourceLocator implements ResourceLocatorInterface
      * Register a new stream
      *
      * @param  string  $scheme
-     * @param  string  $path (default null)
-     * @param  bool    $shared (default false)
+     * @param  string  $prefix (default '')
+     * @param  string|array|null  $paths (default null). When using null path, the scheme will be used as a path
+     * @param  bool    $shared (default false) Shared resoureces are not affected by locations
      * @return void
      */
-    public function registerStream($scheme, $path = null, $shared = false)
+    public function registerStream($scheme, $prefix = '', $paths = null, $shared = false)
     {
-        $stream = new ResourceStream($scheme, $path, $shared);
-        $this->addStream($stream);
+        if (is_null($paths)) {
+            $stream = new ResourceStream($scheme, $prefix, null, $shared);
+            $this->addStream($stream);
+        } else {
+
+            // Invert arrays list. Last path has priority
+            $paths = array_reverse((array) $paths);
+            foreach($paths as $path) {
+                $stream = new ResourceStream($scheme, $prefix, $path, $shared);
+                $this->addStream($stream);
+            }
+        }
+
         return $this;
+    }
+
+    /**
+     * AddPath function. Used to preserve compatibility with RocketTheme/Toolbox
+     *
+     * @param string  $scheme
+     * @param string  $prefix
+     * @param string|array  $paths
+     * @param bool|string $override True to add path as override, string
+     * @param bool $force    True to add paths even if them do not exist.
+     * @deprecated
+     */
+    public function addPath($scheme, $prefix, $paths, $override = false, $force = false)
+    {
+        $this->registerStream($scheme, $prefix, $paths);
     }
 
     /**
@@ -149,7 +189,11 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function removeStream($scheme)
     {
-        unset($this->streams[$scheme]);
+        if (isset($this->streams[$scheme])) {
+            $this->unsetStreamWrapper($scheme);
+            unset($this->streams[$scheme]);
+        }
+
         return $this;
     }
 
@@ -309,9 +353,10 @@ class ResourceLocator implements ResourceLocatorInterface
      * ressources will be returned when considering all locations
      *
      * @param string $uri Input URI to be searched (can be a uri/path ONLY)
+     * @param bool $all If true, all resources will be returned, not only topmost ones
      * @return array The ressources list
      */
-    public function listResources($uri)
+    public function listResources($uri, $all = false)
     {
         $list = [];
         $directories = $this->getResources($uri);
@@ -328,9 +373,21 @@ class ResourceLocator implements ResourceLocatorInterface
 
                 // Create the ressource and add it to the list
                 $resource = new Resource($directory->getStream(), $directory->getLocation(), $fullPath, $relPath);
-                $list[$file->getFilename()] = $resource;
+
+                if ($all) {
+                    $list[] = $resource;
+                } else {
+                    $list[$file->getFilename()] = $resource;
+                }
             }
         }
+
+        // Sort files. Filesystem can return inconsistant order sometime
+        // Without sorting, the order of the resources would be by locations
+        $list = array_sort($list, function($resource)
+        {
+            return $resource->getAbsolutePath();
+        });
 
         return array_values($list);
     }
@@ -430,6 +487,10 @@ class ResourceLocator implements ResourceLocatorInterface
     public function findResource($uri, $absolute = true, $first = false)
     {
         $resource = $this->getResource($uri, $first);
+
+        if (!$resource) {
+            return false;
+        }
 
         if ($absolute) {
             return $resource->getAbsolutePath();
@@ -540,41 +601,58 @@ class ResourceLocator implements ResourceLocatorInterface
         // Prepare result depending on $array parameter
         $results = $array ? [] : false;
 
-        // Get stream resource
-        $streamResource = $this->getStream($scheme);
+        foreach ($this->streams[$scheme] as $prefix => $streams) {
 
-        // Get all search paths using all locations
-        $paths = $this->searchPaths($streamResource);
-
-        // Get filename
-        $filename = '/' . trim($file, '\/');
-
-        // Pass each search paths
-        foreach ($paths as $path => $location) {
-
-            // Check if path from the ResourceStream is absolute or relative
-            // for both unix and windows
-            if (!preg_match('`^/|\w+:`', $path)) {
-                // Handle relative path lookup.
-                $relPath = trim($path . $filename, '/');
-                $fullPath = $this->basePath . '/' . $relPath;
-            } else {
-                // Handle absolute path lookup.
-                $relPath = null; // Can't have a relative path if an absolute one was found
-                $fullPath = rtrim($path . $filename, '/');
+            // Make sure the prefix match
+            if ($prefix && strpos($file, $prefix) !== 0) {
+                continue;
             }
 
-            // Add the result to the list if the path exist, unless we want all results
-            if ($all || $this->filesystem->exists($fullPath)) {
-                $currentResource = new Resource($streamResource, $location, $fullPath, $relPath);
-                if (!$array) {
-                    return $currentResource;
+            foreach ($streams as $stream) {
+
+                // Get all search paths using all locations
+                $paths = $this->searchPaths($stream);
+
+                // Get filename
+                // Remove prefix from filename.
+                $filename = '/' . trim(substr($file, strlen($prefix)), '\/');
+
+                // Pass each search paths
+                foreach ($paths as $path => $location) {
+
+                    // Check if path from the ResourceStream is absolute or relative
+                    // for both unix and windows
+                    if (!preg_match('`^/|\w+:`', $path)) {
+                        // Handle relative path lookup.
+                        $relPath = trim($path . $filename, '/');
+                        $fullPath = $this->basePath . '/' . $relPath;
+                    } else {
+                        // Handle absolute path lookup.
+                        $relPath = null; // Can't have a relative path if an absolute one was found
+                        $fullPath = rtrim($path . $filename, '/');
+                    }
+
+                    // Add the result to the list if the path exist, unless we want all results
+                    if ($all || $this->filesystem->exists($fullPath)) {
+                        $currentResource = new Resource($stream, $location, $fullPath, $relPath);
+                        if (!$array) {
+                            return $currentResource;
+                        }
+                        $results[] = $currentResource;
+                    }
                 }
-                $results[] = $currentResource;
             }
         }
 
         return $results;
+    }
+
+    /**
+     * @return StreamBuilder
+     */
+    public function getStreamBuilder()
+    {
+        return $this->streamBuilder;
     }
 
     /**

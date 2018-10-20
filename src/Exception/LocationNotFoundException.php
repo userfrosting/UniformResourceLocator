@@ -15,5 +15,4 @@ namespace UserFrosting\UniformResourceLocator\Exception;
  */
 class LocationNotFoundException extends \Exception
 {
-
 }

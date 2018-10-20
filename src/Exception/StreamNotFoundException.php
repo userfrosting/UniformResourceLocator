@@ -15,5 +15,4 @@ namespace UserFrosting\UniformResourceLocator\Exception;
  */
 class StreamNotFoundException extends \Exception
 {
-
 }

@@ -24,7 +24,7 @@ class ResourceLocatorTest extends TestCase
     {
         // Test instance & default values
         $stream = new ResourceStream('');
-        $this->assertInstanceOf(ResourceStream::Class, $stream);
+        $this->assertInstanceOf(ResourceStream::class, $stream);
         $this->assertEquals('', $stream->getScheme());
         $this->assertEquals('', $stream->getPath());
         $this->assertFalse($stream->isShared());
@@ -61,7 +61,7 @@ class ResourceLocatorTest extends TestCase
     {
         // Test instance & default values
         $location = new ResourceLocation('');
-        $this->assertInstanceOf(ResourceLocation::Class, $location);
+        $this->assertInstanceOf(ResourceLocation::class, $location);
         $this->assertEquals('', $location->getName());
         $this->assertEquals('', $location->getPath());
 

@@ -409,7 +409,7 @@ class ResourceLocator implements ResourceLocatorInterface
     public function isStream($uri)
     {
         try {
-            list ($scheme,) = $this->normalize($uri, true, true);
+            list($scheme, ) = $this->normalize($uri, true, true);
         } catch (\Exception $e) {
             return false;
         }
@@ -484,7 +484,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
         if (!isset($this->cache[$key])) {
             try {
-                list ($scheme, $file) = $this->normalize($uri, true, true);
+                list($scheme, $file) = $this->normalize($uri, true, true);
                 if (!$file && $scheme === 'file') {
                     $file = $this->basePath;
                 }

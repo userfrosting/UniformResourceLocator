@@ -38,6 +38,11 @@ class ResourceStream
     protected $shared;
 
     /**
+     * @var string $separator Directory separator
+     */
+    protected $separator = '/';
+
+    /**
      * Constructor
      *
      * @param string $scheme
@@ -92,7 +97,7 @@ class ResourceStream
      */
     public function setPath($path)
     {
-        $this->path = rtrim($path, '/');
+        $this->path = rtrim($path, $this->separator);
 
         return $this;
     }

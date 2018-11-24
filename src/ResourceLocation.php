@@ -28,6 +28,11 @@ class ResourceLocation
     protected $path;
 
     /**
+     * @var string $separator Directory separator
+     */
+    protected $separator = '/';
+
+    /**
      * Constructor
      *
      * @param string      $name
@@ -78,7 +83,7 @@ class ResourceLocation
      */
     public function setPath($path = null)
     {
-        $this->path = rtrim($path, '/');
+        $this->path = rtrim($path, $this->separator);
 
         return $this;
     }

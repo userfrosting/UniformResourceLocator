@@ -50,6 +50,11 @@ class ResourceLocator implements ResourceLocatorInterface
     protected $filesystem;
 
     /**
+     * @var string $separator Directory separator
+     */
+    protected $separator = '/';
+
+    /**
      * @var StreamBuilder
      */
     protected $streamBuilder;
@@ -369,7 +374,7 @@ class ResourceLocator implements ResourceLocatorInterface
                 // Calculate the relative path
                 $fullPath = $file->getPathname();
                 $relPath = str_replace($this->basePath, '', $fullPath);
-                $relPath = ltrim($relPath, '/');
+                $relPath = ltrim($relPath, $this->separator);
 
                 // Create the ressource and add it to the list
                 $resource = new Resource($directory->getStream(), $directory->getLocation(), $fullPath, $relPath);
@@ -425,13 +430,13 @@ class ResourceLocator implements ResourceLocatorInterface
                 return false;
             }
         }
-        $uri = preg_replace('|\\\|u', '/', $uri);
+        $uri = preg_replace('|\\\|u', $this->separator, $uri);
         $segments = explode('://', $uri, 2);
         $path = array_pop($segments);
         $scheme = array_pop($segments) ?: 'file';
         if ($path) {
-            $path = preg_replace('|\\\|u', '/', $path);
-            $parts = explode('/', $path);
+            $path = preg_replace('|\\\|u', $this->separator, $path);
+            $parts = explode($this->separator, $path);
             $list = [];
             foreach ($parts as $i => $part) {
                 if ($part === '..') {
@@ -452,7 +457,7 @@ class ResourceLocator implements ResourceLocatorInterface
             if (($l = end($parts)) === '' || $l === '.' || $l === '..') {
                 $list[] = '';
             }
-            $path = implode('/', $list);
+            $path = implode($this->separator, $list);
         }
 
         return $splitStream ? [$scheme, $path] : ($scheme !== 'file' ? "{$scheme}://{$path}" : $path);
@@ -578,7 +583,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
         $list = [];
         foreach ($this->getLocations() as $location) {
-            $path = trim($location->getPath(), '/') . '/' . trim($stream->getPath(), '/');
+            $path = trim($location->getPath(), $this->separator) . $this->separator . trim($stream->getPath(), $this->separator);
             $list[$path] = $location;
         }
 
@@ -619,7 +624,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
                 // Get filename
                 // Remove prefix from filename.
-                $filename = '/' . trim(substr($file, strlen($prefix)), '\/');
+                $filename = $this->separator . trim(substr($file, strlen($prefix)), '\/');
 
                 // Pass each search paths
                 foreach ($paths as $path => $location) {
@@ -628,12 +633,12 @@ class ResourceLocator implements ResourceLocatorInterface
                     // for both unix and windows
                     if (!preg_match('`^/|\w+:`', $path)) {
                         // Handle relative path lookup.
-                        $relPath = trim($path . $filename, '/');
-                        $fullPath = $this->basePath . '/' . $relPath;
+                        $relPath = trim($path . $filename, $this->separator);
+                        $fullPath = $this->basePath . $this->separator . $relPath;
                     } else {
                         // Handle absolute path lookup.
                         $relPath = null; // Can't have a relative path if an absolute one was found
-                        $fullPath = rtrim($path . $filename, '/');
+                        $fullPath = rtrim($path . $filename, $this->separator);
                     }
 
                     // Add the result to the list if the path exist, unless we want all results

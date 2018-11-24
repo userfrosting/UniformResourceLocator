@@ -32,3 +32,9 @@ Time: 41 ms, Memory: 3.75MB
 
 OK (1 test, 18 assertions)
 ```
+
+# Running test coverage report
+
+```
+vendor/bin/phpunit --coverage-html _meta/coverage
+```

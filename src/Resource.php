@@ -13,7 +13,7 @@ namespace UserFrosting\UniformResourceLocator;
  *
  * Contains information about a resource
  *
- * @author    Louis Charette
+ * @author Louis Charette
  */
 class Resource
 {
@@ -31,6 +31,11 @@ class Resource
      * @var string $relPath Relative path to the resource
      */
     protected $relPath;
+
+    /**
+     * @var string $separator Directory separator
+     */
+    protected $separator = '/';
 
     /**
      * @var ResourceStream $stream
@@ -63,7 +68,7 @@ class Resource
         $path = $this->getBasePath();
 
         // Adds the stream prefix
-        $prefix = ($this->stream->getPrefix() != '') ? $this->stream->getPrefix() . '/' : '';
+        $prefix = ($this->stream->getPrefix() != '') ? $this->stream->getPrefix() . $this->separator : '';
 
         return $this->stream->getScheme() . '://' . $prefix . $path;
     }
@@ -77,12 +82,12 @@ class Resource
     public function getBasePath()
     {
         // Remove stream path from relative path
-        $path = str_replace($this->stream->getPath() . '/', '', $this->relPath);
+        $path = str_replace($this->stream->getPath() . $this->separator, '', $this->relPath);
 
         // Also remove location path
         if (!is_null($this->location)) {
             $locationPath = $this->location->getPath();
-            $path = str_replace($locationPath . '/', '', $path);
+            $path = str_replace($locationPath . $this->separator, '', $path);
         }
 
         return $path;

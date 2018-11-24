@@ -1,6 +1,6 @@
 # Uniform Resource Locator
 
-[![Build Status](https://travis-ci.org/userfrosting/UniformResourceLocator.svg?branch=master)](https://travis-ci.org/userfrosting/UniformResourceLocator)
+[![Build Status](https://travis-ci.org/userfrosting/UniformResourceLocator.svg?branch=master)](https://travis-ci.org/userfrosting/UniformResourceLocator) [![codecov](https://codecov.io/gh/userfrosting/UniformResourceLocator/branch/master/graph/badge.svg)](https://codecov.io/gh/userfrosting/UniformResourceLocator)
 [![Join the chat at https://chat.userfrosting.com/channel/support](https://demo.rocket.chat/images/join-chat.svg)](https://chat.userfrosting.com/channel/support)
 
 Louis Charette & Alexander Weissman, 2018

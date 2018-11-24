@@ -40,10 +40,10 @@ class ResourceStream
     /**
      * Constructor
      *
-     * @param string  $scheme
-     * @param string  $prefix
-     * @param string  $path
-     * @param bool    $shared
+     * @param string $scheme
+     * @param string $prefix
+     * @param string $path
+     * @param bool   $shared
      */
     public function __construct($scheme, $prefix = '', $path = null, $shared = false)
     {
@@ -73,6 +73,7 @@ class ResourceStream
     public function setScheme($scheme)
     {
         $this->scheme = $scheme;
+
         return $this;
     }
 
@@ -92,6 +93,7 @@ class ResourceStream
     public function setPath($path)
     {
         $this->path = rtrim($path, '/');
+
         return $this;
     }
 
@@ -111,6 +113,7 @@ class ResourceStream
     public function setPrefix($prefix)
     {
         $this->prefix = $prefix;
+
         return $this;
     }
 
@@ -130,6 +133,7 @@ class ResourceStream
     public function setShared($shared)
     {
         $this->shared = $shared;
+
         return $this;
     }
 }

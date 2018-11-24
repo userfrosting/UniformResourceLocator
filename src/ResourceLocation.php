@@ -30,7 +30,7 @@ class ResourceLocation
     /**
      * Constructor
      *
-     * @param string $name
+     * @param string      $name
      * @param string|null $path
      */
     public function __construct($name, $path = null)
@@ -59,6 +59,7 @@ class ResourceLocation
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -78,6 +79,7 @@ class ResourceLocation
     public function setPath($path = null)
     {
         $this->path = rtrim($path, '/');
+
         return $this;
     }
 }

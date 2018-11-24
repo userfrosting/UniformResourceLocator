@@ -8,8 +8,6 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
-use UserFrosting\UniformResourceLocator\ResourceLocation;
-
 /**
  * Resource Class
  *
@@ -42,10 +40,10 @@ class Resource
     /**
      * Constructor
      *
-     * @param ResourceStream $stream Resource stream
-     * @param ResourceLocation|null $location Resource location
-     * @param string $absolutePath Resource absolute path
-     * @param string $relPath Resource relative path
+     * @param ResourceStream        $stream       Resource stream
+     * @param ResourceLocation|null $location     Resource location
+     * @param string                $absolutePath Resource absolute path
+     * @param string                $relPath      Resource relative path
      */
     public function __construct(ResourceStream $stream, ResourceLocation $location = null, $absolutePath = '', $relPath = '')
     {
@@ -136,6 +134,7 @@ class Resource
     public function setLocation(ResourceLocation $location)
     {
         $this->location = $location;
+
         return $this;
     }
 
@@ -165,6 +164,7 @@ class Resource
     public function setAbsolutePath($absolutePath)
     {
         $this->absolutePath = $absolutePath;
+
         return $this;
     }
 
@@ -184,6 +184,7 @@ class Resource
     public function setRelPath($relPath)
     {
         $this->relPath = $relPath;
+
         return $this;
     }
 
@@ -203,6 +204,7 @@ class Resource
     public function setStream(ResourceStream $stream)
     {
         $this->stream = $stream;
+
         return $this;
     }
 }

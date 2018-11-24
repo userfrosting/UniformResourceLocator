@@ -16,12 +16,15 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
  */
 class BuildingLocatorTest extends TestCase
 {
+    /** @var string $basePath **/
+    protected $basePath = __DIR__ . '/Building';
+
     /**
      * Test the provided "Building" file structure
      */
     public function testBuildingLocator()
     {
-        $locator = new ResourceLocator(__DIR__ . '/Building');
+        $locator = new ResourceLocator($this->basePath);
 
         // Register the floors.
         // Note the missing `/` at the end. This shound't make any difference.
@@ -51,7 +54,7 @@ class BuildingLocatorTest extends TestCase
         // Find the `car.json` resource. Should be from the Garage.
         $resource = $locator->getResource('cars://cars.json');
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $resource);
+        $this->assertEquals($this->basePath . '/Garage/cars/cars.json', $resource);
         $this->assertEquals('Garage/cars/cars.json', $resource->getRelPath());
         $this->assertNull($resource->getLocation());
         $this->assertEquals('cars://cars.json', $resource->getUri());
@@ -72,12 +75,12 @@ class BuildingLocatorTest extends TestCase
         $resources = $locator->getResources('cars://cars.json');
         $this->assertInternalType('array', $resources);
         $this->assertInstanceOf(Resource::class, $resources[0]);
-        $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $resources[0]);
+        $this->assertEquals($this->basePath . '/Garage/cars/cars.json', $resources[0]);
         $this->assertEquals('cars://cars.json', $resources[0]->getUri());
 
         // Same tests, for `findResource` & `findResources`
-        $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $locator->findResource('cars://cars.json'));
-        $this->assertEquals([__DIR__ . '/Building/Garage/cars/cars.json'], $locator->findResources('cars://cars.json'));
+        $this->assertEquals($this->basePath . '/Garage/cars/cars.json', $locator->findResource('cars://cars.json'));
+        $this->assertEquals([$this->basePath . '/Garage/cars/cars.json'], $locator->findResources('cars://cars.json'));
     }
 
     /**
@@ -91,13 +94,13 @@ class BuildingLocatorTest extends TestCase
         // Should also work with simple stream (non file uri)
         $resource = $locator->getResource('cars://');
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals(__DIR__ . '/Building/Garage/cars', $resource);
+        $this->assertEquals($this->basePath . '/Garage/cars', $resource);
         $this->assertEquals('Garage/cars', $resource->getRelPath());
         $this->assertNull($resource->getLocation());
 
         // Same tests, for `findResource` & `findResources`
-        $this->assertEquals(__DIR__ . '/Building/Garage/cars', $locator->findResource('cars://'));
-        $this->assertEquals([__DIR__ . '/Building/Garage/cars'], $locator->findResources('cars://'));
+        $this->assertEquals($this->basePath . '/Garage/cars', $locator->findResource('cars://'));
+        $this->assertEquals([$this->basePath . '/Garage/cars'], $locator->findResources('cars://'));
     }
 
     /**
@@ -112,7 +115,7 @@ class BuildingLocatorTest extends TestCase
         $list = $locator->listResources('cars://');
         $this->assertCount(1, $list);
         $this->assertInstanceOf(Resource::class, $list[0]);
-        $this->assertEquals(__DIR__ . '/Building/Garage/cars/cars.json', $list[0]);
+        $this->assertEquals($this->basePath . '/Garage/cars/cars.json', $list[0]);
         $this->assertEquals('Garage/cars/cars.json', $list[0]->getRelPath());
         $this->assertEquals('cars://cars.json', $list[0]->getUri());
         $this->assertEquals('cars.json', $list[0]->getBasePath());
@@ -147,7 +150,7 @@ class BuildingLocatorTest extends TestCase
         // The config file should never be found when looking for files
         $resource = $locator->getResource('files://test.json');
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals(__DIR__ . '/Building/Floors/Floor3/files/test.json', $resource);
+        $this->assertEquals($this->basePath . '/Floors/Floor3/files/test.json', $resource);
         $this->assertEquals('Floors/Floor3/files/test.json', $resource->getRelPath());
         $this->assertEquals('files://test.json', $resource->getUri());
         $this->assertEquals('Floor3', $resource->getLocation()->getName());
@@ -168,7 +171,7 @@ class BuildingLocatorTest extends TestCase
         $this->assertInternalType('array', $resources);
         $resource = $resources[1];
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals(__DIR__ . '/Building/Floors/Floor2/files/test.json', $resource);
+        $this->assertEquals($this->basePath . '/Floors/Floor2/files/test.json', $resource);
         $this->assertEquals('Floors/Floor2/files/test.json', $resource->getRelPath());
         $this->assertEquals('files://test.json', $resource->getUri());
         $this->assertEquals('Floor2', $resource->getLocation()->getName());
@@ -183,11 +186,11 @@ class BuildingLocatorTest extends TestCase
      */
     public function testNormalStreamTest_findResource(ResourceLocator $locator)
     {
-        $this->assertEquals(__DIR__ . '/Building/Floors/Floor3/files/test.json', $locator->findResource('files://test.json'));
+        $this->assertEquals($this->basePath . '/Floors/Floor3/files/test.json', $locator->findResource('files://test.json'));
         $this->assertEquals([
-            __DIR__ . '/Building/Floors/Floor3/files/test.json',
-            __DIR__ . '/Building/Floors/Floor2/files/test.json',
-            __DIR__ . '/Building/Floors/Floor/files/test.json'
+            $this->basePath . '/Floors/Floor3/files/test.json',
+            $this->basePath . '/Floors/Floor2/files/test.json',
+            $this->basePath . '/Floors/Floor/files/test.json'
         ], $locator->findResources('files://test.json'));
     }
 
@@ -199,11 +202,11 @@ class BuildingLocatorTest extends TestCase
      */
     public function testNormalStreamTest_simplePath(ResourceLocator $locator)
     {
-        $this->assertEquals(__DIR__ . '/Building/Floors/Floor3/files', $locator->findResource('files://'));
+        $this->assertEquals($this->basePath . '/Floors/Floor3/files', $locator->findResource('files://'));
         $this->assertEquals([
-            __DIR__ . '/Building/Floors/Floor3/files',
-            __DIR__ . '/Building/Floors/Floor2/files',
-            __DIR__ . '/Building/Floors/Floor/files'
+            $this->basePath . '/Floors/Floor3/files',
+            $this->basePath . '/Floors/Floor2/files',
+            $this->basePath . '/Floors/Floor/files'
         ], $locator->findResources('files://'));
     }
 
@@ -220,9 +223,9 @@ class BuildingLocatorTest extends TestCase
         $list = $locator->listResources('files://');
         $this->assertCount(3, $list);
         $this->assertEquals([
-            __DIR__ . '/Building/Floors/Floor/files/test/blah.json',
-            __DIR__ . '/Building/Floors/Floor2/files/foo.json',
-            __DIR__ . '/Building/Floors/Floor3/files/test.json'
+            $this->basePath . '/Floors/Floor/files/test/blah.json',
+            $this->basePath . '/Floors/Floor2/files/foo.json',
+            $this->basePath . '/Floors/Floor3/files/test.json'
         ], array_map('strval', $list));
         $this->assertInstanceOf(Resource::class, $list[0]);
         $this->assertEquals('Floor3', $list[2]->getLocation()->getName());
@@ -242,12 +245,12 @@ class BuildingLocatorTest extends TestCase
         $list = $locator->listResources('files://', true);
         $this->assertCount(6, $list);
         $this->assertEquals([
-            __DIR__ . '/Building/Floors/Floor/files/test.json',
-            __DIR__ . '/Building/Floors/Floor/files/test/blah.json',
-            __DIR__ . '/Building/Floors/Floor2/files/data/foo.json',
-            __DIR__ . '/Building/Floors/Floor2/files/foo.json',
-            __DIR__ . '/Building/Floors/Floor2/files/test.json',
-            __DIR__ . '/Building/Floors/Floor3/files/test.json',
+            $this->basePath . '/Floors/Floor/files/test.json',
+            $this->basePath . '/Floors/Floor/files/test/blah.json',
+            $this->basePath . '/Floors/Floor2/files/data/foo.json',
+            $this->basePath . '/Floors/Floor2/files/foo.json',
+            $this->basePath . '/Floors/Floor2/files/test.json',
+            $this->basePath . '/Floors/Floor3/files/test.json',
         ], array_map('strval', $list));
     }
 
@@ -259,15 +262,15 @@ class BuildingLocatorTest extends TestCase
      */
     public function testNormalStreamTest_withPrefix(ResourceLocator $locator)
     {
-        $this->assertEquals(__DIR__ . '/Building/upload/data/files/foo.json', $locator->findResource('files://data/foo.json'));
+        $this->assertEquals($this->basePath . '/upload/data/files/foo.json', $locator->findResource('files://data/foo.json'));
         $this->assertEquals([
-            __DIR__ . '/Building/upload/data/files/foo.json',
-            __DIR__ . '/Building/Floors/Floor2/files/data/foo.json'
+            $this->basePath . '/upload/data/files/foo.json',
+            $this->basePath . '/Floors/Floor2/files/data/foo.json'
         ], $locator->findResources('files://data/foo.json'));
 
         $list = $locator->listResources('files://data');
         $this->assertCount(1, $list);
-        $this->assertEquals([__DIR__ . '/Building/upload/data/files/foo.json'], $list);
+        $this->assertEquals([$this->basePath . '/upload/data/files/foo.json'], $list);
         $this->assertInstanceOf(Resource::class, $list[0]);
         $this->assertNull($list[0]->getLocation());
         $this->assertEquals('upload/data/files/foo.json', $list[0]->getRelPath());
@@ -278,8 +281,8 @@ class BuildingLocatorTest extends TestCase
         $list = $locator->listResources('files://data', true);
         $this->assertCount(2, $list);
         $this->assertEquals([
-            __DIR__ . '/Building/Floors/Floor2/files/data/foo.json',
-            __DIR__ . '/Building/upload/data/files/foo.json'
+            $this->basePath . '/Floors/Floor2/files/data/foo.json',
+            $this->basePath . '/upload/data/files/foo.json'
         ], array_map('strval', $list));
     }
 
@@ -295,7 +298,7 @@ class BuildingLocatorTest extends TestCase
     public function testRocketThemeUniformResourceLocatorCompatibility(ResourceLocator $locator)
     {
         // Setup old locator
-        $toolBox = new \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator(__DIR__ . '/Building');
+        $toolBox = new \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator($this->basePath);
         $toolBox->addPath('cars', '', 'Garage/cars');
         $toolBox->addPath('files', '', 'Floors/Floor/files');
         $toolBox->addPath('files', '', 'Floors/Floor2/files');
@@ -367,7 +370,7 @@ class BuildingLocatorTest extends TestCase
      */
     public function testAddPath()
     {
-        $locator = new ResourceLocator(__DIR__ . '/Building');
+        $locator = new ResourceLocator($this->basePath);
 
         // Let's try doing this manually using an array of paths
         // Last path has priority
@@ -381,6 +384,6 @@ class BuildingLocatorTest extends TestCase
 
         $resource = $locator->getResource('files://test.json');
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals(__DIR__ . '/Building/Floors/Floor3/files/test.json', $resource);
+        $this->assertEquals($this->basePath . '/Floors/Floor3/files/test.json', $resource);
     }
 }

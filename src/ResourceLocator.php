@@ -206,7 +206,7 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function getStream($scheme)
     {
-        if ($this->schemeExist($scheme)) {
+        if ($this->schemeExists($scheme)) {
             return $this->streams[$scheme];
         } else {
             throw new StreamNotFoundException();
@@ -236,7 +236,7 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param  string $scheme The stream scheme
      * @return bool
      */
-    public function schemeExist($scheme)
+    public function schemeExists($scheme)
     {
         return isset($this->streams[$scheme]);
     }
@@ -477,7 +477,7 @@ class ResourceLocator implements ResourceLocatorInterface
             return false;
         }
 
-        return $this->schemeExist($scheme);
+        return $this->schemeExists($scheme);
     }
 
     /**
@@ -603,7 +603,7 @@ class ResourceLocator implements ResourceLocatorInterface
     protected function find($scheme, $file, $array, $all)
     {
         // Make sure stream exist
-        if (!$this->schemeExist($scheme)) {
+        if (!$this->schemeExists($scheme)) {
             throw new \InvalidArgumentException("Invalid resource {$scheme}://");
         }
 

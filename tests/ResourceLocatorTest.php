@@ -9,6 +9,8 @@
 namespace UserFrosting\UniformResourceLocator;
 
 use PHPUnit\Framework\TestCase;
+use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface;
+use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 /**
@@ -19,241 +21,403 @@ class ResourceLocatorTest extends TestCase
     /**
      * Test ResourceLocator Class
      */
-    public function testResourceLocator()
+    public function testConstructor()
     {
         // Test instance & default values
-        $locator = new ResourceLocator;
-        $this->assertEquals('', $locator->getBasePath());
+        $locator = new ResourceLocator();
+        $this->assertInstanceOf(ResourceLocatorInterface::class, $locator);
 
-        // Set/get basePath properties
+        return $locator;
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testGetStreamBuilder()
+    {
+        $locator = new ResourceLocator();
+        $streamBuilder = $locator->getStreamBuilder();
+        $this->assertInstanceOf(StreamBuilder::class, $streamBuilder);
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testGetBasePathWithEmptyConstructorArgument()
+    {
+        $locator = new ResourceLocator();
+        $this->assertEquals('', $locator->getBasePath());
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testSetBasePathWithConstructorArgument()
+    {
+        $locator = new ResourceLocator(__DIR__ . '/Building');
+        $this->assertEquals(__DIR__ . '/Building', $locator->getBasePath());
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testSetBasePath()
+    {
+        $locator = new ResourceLocator();
         $locator->setBasePath(__DIR__ . '/Building');
         $this->assertEquals(__DIR__ . '/Building', $locator->getBasePath());
-
-        // Now try again with the info in the constructor
-        $locator2 = new ResourceLocator(__DIR__ . '/Building');
-        $this->assertEquals(__DIR__ . '/Building', $locator2->getBasePath());
-
-        return $locator;
     }
 
     /**
-     * Same test as testResourceLocator_addStream, but with addPath
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator
+     * @depends testConstructor
      */
-    public function testResourceLocator_addPath(ResourceLocator $locator)
+    public function testAddStream()
     {
+        $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
-        $locator->addPath('bar', '', '/foo');
-        $this->assertTrue($locator->schemeExists('bar'));
 
-        $barStream = $locator->getStream('bar');
-        $this->assertInternalType('array', $barStream);
-        $this->assertInstanceOf(ResourceStream::class, $barStream[''][0]);
-        $this->assertEquals('/foo', $barStream[''][0]->getPath());
-
-        $self = $locator->removeStream('bar');
-        $this->assertInstanceOf(ResourceLocator::class, $self);
-    }
-
-    /**
-     * Test stream manipulation with addStream
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator
-     */
-    public function testResourceLocator_addStream(ResourceLocator $locator)
-    {
-        $this->assertFalse($locator->schemeExists('bar'));
-        $this->assertFalse($locator->schemeExists('foo'));
-
-        $stream = new ResourceStream('bar', '', '/foo');
+        $stream = new ResourceStream('bar', '', 'foo');
         $locator->addStream($stream);
-        $locator->registerStream('foo', '', '/bar');
 
         $this->assertTrue($locator->schemeExists('bar'));
-        $this->assertTrue($locator->schemeExists('foo'));
 
         $barStream = $locator->getStream('bar');
         $this->assertInternalType('array', $barStream);
         $this->assertInstanceOf(ResourceStream::class, $barStream[''][0]);
-        $this->assertEquals('/foo', $barStream[''][0]->getPath());
-
-        return $locator;
+        $this->assertEquals('foo', $barStream[''][0]->getPath());
     }
 
     /**
-     * ...getStreams
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addStream
+     * @depends testConstructor
      */
-    public function testResourceLocator_getStreams(ResourceLocator $locator)
+    public function testRegisterStream()
     {
+        $locator = new ResourceLocator();
+        $this->assertFalse($locator->schemeExists('bar'));
+
+        $locator->registerStream('bar', '', 'foo');
+
+        $this->assertTrue($locator->schemeExists('bar'));
+
+        $barStream = $locator->getStream('bar');
+        $this->assertInternalType('array', $barStream);
+        $this->assertInstanceOf(ResourceStream::class, $barStream[''][0]);
+        $this->assertEquals('foo', $barStream[''][0]->getPath());
+    }
+
+    /**
+     * @depends testRegisterStream
+     */
+    public function testRegisterStreamWithOutPath()
+    {
+        $locator = new ResourceLocator();
+        $this->assertFalse($locator->schemeExists('bar'));
+
+        $locator->registerStream('bar');
+
+        $this->assertTrue($locator->schemeExists('bar'));
+
+        $barStream = $locator->getStream('bar');
+        $this->assertInternalType('array', $barStream);
+        $this->assertInstanceOf(ResourceStream::class, $barStream[''][0]);
+        $this->assertEquals('bar', $barStream[''][0]->getPath());
+    }
+
+    /**
+     * @depends testRegisterStream
+     * @expectedException \UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException
+     */
+    public function testStreamNotFoundException()
+    {
+        $locator = new ResourceLocator();
+        $locator->getStream('etc');
+    }
+
+    /**
+     * @depends testRegisterStream
+     */
+    public function testRemoveStream()
+    {
+        $locator = new ResourceLocator();
+        $locator->registerStream('bar');
+        $this->assertTrue($locator->schemeExists('bar'));
+        $locator->removeStream('bar');
+        $this->assertFalse($locator->schemeExists('bar'));
+    }
+
+    /**
+     * @dataProvider addPathProvider
+     * @param  string $scheme
+     * @param  string $path
+     * @param  string|array $lookup
+     */
+    public function testAddPath($scheme, $path, $lookup)
+    {
+        $locator = new ResourceLocator();
+
+        $this->assertFalse($locator->schemeExists($scheme));
+
+        $locator->addPath($scheme, $path, $lookup);
+
+        $this->assertTrue($locator->schemeExists($scheme));
+    }
+
+    /**
+     * Data provider for testAddPath
+     */
+    public function addPathProvider() {
+        return [
+            ['base', '', 'base'],
+            ['local', '', 'local'],
+            ['override', '', 'override'],
+            ['all', '', ['override://all', 'local://all', 'base://all']],
+        ];
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testGetStreams()
+    {
+        $locator = new ResourceLocator();
+        $locator->registerStream('bar');
+        $locator->registerStream('foo');
+
         $streams = $locator->getStreams();
         $this->assertInternalType('array', $streams);
         $this->assertCount(2, $streams);
         $this->assertInstanceOf(ResourceStream::class, $streams['bar'][''][0]);
-        $this->assertEquals('/foo', $streams['bar'][''][0]->getPath());
+        $this->assertEquals('bar', $streams['bar'][''][0]->getPath());
     }
 
     /**
-     * ...listStreams
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addStream
+     * @depends testConstructor
      */
-    public function testResourceLocator_listStreams(ResourceLocator $locator)
+    public function testListStreams()
     {
+        $locator = new ResourceLocator();
+        $locator->registerStream('bar');
+        $locator->registerStream('foo');
+
         $this->assertEquals(['bar', 'foo'], $locator->listStreams());
     }
 
     /**
-     * ...removeStream
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addStream
+     * @depends testConstructor
      */
-    public function testResourceLocator_removeStream(ResourceLocator $locator)
+    public function testIsStream()
     {
-        $locator->removeStream('bar');
-        $this->assertCount(1, $locator->getStreams());
-    }
+        $locator = new ResourceLocator();
+        $locator->registerStream('foo');
 
-    /**
-     * ...isStream
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addStream
-     */
-    public function testResourceLocator_isStream(ResourceLocator $locator)
-    {
-        $this->assertFalse($locator->isStream('cars://foo'));
+        $this->assertFalse($locator->isStream('cars://foo.txt'));
         $this->assertTrue($locator->isStream('foo://cars'));
     }
 
     /**
-     * ...isStream
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addStream
+     * @depends testIsStream
      */
-    public function testResourceLocator_isStreamReturnFalseOnBadUri(ResourceLocator $locator)
+    public function testIsStreamReturnFalseOnBadUri()
     {
+        $locator = new ResourceLocator();
         $this->assertFalse($locator->isStream('path/to/../../../file.txt'));
     }
 
     /**
-     * Test location manipulation with addLocation
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator
+     * @depends testConstructor
      */
-    public function testResourceLocator_addLocation(ResourceLocator $locator)
+    public function testAddLocation()
     {
-        $location = new ResourceLocation('foo', '/bar');
+        $locator = new ResourceLocator();
+
+        $location = new ResourceLocation('bar', '/foo');
         $locator->addLocation($location);
-        $locator->registerLocation('bar', '/foo');
-        $locator->registerLocation('blah');
 
-        return $locator;
-    }
-
-    /**
-     * ...getLocation
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addLocation
-     */
-    public function testResourceLocator_getLocation(ResourceLocator $locator)
-    {
         $barLocation = $locator->getLocation('bar');
         $this->assertInstanceOf(ResourceLocation::class, $barLocation);
         $this->assertEquals('/foo', $barLocation->getPath());
     }
 
     /**
-     * ...getLocations
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addLocation
+     * @depends testAddLocation
      */
-    public function testResourceLocator_getLocations(ResourceLocator $locator)
+    public function testRegisterLocation()
     {
+        $locator = new ResourceLocator();
+
+        $locator->registerLocation('bar', '/foo');
+
+        $barLocation = $locator->getLocation('bar');
+        $this->assertInstanceOf(ResourceLocation::class, $barLocation);
+        $this->assertEquals('/foo', $barLocation->getPath());
+    }
+
+    /**
+     * @depends testAddLocation
+     */
+    public function testRegisterLocationWithNoPath()
+    {
+        $locator = new ResourceLocator();
+
+        $locator->registerLocation('blah');
+
+        $barLocation = $locator->getLocation('blah');
+        $this->assertInstanceOf(ResourceLocation::class, $barLocation);
+        $this->assertEquals('blah', $barLocation->getPath());
+    }
+
+    /**
+     * @depends testAddLocation
+     * @expectedException \UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException
+     */
+    public function testgetLocationThrowExceptionIfNotFound()
+    {
+        $locator = new ResourceLocator();
+        $locator->getLocation('etc');
+    }
+
+    /**
+     * @depends testRegisterLocation
+     */
+    public function testGetLocations()
+    {
+        $locator = new ResourceLocator();
+        $locator->registerLocation('bar', '/foo');
+        $locator->registerLocation('foo', '/bar');
+
         $locations = $locator->getLocations();
         $this->assertInternalType('array', $locations);
-        $this->assertCount(3, $locations);
-        $this->assertInstanceOf(ResourceLocation::class, $locations['blah']);
-        $this->assertEquals('blah', $locations['blah']->getPath());
+        $this->assertCount(2, $locations);
+        $this->assertInstanceOf(ResourceLocation::class, $locations['bar']);
+        $this->assertEquals('/foo', $locations['bar']->getPath());
     }
 
     /**
-     * ...listLocations
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addLocation
+     * @depends testRegisterLocation
      */
-    public function testResourceLocator_listLocations(ResourceLocator $locator)
+    public function testListLocations()
     {
-        $this->assertEquals(['blah', 'bar', 'foo'], $locator->listLocations());
+        $locator = new ResourceLocator();
+        $locator->registerLocation('bar', '/foo');
+        $locator->registerLocation('foo', '/bar');
+
+        // N.B.: Locations are list with the latest one (top prioriry) first
+        $this->assertEquals(['foo', 'bar'], $locator->listLocations());
     }
 
     /**
-     * ...removeLocation
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addLocation
+     * @depends testRegisterLocation
      */
-    public function testResourceLocator_removeLocation(ResourceLocator $locator)
+    public function testRemoveLocation()
     {
+        $locator = new ResourceLocator();
+        $locator->registerLocation('bar', '/foo');
+        $locator->registerLocation('foo', '/bar');
+
         $locator->removeLocation('bar');
-        $this->assertCount(2, $locator->getLocations());
-    }
-
-    /**
-     * ...locationExist
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addLocation
-     */
-    public function testResourceLocator_locationExist(ResourceLocator $locator)
-    {
-        $this->assertTrue($locator->locationExist('foo'));
+        $this->assertCount(1, $locator->getLocations());
         $this->assertFalse($locator->locationExist('bar'));
-        $this->assertFalse($locator->locationExist('etc'));
+        $this->assertTrue($locator->locationExist('foo'));
+
     }
 
     /**
-     * Test reset
-     *
-     * @param ResourceLocator $locator
-     * @depends testResourceLocator_addLocation
+     * @depends testGetLocations
+     * @depends testGetStreams
      */
-    public function testResourceLocator_reset(ResourceLocator $locator)
+    public function testResourceLocator_reset()
     {
+        $locator = new ResourceLocator();
+        $locator->registerLocation('bar');
+        $locator->registerLocation('foo');
+        $locator->registerStream('bar');
+        $locator->registerStream('foo');
+
+        $this->assertCount(2, $locator->getStreams());
+        $this->assertCount(2, $locator->getLocations());
+
         $locator->reset();
+
         $this->assertCount(0, $locator->getStreams());
         $this->assertCount(0, $locator->getLocations());
     }
 
     /**
-     * Test StreamNotFoundException
-     * @expectedException \UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException
+     * @param string $uri
+     * @param string $path
+     * @dataProvider normalizeProvider
      */
-    public function testStreamNotFoundException()
+    public function testNormalize($uri, $path)
     {
-        $locator = new ResourceLocator;
-        $locator->getStream('etc');
+        $locator = new ResourceLocator();
+        $this->assertEquals($path, $locator->normalize($uri));
     }
 
     /**
-     * Test LocationNotFoundException
-     * @expectedException \UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException
+     * Data provider for testNormalize
      */
-    public function testLocationNotFoundException()
-    {
-        $locator = new ResourceLocator;
-        $locator->getLocation('etc');
-    }
+    public function normalizeProvider() {
+       return [
+           ['', ''],
+           ['./', ''],
+           ['././/./', ''],
+           ['././/../', false],
+           ['/', '/'],
+           ['//', '/'],
+           ['///', '/'],
+           ['/././', '/'],
+           ['foo', 'foo'],
+           ['/foo', '/foo'],
+           ['//foo', '/foo'],
+           ['/foo/', '/foo/'],
+           ['//foo//', '/foo/'],
+           ['path/to/file.txt', 'path/to/file.txt'],
+           ['path/to/../file.txt', 'path/file.txt'],
+           ['path/to/../../file.txt', 'file.txt'],
+           ['path/to/../../../file.txt', false],
+           ['/path/to/file.txt', '/path/to/file.txt'],
+           ['/path/to/../file.txt', '/path/file.txt'],
+           ['/path/to/../../file.txt', '/file.txt'],
+           ['/path/to/../../../file.txt', false],
+           ['c:\\', 'c:/'],
+           ['c:\\path\\to\file.txt', 'c:/path/to/file.txt'],
+           ['c:\\path\\to\../file.txt', 'c:/path/file.txt'],
+           ['c:\\path\\to\../../file.txt', 'c:/file.txt'],
+           ['c:\\path\\to\../../../file.txt', false],
+           ['stream://path/to/file.txt', 'stream://path/to/file.txt'],
+           ['stream://path/to/../file.txt', 'stream://path/file.txt'],
+           ['stream://path/to/../../file.txt', 'stream://file.txt'],
+           ['stream://path/to/../../../file.txt', false],
+
+       ];
+   }
+
+   /**
+    * @depends testNormalize
+    */
+   public function testNormalizeReturnFalseOnSuppressedException()
+   {
+       $locator = new ResourceLocator();
+       $this->assertFalse($locator->normalize(123));
+   }
+
+   /**
+    * @depends testNormalizeReturnFalseOnSuppressedException
+    * @expectedException \BadMethodCallException
+    */
+   public function testNormalizeThrowExceptionOnBadUri()
+   {
+       $locator = new ResourceLocator();
+       $locator->normalize(123, true);
+   }
+
+   /**
+    * @depends testNormalizeReturnFalseOnSuppressedException
+    * @expectedException \BadMethodCallException
+    */
+   public function testNormalizeThrowExceptionOnBadUriPart()
+   {
+       $locator = new ResourceLocator();
+       $locator->normalize('path/to/../../../file.txt', true);
+   }
 }

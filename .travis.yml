@@ -34,7 +34,7 @@ before_script:
   - composer update
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --coverage-clover=app/sprinkles/FormGenerator/coverage.xml
 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)

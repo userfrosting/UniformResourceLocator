@@ -7,10 +7,16 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
+         stderr="true"
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Unit Tests">
             <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+      <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="false">
+          <directory suffix=".php">src/</directory>
+      </whitelist>
+    </filter>
 </phpunit>

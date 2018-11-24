@@ -8,12 +8,31 @@ php:
   - 7.1
   - 7.2
 
-cache:
-  directories:
-    - $HOME/.composer/cache
+env:
+  - LARAVEL_VERSION=5.4.*
+  - LARAVEL_VERSION=5.5.*
+  - LARAVEL_VERSION=5.6.*
+  - LARAVEL_VERSION=5.7.*
+
+matrix:
+  exclude:
+    - php: 5.6
+      env: LARAVEL_VERSION=5.5.*
+    - php: 5.6
+      env: LARAVEL_VERSION=5.6.*
+    - php: 5.6
+      env: LARAVEL_VERSION=5.7.*
+    - php: 7.0
+      env: LARAVEL_VERSION=5.6.*
+    - php: 7.0
+      env: LARAVEL_VERSION=5.7.*
 
 before_script:
-  - composer install
+  - travis_retry composer self-update
+  - travis_retry composer install --prefer-source --no-interaction
+  - if [ "$LARAVEL_VERSION" != "" ]; then composer require --dev "illuminate/filesystem:${LARAVEL_VERSION}" --no-update; fi;
+  - composer update
 
 script:
   - vendor/bin/phpunit
+  

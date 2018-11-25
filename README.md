@@ -103,7 +103,7 @@ This also means if there's a file located in `Building/cars/rental/blah.txt` (th
 
 #### Prefix and non shared streams
 
-Of course, prefix can also be used with non shared streams. Using the some streams :
+Of course, prefix can also be used with non shared streams. Using the same streams :
 
 | Prefix | Path               |
 |--------|--------------------|
@@ -133,7 +133,7 @@ The resulting search paths will then be :
 | files://test.json      | Floors/{floorX}/files/ |
 | files://data/test.json | upload/data/files/     |
 
-In other words
+In other words...
 
 ## Adding Locations
 

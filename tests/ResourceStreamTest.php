@@ -6,9 +6,10 @@
  * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/licenses/UserFrosting.md (MIT License)
  */
 
-namespace UserFrosting\UniformResourceLocator;
+namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 /**
  * Tests for ResourceLocator

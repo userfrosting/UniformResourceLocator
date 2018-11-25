@@ -6,12 +6,14 @@
  * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/licenses/UserFrosting.md (MIT License)
  */
 
-namespace UserFrosting\UniformResourceLocator;
+namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 /**
  * Tests for ResourceLocator
@@ -19,11 +21,10 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
 class ResourceLocatorTest extends TestCase
 {
     /**
-     * Test ResourceLocator Class
+     * Test instance & default values
      */
     public function testConstructor()
     {
-        // Test instance & default values
         $locator = new ResourceLocator();
         $this->assertInstanceOf(ResourceLocatorInterface::class, $locator);
 
@@ -147,9 +148,9 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @dataProvider addPathProvider
-     * @param  string $scheme
-     * @param  string $path
-     * @param  string|array $lookup
+     * @param string       $scheme
+     * @param string       $path
+     * @param string|array $lookup
      */
     public function testAddPath($scheme, $path, $lookup)
     {
@@ -165,7 +166,8 @@ class ResourceLocatorTest extends TestCase
     /**
      * Data provider for testAddPath
      */
-    public function addPathProvider() {
+    public function addPathProvider()
+    {
         return [
             ['base', '', 'base'],
             ['local', '', 'local'],
@@ -318,7 +320,6 @@ class ResourceLocatorTest extends TestCase
         $this->assertCount(1, $locator->getLocations());
         $this->assertFalse($locator->locationExist('bar'));
         $this->assertTrue($locator->locationExist('foo'));
-
     }
 
     /**
@@ -356,8 +357,9 @@ class ResourceLocatorTest extends TestCase
     /**
      * Data provider for testNormalize
      */
-    public function normalizeProvider() {
-       return [
+    public function normalizeProvider()
+    {
+        return [
            ['', ''],
            ['./', ''],
            ['././/./', ''],
@@ -390,34 +392,34 @@ class ResourceLocatorTest extends TestCase
            ['stream://path/to/../../../file.txt', false],
 
        ];
-   }
+    }
 
-   /**
-    * @depends testNormalize
-    */
-   public function testNormalizeReturnFalseOnSuppressedException()
-   {
-       $locator = new ResourceLocator();
-       $this->assertFalse($locator->normalize(123));
-   }
+    /**
+     * @depends testNormalize
+     */
+    public function testNormalizeReturnFalseOnSuppressedException()
+    {
+        $locator = new ResourceLocator();
+        $this->assertFalse($locator->normalize(123));
+    }
 
-   /**
-    * @depends testNormalizeReturnFalseOnSuppressedException
-    * @expectedException \BadMethodCallException
-    */
-   public function testNormalizeThrowExceptionOnBadUri()
-   {
-       $locator = new ResourceLocator();
-       $locator->normalize(123, true);
-   }
+    /**
+     * @depends testNormalizeReturnFalseOnSuppressedException
+     * @expectedException \BadMethodCallException
+     */
+    public function testNormalizeThrowExceptionOnBadUri()
+    {
+        $locator = new ResourceLocator();
+        $locator->normalize(123, true);
+    }
 
-   /**
-    * @depends testNormalizeReturnFalseOnSuppressedException
-    * @expectedException \BadMethodCallException
-    */
-   public function testNormalizeThrowExceptionOnBadUriPart()
-   {
-       $locator = new ResourceLocator();
-       $locator->normalize('path/to/../../../file.txt', true);
-   }
+    /**
+     * @depends testNormalizeReturnFalseOnSuppressedException
+     * @expectedException \BadMethodCallException
+     */
+    public function testNormalizeThrowExceptionOnBadUriPart()
+    {
+        $locator = new ResourceLocator();
+        $locator->normalize('path/to/../../../file.txt', true);
+    }
 }

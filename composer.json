@@ -28,5 +28,10 @@
         "psr-4": {
             "UserFrosting\\UniformResourceLocator\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "UserFrosting\\UniformResourceLocator\\Tests\\": "tests"
+        }
     }
 }

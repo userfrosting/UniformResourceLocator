@@ -11,7 +11,14 @@ namespace UserFrosting\UniformResourceLocator;
 /**
  * Resource Class
  *
- * Contains information about a resource
+ * Resources are used to represent a file with info regarding the stream and
+ * Location used to find it. When a resource is created, we save the stream used
+ * to find it, the location where it was found, and the absolute and relative
+ * paths of the file. Using this information, we can later rebuilt the URI used
+ * to find this file. Since the full path will contains the relative location of
+ * the stream and location inside the filesystem, this information will be
+ * removed to recrete the relative 'basepath' of the file, allowing the
+ * recreatation of the uri (scheme://basePath).
  *
  * @author Louis Charette
  */
@@ -23,14 +30,14 @@ class Resource
     protected $location;
 
     /**
-     * @var string $absolutePath Absolute path to the resource
+     * @var string $path Relative path to the resource, above the locator base path
      */
-    protected $absolutePath;
+    protected $path;
 
     /**
-     * @var string $relPath Relative path to the resource
+     * @var string $locatorBasePath Relative path to the resource, above the locator base path
      */
-    protected $relPath;
+    protected $locatorBasePath;
 
     /**
      * @var string $separator Directory separator
@@ -45,21 +52,22 @@ class Resource
     /**
      * Constructor
      *
-     * @param ResourceStream        $stream       Resource stream
-     * @param ResourceLocation|null $location     Resource location
-     * @param string                $absolutePath Resource absolute path
-     * @param string                $relPath      Resource relative path
+     * @param ResourceStream        $stream            ResourceStream used to locate this resource
+     * @param ResourceLocation|null $location          ResourceLocation used to locate this resource
+     * @param string                $path              Resource path, relative to the locator base path, and containing the stream and location path
+     * @param string                $locatorBasePath   Locator base Path (default to '')
      */
-    public function __construct(ResourceStream $stream, ResourceLocation $location = null, $absolutePath = '', $relPath = '')
+    public function __construct(ResourceStream $stream, ResourceLocation $location = null, $path, $locatorBasePath = '')
     {
         $this->stream = $stream;
         $this->location = $location;
-        $this->relPath = $relPath;
-        $this->absolutePath = $absolutePath;
+        $this->path = $path;
+        $this->locatorBasePath = $locatorBasePath;
     }
 
     /**
      * Get Resource URI
+     * Also adds the prefix stream prefix if it existprefix.
      *
      * @return string
      */
@@ -68,59 +76,66 @@ class Resource
         $path = $this->getBasePath();
 
         // Adds the stream prefix
-        $prefix = ($this->stream->getPrefix() != '') ? $this->stream->getPrefix() . $this->separator : '';
+        $prefix = ($this->stream->getPrefix() != '') ? $this->stream->getPrefix() . $this->getSeparator() : '';
 
         return $this->stream->getScheme() . '://' . $prefix . $path;
     }
 
     /**
-     * Get the resource base path, aka the path that comes after the `://`
-     * and without the prefix
+     * Get the resource base path, aka the path that comes after the `://`.
+     *
+     * To to this, we use the relative path and remove
+     * the stream and location base path. For example, a stream with a base path
+     * of `data/foo/`, will return a relative path for every resource it find as
+     * `data/foo/filename.txt`. So we want to remove the `data/foo/` part to
+     * keep only the `filename.txt` part, aka the part after the `://` in the URI.
+     *
+     * Same goes for the location part, which comes before the stream:
+     * `locations/locationA/data/foo`
      *
      * @return string
      */
     public function getBasePath()
     {
-        // Remove stream path from relative path
-        $path = str_replace($this->stream->getPath() . $this->separator, '', $this->relPath);
+        // Add the stream base path to the search path
+        $searchPattern = $this->stream->getPath() . $this->getSeparator();
 
-        // Also remove location path
-        if (!is_null($this->location)) {
-            $locationPath = $this->location->getPath();
-            $path = str_replace($locationPath . $this->separator, '', $path);
+        // Add the location path to the search path if there's a location
+        if (!is_null($this->getLocation())) {
+            $searchPattern = $this->getLocation()->getPath() . $this->getSeparator() . $searchPattern;
         }
 
-        return $path;
+        return preg_replace("#^$searchPattern#", '', $this->getPath());
     }
 
     /**
-     * Extract the resource filename
+     * Extract the resource filename (test.txt -> test)
      *
      * @return string
      */
     public function getFilename()
     {
-        return pathinfo($this->relPath, PATHINFO_FILENAME);
+        return pathinfo($this->getPath(), PATHINFO_FILENAME);
     }
 
     /**
-     * Extract the trailing name component
+     * Extract the trailing name component (test.txt -> test.txt)
      *
      * @return string
      */
     public function getBasename()
     {
-        return pathinfo($this->relPath, PATHINFO_BASENAME);
+        return pathinfo($this->getPath(), PATHINFO_BASENAME);
     }
 
     /**
-     * Extract the resource extension
+     * Extract the resource extension (test.txt -> txt)
      *
      * @return string
      */
     public function getExtension()
     {
-        return pathinfo($this->relPath, PATHINFO_EXTENSION);
+        return pathinfo($this->getPath(), PATHINFO_EXTENSION);
     }
 
     /**
@@ -132,23 +147,11 @@ class Resource
     }
 
     /**
-     * @param ResourceLocation $location
-     *
-     * @return static
-     */
-    public function setLocation(ResourceLocation $location)
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getAbsolutePath()
     {
-        return $this->absolutePath;
+        return $this->getLocatorBasePath() . $this->getPath();
     }
 
     /**
@@ -162,13 +165,29 @@ class Resource
     }
 
     /**
-     * @param string $absolutePath
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocatorBasePath()
+    {
+        return $this->locatorBasePath;
+    }
+
+    /**
+     * @param string $locatorBasePath
      *
      * @return static
      */
-    public function setAbsolutePath($absolutePath)
+    public function setLocatorBasePath($locatorBasePath)
     {
-        $this->absolutePath = $absolutePath;
+        $this->locatorBasePath = $locatorBasePath;
 
         return $this;
     }
@@ -176,19 +195,19 @@ class Resource
     /**
      * @return string
      */
-    public function getRelPath()
+    public function getSeparator()
     {
-        return $this->relPath;
+        return $this->separator;
     }
 
     /**
-     * @param string $relPath
+     * @param string $separator
      *
      * @return static
      */
-    public function setRelPath($relPath)
+    public function setSeparator($separator)
     {
-        $this->relPath = $relPath;
+        $this->separator = $separator;
 
         return $this;
     }
@@ -199,17 +218,5 @@ class Resource
     public function getStream()
     {
         return $this->stream;
-    }
-
-    /**
-     * @param ResourceStream $stream
-     *
-     * @return static
-     */
-    public function setStream(ResourceStream $stream)
-    {
-        $this->stream = $stream;
-
-        return $this;
     }
 }

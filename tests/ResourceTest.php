@@ -114,39 +114,6 @@ class ResourceTest extends TestCase
     }
 
     /**
-     * @dataProvider resourcesProvider
-     * @param  bool $useLocation
-     * @param  string $path
-     * @param  string $basePath
-     */
-    /*public function testGetBasePathWithComposedStreamPath($useLocation, $path, $basePath)
-    {
-        $streamPath = $this->streamPath . 'me/'; // foo/me/
-        $this->stream->setPath($streamPath);
-
-        // Can't be done in resourcesProvider, as `setUp` is called after
-        if ($useLocation) {
-            $location = $this->location;
-            $locationPath = $this->locationPath;
-        } else {
-            $location = null;
-            $locationPath = '';
-        }
-
-        $resource = new Resource($this->stream, $location, $locationPath . $streamPath . $path, $basePath);
-
-        // getBasePath
-        $this->assertSame($path, $resource->getBasePath());
-
-        // Test `getUri` as the too are connected
-        $this->assertSame($this->streamScheme . '://' . $path, $resource->getUri());
-
-        // Test `getAbsolutePath` and `__toString`
-        $this->assertSame($basePath . $locationPath . $streamPath . $path, $resource->getAbsolutePath());
-        $this->assertSame($resource->getAbsolutePath(), (string) $resource);
-    }*/
-
-    /**
      * Data provider for testGetBasePath.
      *
      * Return a list of basepath to test. The rela rel path will be constructed by the
@@ -184,6 +151,22 @@ class ResourceTest extends TestCase
         }
 
         return $data;
+    }
+
+    /**
+     */
+    public function testSharedResourceStream()
+    {
+        $path = 'Garage/cars/';
+        $stream = new ResourceStream('cars', '', $path, true);
+        $resource = new Resource($stream, null, $path);
+
+        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertEquals($path, $resource);
+        $this->assertEquals($path, $resource->getPath());
+        $this->assertNull($resource->getLocation());
+        $this->assertEquals('cars://', $resource->getUri());
+        $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
     }
 
     /**

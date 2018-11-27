@@ -86,10 +86,6 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function __invoke($uri)
     {
-        if (!is_string($uri)) {
-            throw new \BadMethodCallException('Invalid parameter $uri.');
-        }
-
         return $this->findResource($uri, true);
     }
 
@@ -502,7 +498,7 @@ class ResourceLocator implements ResourceLocatorInterface
         if ($absolute) {
             return $resource->getAbsolutePath();
         } else {
-            return $resource->getRelPath();
+            return $resource->getPath();
         }
     }
 
@@ -525,7 +521,7 @@ class ResourceLocator implements ResourceLocatorInterface
             if ($absolute) {
                 $paths[] = $resource->getAbsolutePath();
             } else {
-                $paths[] = $resource->getRelPath();
+                $paths[] = $resource->getPath();
             }
         }
 

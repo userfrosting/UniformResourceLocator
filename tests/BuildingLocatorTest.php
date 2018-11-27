@@ -11,7 +11,6 @@ namespace UserFrosting\UniformResourceLocator\Tests;
 use PHPUnit\Framework\TestCase;
 use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface;
 use UserFrosting\UniformResourceLocator\Resource;
-use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
 use UserFrosting\UniformResourceLocator\ResourceStream;
 
@@ -20,10 +19,10 @@ use UserFrosting\UniformResourceLocator\ResourceStream;
  */
 class BuildingLocatorTest extends TestCase
 {
-    /** @var string $basePath **/
+    /** @var string $basePath */
     protected $basePath = __DIR__ . '/Building/';
 
-    /** @var ResourceLocatorInterface **/
+    /** @var ResourceLocatorInterface */
     static protected $locator;
 
     /**
@@ -66,9 +65,6 @@ class BuildingLocatorTest extends TestCase
      *  - Floors/Floor2/test.json : Overwritten by Floor3 version
      *  - Floors/Floor1/test.json : Overwritten by Floor3 version
      *  - Garage/files/blah.json : Should never be found, because the Garage is not part of the file:// search path
-     *
-     * Finally, `upload/data/files/foo.json` will be
-     *
      */
     public function setUp()
     {
@@ -324,17 +320,96 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     * @dataProvider resourceProvider
+     * @param string $uri
+     * @param string $path
+     * @param string $locationName
+     * @param array  $paths
+     */
+    public function testGetResource($uri, $path, $locationName, $paths)
+    {
+        $locator = self::$locator;
+
+        $resource = $locator->getResource($uri);
+        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertEquals($this->basePath . $path, $resource);
+        $this->assertEquals($path, $resource->getPath());
+        $this->assertEquals($uri, $resource->getUri());
+        $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
+
+        if (is_null($locationName)) {
+            $this->assertNull($resource->getLocation());
+        } else {
+            $this->assertEquals($locationName, $resource->getLocation()->getName());
+        }
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     * @param string $uri
+     * @param string $path
+     * @param string $locationName
+     * @param array  $paths
+     */
+    public function testGetResources($uri, $path, $locationName, $paths)
+    {
+        $locator = self::$locator;
+
+        $resources = $locator->getResources($uri);
+        $this->assertInternalType('array', $resources);
+        $this->assertCount(count($paths), $resources);
+        $this->assertEquals($this->relativeToAbsolutePaths($paths), $resources);
+        $this->assertInstanceOf(Resource::class, $resources[0]);
+        $this->assertEquals($this->basePath . $path, $resources[0]);
+        $this->assertEquals($uri, $resources[0]->getUri());
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     * @param string $uri
+     * @param string $path
+     * @param string $locationName
+     * @param array  $paths
+     */
+    public function testFindResource($uri, $path, $locationName, $paths)
+    {
+        $locator = self::$locator;
+
+        // Same tests, for `__invoke`, findResource` & `findResources`
+        $this->assertEquals($this->basePath . $path, $locator($uri));
+        $this->assertEquals($this->basePath . $path, $locator->findResource($uri));
+        $this->assertEquals($this->relativeToAbsolutePaths($paths), $locator->findResources($uri));
+
+        // Expect same result with relative paths
+        $this->assertEquals($path, $locator->findResource($uri, false));
+        $this->assertEquals($paths, $locator->findResources($uri, false));
+    }
+
+    /**
      * Data provider for normal stream test
      */
     public function resourceProvider()
     {
         return [
             //uri, path
-            ['files://test.json', 'Floors/Floor3/files/test.json'],
-            ['files://foo.json', 'Floors/Floor2/files/foo.json'],
-            ['files://data/foo.json', 'Floors/Floor2/files/data/foo.json'],
-            ['files://test/blah.json', 'Floors/Floor3/files/test/blah.json'],
-            ['files://', 'Floors/Floor3/files/'],
+            ['files://test.json', 'Floors/Floor3/files/test.json', 'Floor3', [
+                'Floors/Floor3/files/test.json',
+                'Floors/Floor2/files/test.json',
+                'Floors/Floor/files/test.json',
+            ]],
+
+            //['files://foo.json', 'Floors/Floor2/files/foo.json', 'Floor2', []],
+
+            ['files://data/foo.json', 'upload/data/files/foo.json', null, [
+                'upload/data/files/foo.json',
+                'Floors/Floor2/files/data/foo.json'
+            ]],
+
+            ['files://test/blah.json', 'Floors/Floor/files/test/blah.json', 'Floor1', [
+                'Floors/Floor/files/test/blah.json'
+            ]],
+
+            //['files://', 'Floors/Floor3/files', 'Floor3', []],
         ];
     }
 
@@ -403,5 +478,19 @@ class BuildingLocatorTest extends TestCase
             $this->basePath . 'Floors/Floor2/files/data/foo.json',
             $this->basePath . 'upload/data/files/foo.json',
         ], array_map('strval', $list));
+    }
+
+    /**
+     * Convert an array of relative paths to absolute paths
+     * @param  array  $paths relative paths
+     * @return array         absolute paths
+     */
+    protected function relativeToAbsolutePaths(array $paths)
+    {
+        $pathsWithAbsolute = [];
+        foreach ($paths as $p) {
+            $pathsWithAbsolute[] = $this->basePath . $p;
+        }
+        return $pathsWithAbsolute;
     }
 }

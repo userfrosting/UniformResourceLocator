@@ -462,12 +462,18 @@ class BuildingLocatorTest extends TestCase
                 'Floors/Floor/files/test/blah.json'
             ]],
 
-            /*['files', '', 'Floor3', [
-                'Floors/Floor3/files/test.json',
-                'Floors/Floor2/files/foo.json',
-                'upload/data/files/foo.json',
-                'Floors/Floor/files/test/blah.json',
-            ]],*/
+            // N.B.: upload/data/files is not returned here as the `data` prefix is not used
+            ['files', '', 'Floor3', [
+                'Floors/Floor3/files',
+                'Floors/Floor2/files',
+                'Floors/Floor/files',
+            ]],
+
+            // Test the data prefix here
+            ['files', 'data', null, [
+                'upload/data/files',
+                'Floors/Floor2/files/data',
+            ]],
 
             ['conf', 'test.json', 'Floor2', [
                 'Floors/Floor2/config/test.json'

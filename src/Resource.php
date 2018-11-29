@@ -97,15 +97,20 @@ class Resource
      */
     public function getBasePath()
     {
-        // Add the stream base path to the search path
-        $searchPattern = $this->stream->getPath() . $this->getSeparator();
+        // Start with the stream relative path as a search path.
+        $searchPattern = preg_replace("#^".$this->getLocatorBasePath()."#", '', $this->stream->getPath());
 
         // Add the location path to the search path if there's a location
         if (!is_null($this->getLocation())) {
             $searchPattern = $this->getLocation()->getPath() . $this->getSeparator() . $searchPattern;
         }
 
-        return preg_replace("#^$searchPattern#", '', $this->getPath());
+        // Remove the search path from the beginning of the resource path
+        // then trim any beginning slashes from the resulting path
+        $result = preg_replace("#^$searchPattern#", '', $this->getPath());
+        $result = ltrim($result, $this->getSeparator());
+
+        return $result;
     }
 
     /**

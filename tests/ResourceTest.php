@@ -132,6 +132,10 @@ class ResourceTest extends TestCase
             'foo/test.txt',           // `foo/` is removed, because it's the stream part
             'foo/foo/test.txt',       // The first `foo/` is removed, because it's the stream part, the other should be kept
             'bar/test.txt',           // No stream part. Shouldn't happen in real life. Bar should be kept
+            'foo/',                   // With out extensions
+            'foo',
+            'foo/foo/',
+            'foo/foo'
         ];
 
         $basePaths = [
@@ -154,10 +158,11 @@ class ResourceTest extends TestCase
     }
 
     /**
+     * @dataProvider sharedResourceStreamProvider
+     * @param string $path
      */
-    public function testSharedResourceStream()
+    public function testSharedResourceStream($path)
     {
-        $path = 'Garage/cars/';
         $stream = new ResourceStream('cars', '', $path, true);
         $resource = new Resource($stream, null, $path);
 
@@ -167,6 +172,24 @@ class ResourceTest extends TestCase
         $this->assertNull($resource->getLocation());
         $this->assertEquals('cars://', $resource->getUri());
         $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
+    }
+
+    /**
+     * Data provider for testSharedResourceStream
+     *
+     * Test different placement of slashes to make sure getUri and getBasePath
+     * returns the correct path
+     */
+    public function sharedResourceStreamProvider()
+    {
+        return [
+            ['Garage/cars'],
+            ['Garage/cars/'],
+            ['Garage'],
+            ['Garage/'],
+            ['/Garage/cars'],
+            ['/Garage/cars/'],
+        ];
     }
 
     /**
@@ -186,7 +209,7 @@ class ResourceTest extends TestCase
     }
 
     /**
-     * Data provider for testGetBasePath*.
+     * Data provider for testFilePropertiesGetters.
      *
      * Return a list of relPath to test. The abs path will be constructed by the
      * test according to the stream used, so we'll asume the abs path are always

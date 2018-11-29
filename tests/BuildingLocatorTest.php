@@ -313,9 +313,10 @@ class BuildingLocatorTest extends TestCase
     public function sharedResourceProvider()
     {
         return [
+            //[$uri, $path]
             ['cars://cars.json', 'Garage/cars/cars.json'],
-            //['cars://', 'Garage/cars'],
-            //['absCars://cars.json', 'Garage/cars/cars.json'],
+            ['cars://', 'Garage/cars'],
+            ['absCars://cars.json', 'Garage/cars/cars.json'],
         ];
     }
 

@@ -88,12 +88,14 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * @dataProvider findProvider
+     * @dataProvider resourceProvider
+     * @dataProvider sharedResourceProvider
      * @param string       $scheme
      * @param string       $file
+     * @param string|null  $location
      * @param array|string $expectedPaths
      */
-    public function testFind($scheme, $file, $expectedPaths)
+    public function testFind($scheme, $file, $location, $expectedPaths)
     {
         // find($scheme, $file, $array, $all)
         $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, false]);
@@ -103,12 +105,14 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * @dataProvider findProvider
+     * @dataProvider resourceProvider
+     * @dataProvider sharedResourceProvider
      * @param string       $scheme
      * @param string       $file
+     * @param string|null  $location
      * @param array|string $expectedPaths
      */
-    public function testFindWithArray($scheme, $file, $expectedPaths)
+    public function testFindWithArray($scheme, $file, $location, $expectedPaths)
     {
         // find($scheme, $file, $array, $all)
         $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, false]);
@@ -117,56 +121,15 @@ class BuildingLocatorTest extends TestCase
         $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resource);
     }
 
-    /*public function testFindWithAll($scheme, $file, $expectedPaths)
+    /*public function testFindWithAll($scheme, $file, $location, $expectedPaths)
     {
 
     }*/
 
-    /*public function testFindWithArrayAndAll($scheme, $file, $expectedPaths)
+    /*public function testFindWithArrayAndAll($scheme, $file, $location, $expectedPaths)
     {
 
     }*/
-
-    /**
-     * DataProvider for testFind
-     * Return all files available from our test case
-     */
-    public function findProvider()
-    {
-        return [
-            //[$scheme, $file, $expectedPaths],
-            ['cars', 'cars.json', [
-                'Garage/cars/cars.json'
-            ]],
-
-            ['absCars', 'cars.json', [
-                'Garage/cars/cars.json'
-            ]],
-
-            ['files', 'test.json', [
-                'Floors/Floor3/files/test.json',
-                'Floors/Floor2/files/test.json',
-                'Floors/Floor/files/test.json',
-            ]],
-
-            ['files', 'foo.json', [
-                'Floors/Floor2/files/foo.json'
-            ]],
-
-            ['files', 'data/foo.json', [
-                'upload/data/files/foo.json',
-                'Floors/Floor2/files/data/foo.json'
-            ]],
-
-            ['files', 'test/blah.json', [
-                'Floors/Floor/files/test/blah.json'
-            ]],
-
-            ['conf', 'test.json', [
-                'Floors/Floor2/config/test.json'
-            ]],
-        ];
-    }
 
     /**
      * @expectedException \InvalidArgumentException
@@ -211,17 +174,20 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider sharedResourceProvider
-     * @param string $uri
-     * @param string $path
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
      */
-    public function testGetResourceForSharedStream($uri, $path)
+    public function testGetResourceForSharedStream($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
+        $uri = $scheme . '://' . $file;
 
         $resource = $locator->getResource($uri);
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals($this->basePath . $path, $resource);
-        $this->assertEquals($path, $resource->getPath());
+        $this->assertEquals($this->basePath . $expectedPaths[0], $resource);
+        $this->assertEquals($expectedPaths[0], $resource->getPath());
         $this->assertNull($resource->getLocation());
         $this->assertEquals($uri, $resource->getUri());
         $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
@@ -240,18 +206,21 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider sharedResourceProvider
-     * @param string $uri
-     * @param string $path
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
      */
-    public function testGetResourcesForSharedStream($uri, $path)
+    public function testGetResourcesForSharedStream($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
+        $uri = $scheme . '://' . $file;
 
         $resources = $locator->getResources($uri);
         $this->assertInternalType('array', $resources);
-        $this->assertCount(1, $resources);
+        $this->assertCount(count($expectedPaths), $resources);
         $this->assertInstanceOf(Resource::class, $resources[0]);
-        $this->assertEquals($this->basePath . $path, $resources[0]);
+        $this->assertEquals($this->basePath . $expectedPaths[0], $resources[0]);
         $this->assertEquals($uri, $resources[0]->getUri());
     }
 
@@ -268,21 +237,24 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider sharedResourceProvider
-     * @param string $uri
-     * @param string $path
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
      */
-    public function testFindResourceForSharedStream($uri, $path)
+    public function testFindResourceForSharedStream($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
+        $uri = $scheme . '://' . $file;
 
         // Same tests, for `__invoke`, findResource` & `findResources`
-        $this->assertEquals($this->basePath . $path, $locator($uri));
-        $this->assertEquals($this->basePath . $path, $locator->findResource($uri));
-        $this->assertEquals([$this->basePath . $path], $locator->findResources($uri));
+        $this->assertEquals($this->basePath . $expectedPaths[0], $locator($uri));
+        $this->assertEquals($this->basePath . $expectedPaths[0], $locator->findResource($uri));
+        $this->assertEquals([$this->basePath . $expectedPaths[0]], $locator->findResources($uri));
 
         // Expect same result with relative paths
-        $this->assertEquals($path, $locator->findResource($uri, false));
-        $this->assertEquals([$path], $locator->findResources($uri, false));
+        $this->assertEquals($expectedPaths[0], $locator->findResource($uri, false));
+        $this->assertEquals($expectedPaths, $locator->findResources($uri, false));
     }
 
     /**
@@ -328,109 +300,72 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * Data provider for shared stream tests
-     */
-    public function sharedResourceProvider()
-    {
-        return [
-            //[$uri, $path]
-            ['cars://cars.json', 'Garage/cars/cars.json'],
-            ['cars://', 'Garage/cars'],
-            ['absCars://cars.json', 'Garage/cars/cars.json'],
-        ];
-    }
-
-    /**
      * @dataProvider resourceProvider
-     * @param string $uri
-     * @param string $locationName
-     * @param array  $paths
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
      */
-    public function testGetResource($uri, $locationName, $paths)
+    public function testGetResource($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
+        $uri = $scheme . '://' . $file;
 
         $resource = $locator->getResource($uri);
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals($this->basePath . $paths[0], $resource);
-        $this->assertEquals($paths[0], $resource->getPath());
+        $this->assertEquals($this->basePath . $expectedPaths[0], $resource);
+        $this->assertEquals($expectedPaths[0], $resource->getPath());
         $this->assertEquals($uri, $resource->getUri());
         $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
 
-        if (is_null($locationName)) {
+        if (is_null($location)) {
             $this->assertNull($resource->getLocation());
         } else {
-            $this->assertEquals($locationName, $resource->getLocation()->getName());
+            $this->assertEquals($location, $resource->getLocation()->getName());
         }
     }
 
     /**
      * @dataProvider resourceProvider
-     * @param string $uri
-     * @param string $locationName
-     * @param array  $paths
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
      */
-    public function testGetResources($uri, $locationName, $paths)
+    public function testGetResources($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
+        $uri = $scheme . '://' . $file;
 
         $resources = $locator->getResources($uri);
         $this->assertInternalType('array', $resources);
-        $this->assertCount(count($paths), $resources);
-        $this->assertEquals($this->relativeToAbsolutePaths($paths), $resources);
+        $this->assertCount(count($expectedPaths), $resources);
+        $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resources);
         $this->assertInstanceOf(Resource::class, $resources[0]);
-        $this->assertEquals($this->basePath . $paths[0], $resources[0]);
+        $this->assertEquals($this->basePath . $expectedPaths[0], $resources[0]);
         $this->assertEquals($uri, $resources[0]->getUri());
     }
 
     /**
      * @dataProvider resourceProvider
-     * @param string $uri
-     * @param string $locationName
-     * @param array  $paths
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
      */
-    public function testFindResource($uri, $locationName, $paths)
+    public function testFindResource($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
+        $uri = $scheme . '://' . $file;
 
         // Same tests, for `__invoke`, findResource` & `findResources`
-        $this->assertEquals($this->basePath . $paths[0], $locator($uri));
-        $this->assertEquals($this->basePath . $paths[0], $locator->findResource($uri));
-        $this->assertEquals($this->relativeToAbsolutePaths($paths), $locator->findResources($uri));
+        $this->assertEquals($this->basePath . $expectedPaths[0], $locator($uri));
+        $this->assertEquals($this->basePath . $expectedPaths[0], $locator->findResource($uri));
+        $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $locator->findResources($uri));
 
         // Expect same result with relative paths
-        $this->assertEquals($paths[0], $locator->findResource($uri, false));
-        $this->assertEquals($paths, $locator->findResources($uri, false));
-    }
-
-    /**
-     * Data provider for normal stream test
-     */
-    public function resourceProvider()
-    {
-        return [
-            //uri, path
-            ['files://test.json', 'Floor3', [
-                'Floors/Floor3/files/test.json',
-                'Floors/Floor2/files/test.json',
-                'Floors/Floor/files/test.json',
-            ]],
-
-            /*['files://foo.json', 'Floor2', [
-                'Floors/Floor2/files/foo.json'
-            ]],*/
-
-            ['files://data/foo.json', null, [
-                'upload/data/files/foo.json',
-                'Floors/Floor2/files/data/foo.json'
-            ]],
-
-            ['files://test/blah.json', 'Floor1', [
-                'Floors/Floor/files/test/blah.json'
-            ]],
-
-            //['files://', 'Floors/Floor3/files', 'Floor3', []],
-        ];
+        $this->assertEquals($expectedPaths[0], $locator->findResource($uri, false));
+        $this->assertEquals($expectedPaths, $locator->findResources($uri, false));
     }
 
     /**
@@ -498,6 +433,67 @@ class BuildingLocatorTest extends TestCase
             $this->basePath . 'Floors/Floor2/files/data/foo.json',
             $this->basePath . 'upload/data/files/foo.json',
         ], array_map('strval', $list));
+    }
+
+    /**
+     * DataProvider for testFind
+     * Return all files available from our test case
+     */
+    public function resourceProvider()
+    {
+        return [
+            //[$scheme, $file, $location, $expectedPaths],
+            ['files', 'test.json', 'Floor3', [
+                'Floors/Floor3/files/test.json',
+                'Floors/Floor2/files/test.json',
+                'Floors/Floor/files/test.json',
+            ]],
+
+            ['files', 'foo.json', 'Floor2', [
+                'Floors/Floor2/files/foo.json'
+            ]],
+
+            ['files', 'data/foo.json', null, [
+                'upload/data/files/foo.json',
+                'Floors/Floor2/files/data/foo.json'
+            ]],
+
+            ['files', 'test/blah.json', 'Floor1', [
+                'Floors/Floor/files/test/blah.json'
+            ]],
+
+            /*['files', '', 'Floor3', [
+                'Floors/Floor3/files/test.json',
+                'Floors/Floor2/files/foo.json',
+                'upload/data/files/foo.json',
+                'Floors/Floor/files/test/blah.json',
+            ]],*/
+
+            ['conf', 'test.json', 'Floor2', [
+                'Floors/Floor2/config/test.json'
+            ]],
+        ];
+    }
+
+    /**
+     * Data provider for shared stream tests
+     */
+    public function sharedResourceProvider()
+    {
+        return [
+            //[$scheme, $file, $lcoation, $expectedPaths],
+            ['cars', 'cars.json', null, [
+                'Garage/cars/cars.json'
+            ]],
+
+            ['cars', '', null, [
+                'Garage/cars'
+            ]],
+
+            ['absCars', 'cars.json', null, [
+                'Garage/cars/cars.json'
+            ]],
+        ];
     }
 
     /**

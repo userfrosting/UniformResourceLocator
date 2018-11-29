@@ -91,23 +91,41 @@ class BuildingLocatorTest extends TestCase
      * @dataProvider findProvider
      * @param string       $scheme
      * @param string       $file
-     * @param bool         $array
-     * @param bool         $all
-     * @param array|string $expectedResult
+     * @param array|string $expectedPaths
      */
-    public function testFind($scheme, $file, $array, $all, $expectedResult)
+    public function testFind($scheme, $file, $expectedPaths)
     {
         // find($scheme, $file, $array, $all)
-        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, $array, $all]);
+        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, false]);
 
-        if ($array) {
-            $this->assertInternalType('array', $resource);
-            $this->assertEquals($expectedResult, $resource);
-        } else {
-            $this->assertInstanceOf(Resource::class, $resource);
-            $this->assertEquals($expectedResult, $resource->getAbsolutePath());
-        }
+        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertEquals($this->basePath . $expectedPaths[0], $resource->getAbsolutePath());
     }
+
+    /**
+     * @dataProvider findProvider
+     * @param string       $scheme
+     * @param string       $file
+     * @param array|string $expectedPaths
+     */
+    public function testFindWithArray($scheme, $file, $expectedPaths)
+    {
+        // find($scheme, $file, $array, $all)
+        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, false]);
+
+        $this->assertInternalType('array', $resource);
+        $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resource);
+    }
+
+    /*public function testFindWithAll($scheme, $file, $expectedPaths)
+    {
+
+    }*/
+
+    /*public function testFindWithArrayAndAll($scheme, $file, $expectedPaths)
+    {
+
+    }*/
 
     /**
      * DataProvider for testFind
@@ -116,35 +134,37 @@ class BuildingLocatorTest extends TestCase
     public function findProvider()
     {
         return [
-            //[$scheme, $file, $array, $all, $expectedResult],
-            ['cars', 'cars.json', false, false, $this->basePath . 'Garage/cars/cars.json'],
-            ['cars', 'cars.json', true, false, [$this->basePath . 'Garage/cars/cars.json']],
-
-            ['absCars', 'cars.json', false, false, $this->basePath . 'Garage/cars/cars.json'],
-            ['absCars', 'cars.json', true, false, [$this->basePath . 'Garage/cars/cars.json']],
-
-            ['files', 'test.json', false, false, $this->basePath . 'Floors/Floor3/files/test.json'],
-            ['files', 'test.json', true, false, [
-                $this->basePath . 'Floors/Floor3/files/test.json',
-                $this->basePath . 'Floors/Floor2/files/test.json',
-                $this->basePath . 'Floors/Floor/files/test.json',
+            //[$scheme, $file, $expectedPaths],
+            ['cars', 'cars.json', [
+                'Garage/cars/cars.json'
             ]],
 
-            ['files', 'foo.json', false, false, $this->basePath . 'Floors/Floor2/files/foo.json'],
-            ['files', 'foo.json', true, false, [$this->basePath . 'Floors/Floor2/files/foo.json']],
-
-            ['files', 'data/foo.json', false, false, $this->basePath . 'upload/data/files/foo.json'],
-            ['files', 'data/foo.json', true, false, [
-                $this->basePath . 'upload/data/files/foo.json',
-                $this->basePath . 'Floors/Floor2/files/data/foo.json'
+            ['absCars', 'cars.json', [
+                'Garage/cars/cars.json'
             ]],
 
-            ['files', 'test/blah.json', false, false, $this->basePath . 'Floors/Floor/files/test/blah.json'],
-            ['files', 'test/blah.json', true, false, [$this->basePath . 'Floors/Floor/files/test/blah.json']],
+            ['files', 'test.json', [
+                'Floors/Floor3/files/test.json',
+                'Floors/Floor2/files/test.json',
+                'Floors/Floor/files/test.json',
+            ]],
 
-            ['conf', 'test.json', false, false, $this->basePath . 'Floors/Floor2/config/test.json'],
-            ['conf', 'test.json', true, false, [$this->basePath . 'Floors/Floor2/config/test.json']],
+            ['files', 'foo.json', [
+                'Floors/Floor2/files/foo.json'
+            ]],
 
+            ['files', 'data/foo.json', [
+                'upload/data/files/foo.json',
+                'Floors/Floor2/files/data/foo.json'
+            ]],
+
+            ['files', 'test/blah.json', [
+                'Floors/Floor/files/test/blah.json'
+            ]],
+
+            ['conf', 'test.json', [
+                'Floors/Floor2/config/test.json'
+            ]],
         ];
     }
 
@@ -323,18 +343,17 @@ class BuildingLocatorTest extends TestCase
     /**
      * @dataProvider resourceProvider
      * @param string $uri
-     * @param string $path
      * @param string $locationName
      * @param array  $paths
      */
-    public function testGetResource($uri, $path, $locationName, $paths)
+    public function testGetResource($uri, $locationName, $paths)
     {
         $locator = self::$locator;
 
         $resource = $locator->getResource($uri);
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals($this->basePath . $path, $resource);
-        $this->assertEquals($path, $resource->getPath());
+        $this->assertEquals($this->basePath . $paths[0], $resource);
+        $this->assertEquals($paths[0], $resource->getPath());
         $this->assertEquals($uri, $resource->getUri());
         $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
 
@@ -348,11 +367,10 @@ class BuildingLocatorTest extends TestCase
     /**
      * @dataProvider resourceProvider
      * @param string $uri
-     * @param string $path
      * @param string $locationName
      * @param array  $paths
      */
-    public function testGetResources($uri, $path, $locationName, $paths)
+    public function testGetResources($uri, $locationName, $paths)
     {
         $locator = self::$locator;
 
@@ -361,28 +379,27 @@ class BuildingLocatorTest extends TestCase
         $this->assertCount(count($paths), $resources);
         $this->assertEquals($this->relativeToAbsolutePaths($paths), $resources);
         $this->assertInstanceOf(Resource::class, $resources[0]);
-        $this->assertEquals($this->basePath . $path, $resources[0]);
+        $this->assertEquals($this->basePath . $paths[0], $resources[0]);
         $this->assertEquals($uri, $resources[0]->getUri());
     }
 
     /**
      * @dataProvider resourceProvider
      * @param string $uri
-     * @param string $path
      * @param string $locationName
      * @param array  $paths
      */
-    public function testFindResource($uri, $path, $locationName, $paths)
+    public function testFindResource($uri, $locationName, $paths)
     {
         $locator = self::$locator;
 
         // Same tests, for `__invoke`, findResource` & `findResources`
-        $this->assertEquals($this->basePath . $path, $locator($uri));
-        $this->assertEquals($this->basePath . $path, $locator->findResource($uri));
+        $this->assertEquals($this->basePath . $paths[0], $locator($uri));
+        $this->assertEquals($this->basePath . $paths[0], $locator->findResource($uri));
         $this->assertEquals($this->relativeToAbsolutePaths($paths), $locator->findResources($uri));
 
         // Expect same result with relative paths
-        $this->assertEquals($path, $locator->findResource($uri, false));
+        $this->assertEquals($paths[0], $locator->findResource($uri, false));
         $this->assertEquals($paths, $locator->findResources($uri, false));
     }
 
@@ -393,20 +410,22 @@ class BuildingLocatorTest extends TestCase
     {
         return [
             //uri, path
-            ['files://test.json', 'Floors/Floor3/files/test.json', 'Floor3', [
+            ['files://test.json', 'Floor3', [
                 'Floors/Floor3/files/test.json',
                 'Floors/Floor2/files/test.json',
                 'Floors/Floor/files/test.json',
             ]],
 
-            //['files://foo.json', 'Floors/Floor2/files/foo.json', 'Floor2', []],
+            /*['files://foo.json', 'Floor2', [
+                'Floors/Floor2/files/foo.json'
+            ]],*/
 
-            ['files://data/foo.json', 'upload/data/files/foo.json', null, [
+            ['files://data/foo.json', null, [
                 'upload/data/files/foo.json',
                 'Floors/Floor2/files/data/foo.json'
             ]],
 
-            ['files://test/blah.json', 'Floors/Floor/files/test/blah.json', 'Floor1', [
+            ['files://test/blah.json', 'Floor1', [
                 'Floors/Floor/files/test/blah.json'
             ]],
 

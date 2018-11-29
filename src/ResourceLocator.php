@@ -630,11 +630,11 @@ class ResourceLocator implements ResourceLocatorInterface
                     if (!preg_match('`^/|\w+:`', $path)) {
                         // Handle relative path lookup.
                         $relPath = trim($path . $filename, $this->separator);
-                        $fullPath = $this->getBasePath() . $this->separator . $relPath;
+                        $fullPath = rtrim($this->getBasePath(), $this->separator) . $this->separator . $relPath;
                     } else {
                         // Handle absolute path lookup.
-                        $relPath = null; // Can't have a relative path if an absolute one was found
                         $fullPath = rtrim($path . $filename, $this->separator);
+                        $relPath = str_replace($this->getBasePath(), '', $fullPath);
                     }
 
                     // Add the result to the list if the path exist, unless we want all results

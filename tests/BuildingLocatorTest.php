@@ -23,7 +23,7 @@ class BuildingLocatorTest extends TestCase
     protected $basePath = __DIR__ . '/Building/';
 
     /** @var ResourceLocatorInterface */
-    static protected $locator;
+    protected static $locator;
 
     /**
      * Setup shared locator for resources tests
@@ -89,11 +89,11 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider findProvider
-     * @param  string $scheme
-     * @param  string $file
-     * @param  bool $array
-     * @param  bool $all
-     * @param  array|string $expectedResult
+     * @param string       $scheme
+     * @param string       $file
+     * @param bool         $array
+     * @param bool         $all
+     * @param array|string $expectedResult
      */
     public function testFind($scheme, $file, $array, $all, $expectedResult)
     {
@@ -120,8 +120,8 @@ class BuildingLocatorTest extends TestCase
             ['cars', 'cars.json', false, false, $this->basePath . 'Garage/cars/cars.json'],
             ['cars', 'cars.json', true, false, [$this->basePath . 'Garage/cars/cars.json']],
 
-            //['absCars', 'cars.json', false, false, $this->basePath . 'Garage/cars/cars.json'],
-            //['absCars', 'cars.json', true, false, [$this->basePath . 'Garage/cars/cars.json']],
+            ['absCars', 'cars.json', false, false, $this->basePath . 'Garage/cars/cars.json'],
+            ['absCars', 'cars.json', true, false, [$this->basePath . 'Garage/cars/cars.json']],
 
             ['files', 'test.json', false, false, $this->basePath . 'Floors/Floor3/files/test.json'],
             ['files', 'test.json', true, false, [
@@ -482,8 +482,8 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * Convert an array of relative paths to absolute paths
-     * @param  array  $paths relative paths
-     * @return array         absolute paths
+     * @param  array $paths relative paths
+     * @return array absolute paths
      */
     protected function relativeToAbsolutePaths(array $paths)
     {
@@ -491,6 +491,7 @@ class BuildingLocatorTest extends TestCase
         foreach ($paths as $p) {
             $pathsWithAbsolute[] = $this->basePath . $p;
         }
+
         return $pathsWithAbsolute;
     }
 }

@@ -107,6 +107,7 @@ class BuildingLocatorTest extends TestCase
     /**
      * @dataProvider resourceProvider
      * @dataProvider sharedResourceProvider
+     * @depends testFind
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -133,6 +134,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @depends testFind
      */
     public function testFindThrowExceptionWhenSchemaDontExist()
     {
@@ -194,6 +196,7 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     * @depends testGetResourceForSharedStream
      */
     public function testGetResourceForSharedStreamReturnFalseIfNoResourceFalse()
     {
@@ -206,6 +209,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider sharedResourceProvider
+     * @depends testGetResourceForSharedStream
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -225,6 +229,7 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     * @depends testGetResourcesForSharedStream
      */
     public function testGetResourcesForSharedStreamReturnFalseIfNoResourceFalse()
     {
@@ -237,6 +242,8 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider sharedResourceProvider
+     * @depends testGetResourceForSharedStream
+     * @depends testGetResourcesForSharedStream
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -327,6 +334,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider resourceProvider
+     * @depends testGetResource
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -348,6 +356,8 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider resourceProvider
+     * @depends testGetResource
+     * @depends testGetResources
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -380,6 +390,7 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     * @depends testListResourcesForSharedStream
      */
     public function testListResourcesForSharedStreamWithAllArgument()
     {
@@ -407,6 +418,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * List all ressources under listResources
+     * @depends testListResourcesForFiles
      */
     public function testListResourcesForFilesWithAllArgument()
     {
@@ -424,6 +436,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * upload file will be showed here, as we're in the data prefix
+     * @depends testListResourcesForFilesWithAllArgument
      */
     public function testListResourcesForDataFilesWithAllArgument()
     {

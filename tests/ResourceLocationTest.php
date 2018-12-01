@@ -44,4 +44,24 @@ class ResourceLocationTest extends TestCase
         $this->assertEquals('bar', $location->getName());
         $this->assertEquals('/foo', $location->getPath());
     }
+
+    /**
+     * @depends testResourceLocation_ctor
+     */
+    public function testResourceLocation_ctorWithSupressesRightSlashe()
+    {
+        $location = new ResourceLocation('bar', '/foo/');
+        $this->assertEquals('bar', $location->getName());
+        $this->assertEquals('/foo', $location->getPath());
+    }
+
+    /**
+    * @depends testResourceLocation_ctor
+     */
+    public function testResourceLocation_ctoOmittedPathEqualsName()
+    {
+        $location = new ResourceLocation('bar');
+        $this->assertEquals('bar', $location->getName());
+        $this->assertEquals('bar', $location->getPath());
+    }
 }

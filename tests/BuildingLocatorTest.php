@@ -568,18 +568,21 @@ class BuildingLocatorTest extends TestCase
     {
         return [
             //[$scheme, $file, $lcoation, $expectedPaths, $expectedAllPaths],
+            // #0
             ['cars', 'cars.json', null, [
                 'Garage/cars/cars.json'
             ], [
                 'Garage/cars/cars.json'
             ]],
 
+            // #1
             ['cars', '', null, [
                 'Garage/cars'
             ], [
                 'Garage/cars'
             ]],
 
+            // #2
             ['absCars', 'cars.json', null, [
                 'Garage/cars/cars.json'
             ], [
@@ -601,5 +604,23 @@ class BuildingLocatorTest extends TestCase
         }
 
         return $pathsWithAbsolute;
+    }
+
+    /**
+     */
+    public function testFindCachedReturnFalseOnBadUriPart()
+    {
+        $locator = new ResourceLocator();
+        $resource = $locator->getResource('path/to/../../../file.txt');
+        $this->assertFalse($resource);
+    }
+
+    /**
+     */
+    public function testFindCachedReturnFalseOnBadUriPartWithArray()
+    {
+        $locator = new ResourceLocator();
+        $resources = $locator->getResources('path/to/../../../file.txt');
+        $this->assertSame([], $resources);
     }
 }

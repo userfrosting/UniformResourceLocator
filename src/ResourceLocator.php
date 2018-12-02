@@ -579,7 +579,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
         $list = [];
         foreach ($this->getLocations() as $location) {
-            $path = trim($location->getPath(), $this->separator) . $this->separator . trim($stream->getPath(), $this->separator);
+            $path = rtrim($location->getPath(), $this->separator) . $this->separator . trim($stream->getPath(), $this->separator);
             $list[$path] = $location;
         }
 

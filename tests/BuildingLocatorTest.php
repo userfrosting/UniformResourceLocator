@@ -73,10 +73,12 @@ class BuildingLocatorTest extends TestCase
         self::$locator = new ResourceLocator($this->basePath);
 
         // Register the floors.
-        // Note the missing `/` at the end for Floor 3 and the one before Floor2. This shound't make any difference.
-        // But at the beggining should produce error, because it produce an absolute path. We're not testing with absolute paths
+        // Note the missing `/` at the end for Floor 3. This shound't make any difference.
+        // At the beginning, it means the locator use an absolute path, bypassing Locator base path for that locator
+        // Floor2 simulate an absolute path for that location. Note it won't make any sense (and fail) if both
+        // the location and the stream uses absolute paths
         self::$locator->registerLocation('Floor1', 'Floors/Floor/');
-        self::$locator->registerLocation('Floor2', '/Floors/Floor2/');
+        self::$locator->registerLocation('Floor2', $this->basePath . 'Floors/Floor2/');
         self::$locator->registerLocation('Floor3', 'Floors/Floor3');
 
         // Register the streams

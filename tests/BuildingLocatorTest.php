@@ -124,15 +124,43 @@ class BuildingLocatorTest extends TestCase
         $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resource);
     }
 
-    /*public function testFindWithAll($scheme, $file, $location, $expectedPaths)
+    /**
+     * @dataProvider resourceProvider
+     * @dataProvider sharedResourceProvider
+     * @depends testFind
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     * @param array|string $expectedAllPaths
+     */
+    public function testFindWithAll($scheme, $file, $location, $expectedPaths, $expectedAllPaths)
     {
+        // find($scheme, $file, $array, $all)
+        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, true]);
 
-    }*/
+        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertEquals($this->basePath . $expectedAllPaths[0], $resource->getAbsolutePath());
+    }
 
-    /*public function testFindWithArrayAndAll($scheme, $file, $location, $expectedPaths)
+    /**
+     * @dataProvider resourceProvider
+     * @dataProvider sharedResourceProvider
+     * @depends testFind
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     * @param array|string $expectedAllPaths
+     */
+    public function testFindWithArrayAndAll($scheme, $file, $location, $expectedPaths, $expectedAllPaths)
     {
+        // find($scheme, $file, $array, $all)
+        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, true]);
 
-    }*/
+        $this->assertInternalType('array', $resource);
+        $this->assertEquals($this->relativeToAbsolutePaths($expectedAllPaths), $resource);
+    }
 
     /**
      * @expectedException \InvalidArgumentException
@@ -457,41 +485,78 @@ class BuildingLocatorTest extends TestCase
     public function resourceProvider()
     {
         return [
-            //[$scheme, $file, $location, $expectedPaths],
+            //[$scheme, $file, $location, $expectedPaths, $expectedAllPaths],
+            // #0
             ['files', 'test.json', 'Floor3', [
+                'Floors/Floor3/files/test.json',
+                'Floors/Floor2/files/test.json',
+                'Floors/Floor/files/test.json',
+            ], [
                 'Floors/Floor3/files/test.json',
                 'Floors/Floor2/files/test.json',
                 'Floors/Floor/files/test.json',
             ]],
 
+            // #1
             ['files', 'foo.json', 'Floor2', [
                 'Floors/Floor2/files/foo.json'
+            ], [
+                'Floors/Floor3/files/foo.json',
+                'Floors/Floor2/files/foo.json',
+                'Floors/Floor/files/foo.json',
             ]],
 
+            // #2
             ['files', 'data/foo.json', null, [
                 'upload/data/files/foo.json',
                 'Floors/Floor2/files/data/foo.json'
+            ], [
+                'upload/data/files/foo.json',
+                'Floors/Floor3/files/data/foo.json',
+                'Floors/Floor2/files/data/foo.json',
+                'Floors/Floor/files/data/foo.json'
             ]],
 
+            // #3
             ['files', 'test/blah.json', 'Floor1', [
+                'Floors/Floor/files/test/blah.json'
+            ], [
+                'Floors/Floor3/files/test/blah.json',
+                'Floors/Floor2/files/test/blah.json',
                 'Floors/Floor/files/test/blah.json'
             ]],
 
+            // #4
             // N.B.: upload/data/files is not returned here as the `data` prefix is not used
             ['files', '', 'Floor3', [
                 'Floors/Floor3/files',
                 'Floors/Floor2/files',
                 'Floors/Floor/files',
+            ], [
+                'Floors/Floor3/files',
+                'Floors/Floor2/files',
+                'Floors/Floor/files',
             ]],
 
+            // #5
             // Test the data prefix here
             ['files', 'data', null, [
                 'upload/data/files',
                 'Floors/Floor2/files/data',
+            ], [
+                'upload/data/files',
+                'Floors/Floor3/files/data',
+                'Floors/Floor2/files/data',
+                'Floors/Floor/files/data'
             ]],
 
+            // #6
             ['conf', 'test.json', 'Floor2', [
                 'Floors/Floor2/config/test.json'
+            ], [
+                'Floors/Floor3/config/test.json',
+                'Floors/Floor2/config/test.json',
+                'Floors/Floor/config/test.json'
             ]],
         ];
     }
@@ -502,16 +567,22 @@ class BuildingLocatorTest extends TestCase
     public function sharedResourceProvider()
     {
         return [
-            //[$scheme, $file, $lcoation, $expectedPaths],
+            //[$scheme, $file, $lcoation, $expectedPaths, $expectedAllPaths],
             ['cars', 'cars.json', null, [
+                'Garage/cars/cars.json'
+            ], [
                 'Garage/cars/cars.json'
             ]],
 
             ['cars', '', null, [
                 'Garage/cars'
+            ], [
+                'Garage/cars'
             ]],
 
             ['absCars', 'cars.json', null, [
+                'Garage/cars/cars.json'
+            ], [
                 'Garage/cars/cars.json'
             ]],
         ];

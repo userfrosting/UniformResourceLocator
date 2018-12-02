@@ -60,6 +60,11 @@ class ResourceLocator implements ResourceLocatorInterface
     protected $streamBuilder;
 
     /**
+     * @var array List of system reserved streams
+     */
+    protected $reservedStreams = ['file'];
+
+    /**
      * Constructor
      *
      * @param string|null $basePath (default null)
@@ -96,6 +101,10 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function addStream(ResourceStream $stream)
     {
+        if (in_array($stream->getScheme(), $this->reservedStreams)) {
+            throw new \InvalidArgumentException("Can't add restriced stream scheme {$stream->getScheme()}.");
+        }
+
         $this->streams[$stream->getScheme()][$stream->getPrefix()][] = $stream;
         $this->setupStreamWrapper($stream->getScheme());
 
@@ -429,7 +438,7 @@ class ResourceLocator implements ResourceLocatorInterface
         $uri = preg_replace('|\\\|u', $this->separator, $uri);
         $segments = explode('://', $uri, 2);
         $path = array_pop($segments);
-        $scheme = array_pop($segments) ?: 'file';
+        $scheme = array_pop($segments) ?: '';
         if ($path) {
             $path = preg_replace('|\\\|u', $this->separator, $path);
             $parts = explode($this->separator, $path);
@@ -456,7 +465,7 @@ class ResourceLocator implements ResourceLocatorInterface
             $path = implode($this->separator, $list);
         }
 
-        return $splitStream ? [$scheme, $path] : ($scheme !== 'file' ? "{$scheme}://{$path}" : $path);
+        return $splitStream ? [$scheme, $path] : ($scheme !== '' ? "{$scheme}://{$path}" : $path);
     }
 
     /**
@@ -550,9 +559,6 @@ class ResourceLocator implements ResourceLocatorInterface
         if (!isset($this->cache[$key])) {
             try {
                 list($scheme, $file) = $this->normalize($uri, true, true);
-                if (!$file && $scheme === 'file') {
-                    $file = $this->getBasePath();
-                }
                 $this->cache[$key] = $this->find($scheme, $file, $array, $all);
             } catch (\BadMethodCallException $e) {
                 // If something couldn't be found, return false or empty array

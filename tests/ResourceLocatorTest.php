@@ -136,6 +136,16 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @depends testRegisterStream
+     * @expectedException InvalidArgumentException
+     */
+    public function testAddStreamThrowExceptionOnRestrictedScheme()
+    {
+        $locator = new ResourceLocator();
+        $locator->registerStream('file');
+    }
+
+    /**
+     * @depends testRegisterStream
      */
     public function testRemoveStream()
     {

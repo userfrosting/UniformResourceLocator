@@ -172,23 +172,6 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * Call protected/private method of a class.
-     *
-     * @param  object &$object    Instantiated object that we will run method on.
-     * @param  string $methodName Method name to call
-     * @param  array  $parameters Array of parameters to pass into method.
-     * @return mixed  Method return.
-     */
-    protected function invokeMethod(&$object, $methodName, array $parameters = [])
-    {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $parameters);
-    }
-
-    /**
      * @expectedException \InvalidArgumentException
      */
     public function testGetResourceThrowExceptionIfShemeNotExist()
@@ -479,6 +462,70 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     */
+    public function testFindCachedReturnFalseOnBadUriPart()
+    {
+        $locator = new ResourceLocator();
+        $resource = $locator->getResource('path/to/../../../file.txt');
+        $this->assertFalse($resource);
+    }
+
+    /**
+     */
+    public function testFindCachedReturnFalseOnBadUriPartWithArray()
+    {
+        $locator = new ResourceLocator();
+        $resources = $locator->getResources('path/to/../../../file.txt');
+        $this->assertSame([], $resources);
+    }
+
+    /**
+     * Test streamWrapper setup making sure a file that don't exist doesn't
+     * return false positive
+     */
+    public function testStreamWrapper()
+    {
+        $filename = 'test://cars.json';
+        $this->assertFalse(@file_exists($filename));
+
+        // Register
+        self::$locator->registerStream('test', '', 'Garage/cars/', true);
+        $this->assertTrue(file_exists($filename));
+
+        // Unregister
+        self::$locator->removeStream('test');
+        $this->assertFalse(@file_exists($filename));
+    }
+
+    /**
+     * Test streamWrapper setup by reading a file using it's uri
+     * @depends testStreamWrapper
+     */
+    public function testStreamWrapperReadFile()
+    {
+        $filename = 'cars://cars.json';
+
+        $this->assertTrue(file_exists($filename));
+
+        $handle = fopen($filename, "r");
+        $contents = fread($handle, filesize($filename));
+
+        $this->assertNotEquals('', $contents);
+        $this->assertEquals('Tesla', json_decode($contents, true)['cars'][1]['make']);
+
+        fclose($handle);
+    }
+
+    /**
+     * Test streamWrapper setup making sure a file that don't exist doesn't
+     * return false positive
+     */
+    public function testStreamWrapperNotExist()
+    {
+        $this->assertFalse(file_exists('cars://idontExist.txt'));
+    }
+
+    /**
      * DataProvider for testFind
      * Return all files available from our test case
      */
@@ -607,20 +654,19 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     * Call protected/private method of a class.
+     *
+     * @param  object &$object    Instantiated object that we will run method on.
+     * @param  string $methodName Method name to call
+     * @param  array  $parameters Array of parameters to pass into method.
+     * @return mixed  Method return.
      */
-    public function testFindCachedReturnFalseOnBadUriPart()
+    protected function invokeMethod(&$object, $methodName, array $parameters = [])
     {
-        $locator = new ResourceLocator();
-        $resource = $locator->getResource('path/to/../../../file.txt');
-        $this->assertFalse($resource);
-    }
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
 
-    /**
-     */
-    public function testFindCachedReturnFalseOnBadUriPartWithArray()
-    {
-        $locator = new ResourceLocator();
-        $resources = $locator->getResources('path/to/../../../file.txt');
-        $this->assertSame([], $resources);
+        return $method->invokeArgs($object, $parameters);
     }
 }

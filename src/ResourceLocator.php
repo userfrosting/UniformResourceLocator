@@ -377,12 +377,13 @@ class ResourceLocator implements ResourceLocatorInterface
             foreach ($files as $file) {
 
                 // Calculate the relative path
+                $basePath = rtrim($this->getBasePath(), $this->separator) . $this->separator;
                 $fullPath = $file->getPathname();
-                $relPath = str_replace($this->getBasePath(), '', $fullPath);
+                $relPath = str_replace($basePath, '', $fullPath);
                 $relPath = ltrim($relPath, $this->separator);
 
                 // Create the ressource and add it to the list
-                $resource = new Resource($directory->getStream(), $directory->getLocation(), $relPath, $this->getBasePath());
+                $resource = new Resource($directory->getStream(), $directory->getLocation(), $relPath, $basePath);
 
                 if ($all) {
                     $list[] = $resource;
@@ -631,21 +632,23 @@ class ResourceLocator implements ResourceLocatorInterface
                 // Pass each search paths
                 foreach ($paths as $path => $location) {
 
+                    $basePath = rtrim($this->getBasePath(), $this->separator) . $this->separator;
+
                     // Check if path from the ResourceStream is absolute or relative
                     // for both unix and windows
                     if (!preg_match('`^/|\w+:`', $path)) {
                         // Handle relative path lookup.
                         $relPath = trim($path . $filename, $this->separator);
-                        $fullPath = rtrim($this->getBasePath(), $this->separator) . $this->separator . $relPath;
+                        $fullPath = $basePath . $relPath;
                     } else {
                         // Handle absolute path lookup.
                         $fullPath = rtrim($path . $filename, $this->separator);
-                        $relPath = str_replace($this->getBasePath(), '', $fullPath);
+                        $relPath = str_replace($basePath, '', $fullPath);
                     }
 
                     // Add the result to the list if the path exist, unless we want all results
                     if ($all || $this->filesystem->exists($fullPath)) {
-                        $currentResource = new Resource($stream, $location, $relPath, $this->getBasePath());
+                        $currentResource = new Resource($stream, $location, $relPath, $basePath);
                         if (!$array) {
                             return $currentResource;
                         }

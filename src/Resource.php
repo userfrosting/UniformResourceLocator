@@ -109,20 +109,20 @@ class Resource
     public function getBasePath()
     {
         // Start with the stream relative path as a search path.
-        $searchPattern = preg_replace("#^".$this->getLocatorBasePath()."#", '', $this->stream->getPath());
+        $searchPattern = preg_replace("#^".preg_quote($this->getLocatorBasePath())."#", '', $this->stream->getPath());
 
         // Add the location path to the search path if there's a location
         if (!is_null($this->getLocation())) {
 
             // We'll also need to remove the locator base path from the locator path
             // as it won't be removed by the previous attempt
-            $locatorPath = preg_replace("#^".$this->getLocatorBasePath()."#", '', $this->getLocation()->getPath());
+            $locatorPath = preg_replace("#^".preg_quote($this->getLocatorBasePath())."#", '', $this->getLocation()->getPath());
             $searchPattern = $locatorPath . $this->getSeparator() . $searchPattern;
         }
 
         // Remove the search path from the beginning of the resource path
         // then trim any beginning slashes from the resulting path
-        $result = preg_replace("#^$searchPattern#", '', $this->getPath());
+        $result = preg_replace('#^'.preg_quote($searchPattern).'#', '', $this->getPath());
         $result = ltrim($result, $this->getSeparator());
 
         return $result;

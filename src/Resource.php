@@ -61,7 +61,8 @@ class Resource
     {
         $this->stream = $stream;
         $this->location = $location;
-        $this->path = $path;
+        // Normalise to unix-style path separator (for backwards compatibility)
+        $this->path = str_replace('\\', '/', $path);
         $this->locatorBasePath = $locatorBasePath;
     }
 
@@ -123,7 +124,8 @@ class Resource
         // Remove the search path from the beginning of the resource path
         // then trim any beginning slashes from the resulting path
         $result = preg_replace('#^'.preg_quote($searchPattern).'#', '', $this->getPath());
-        $result = ltrim($result, $this->getSeparator());
+        $result = ltrim($result, '/');
+        $result = ltrim($result, '\\');
 
         return $result;
     }

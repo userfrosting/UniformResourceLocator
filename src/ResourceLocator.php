@@ -388,7 +388,7 @@ class ResourceLocator implements ResourceLocatorInterface
                 if ($all) {
                     $list[] = $resource;
                 } else {
-                    $list[$file->getFilename()] = $resource;
+                    $list[$resource->getUri()] = $resource;
                 }
             }
         }

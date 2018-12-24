@@ -167,6 +167,12 @@ $locator->registerLocation($name, $path); 
 
 See [the Running Tests](RUNNING_TESTS.md) page.
 
+# Building doc
+
+```
+vendor/bin/phpdoc-md generate src/ > docs.md
+```
+
 # References
 
 - [The Power of Uniform Resource Location in PHP](https://web.archive.org/web/20131116092917/http://webmozarts.com/2013/06/19/the-power-of-uniform-resource-location-in-php/)

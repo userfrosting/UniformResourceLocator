@@ -133,7 +133,7 @@ class DocTest extends TestCase
         ], $streams);
 
         // listLocations
-        $locations = $locator->getLocations();
+        $locations = $locator->listLocations();
         $this->assertSame([
             'Floor2',
             'Floor1'

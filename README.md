@@ -17,7 +17,7 @@ It's like trying to find someone in a one story house vs. a 25 stories office bu
 
 # Documentation
 
-[Documentation is available here](docs/README.md).
+Documentation is available in [docs/README.md](docs/README.md), API docs in [docs/api.md](docs/api.md) and a working example / tutorial in [docs/Example.md](docs/Example.md).
 
 # Testing
 

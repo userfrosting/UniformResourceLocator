@@ -32,7 +32,7 @@
         - [Stream Instance](#stream-instance)
     - [Managing Locations](#managing-locations)
         - [Location Instance](#location-instance)
-- [Real Life Example](#real-life-example)
+- [Real Life Example](Example.md)
 
 <!-- /TOC -->
 
@@ -349,60 +349,3 @@ When interacting with location instances, informations can be retrieved or chang
 - `setPath` : Change the location base path.
 
 See the [API Documentation](api.md#class-userfrostinguniformresourcelocatorresourcestream) for more informations.
-
-# Real Life Example
-
-## Project structure
-
-For this example, we'll use the Building analogy as the fictional structure of our project. We'll use two **floors**, `Floor1` and `Floor2`, as locations, with the second floor (`Floor2`) having priority over the first one (`Floor1`). Each floor will be physically located into `app/floors/FloorX`. Each location will support three streams (`config`, `logs`, `templates`). We'll finally an `upload` shared stream. This stream will be located directly into `/app/uploads/`.
-
-The next tables summarized what we'll be creating :
-
-### Locations
-
-Name   | Path           | Resolved Path
--------|----------------|-------------------
-Floor1 | floors/Floor1/ | app/floors/Floor1/
-Floor2 | floors/Floor2/ | app/floors/Floor2/
-
-### Streams
-
-Scheme       | Path              | Resolved Path                         | Shared
--------------|-------------------|---------------------------------------|-------
-config://    | config/           | app/Floors/Floor{X}/config/           | No
-logs://      | logs/             | app/Floors/Floor{X}/logs/             | No
-templates:// | layout/templates/ | app/Floors/Floor{X}/layout/templates/ | No
-upload://    | uploads/          | app/uploads/                          | Yes
-
-### File Structure
-
-#### Config
-
-! TODO
-
-## Creating the locator, locations and Streams
-
-First, let's create the locator instance. We'll pass the base path, `app/`, as the constructor only argument. Here you should be careful with the relative location of your code from the rest of your code. The `__DIR__` constant might be helpful in most cases and assuming your code is at the top level of your project (`/`), `__DIR__ . 'app/'` should do it. Note the locator support both relative an absolute base path.
-
-```
-$locator = new ResourceLocator(__DIR__ . 'app/');
-```
-
-Next, we'll create the locations. The order in which the locations are registered is important. Since we want the second location to have priority, it must be created last. The last registered location always has the highest priority.
-
-```
-$locator->registerLocation('Floor1', 'floors/Floor1/');
-$locator->registerLocation('Floor2', 'floors/Floor2/');
-```
-
-Finally, we'll create the streams. Note the order is not important here. Moreover, the streams can be registered before the locations.
-
-```
-$locator->registerStream('config');
-$locator->registerStream('logs');
-$locator->registerStream('templates', '', 'layout/templates/');
-$locator->registerStream('upload', '', 'uploads/', true);
-```
-
-## Finding Files
-

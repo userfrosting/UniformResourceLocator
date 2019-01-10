@@ -23,7 +23,7 @@ It's like trying to find someone in a one story house vs. a 25 stories office bu
 
 # Testing
 
-See [the Running Tests](RUNNING_TESTS.md) page.
+See [the Running Tests](docs/RUNNING_TESTS.md) page.
 
 # Building doc
 

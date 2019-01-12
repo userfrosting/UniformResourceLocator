@@ -1,9 +1,10 @@
 <?php
 /**
- * UserFrosting (http://www.userfrosting.com)
+ * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
- * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/licenses/UserFrosting.md (MIT License)
+ * @copyright Copyright (c) 2013-2019 Alexander Weissman, Louis Charette
+ * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/LICENSE.md (MIT License)
  */
 
 namespace UserFrosting\UniformResourceLocator\Tests;
@@ -302,8 +303,6 @@ class BuildingLocatorTest extends TestCase
         $locator(123);
     }
 
-    /**
-     */
     public function testFindResourceForSharedStreamReturnFalseIfNoResourceFalse()
     {
         $locator = self::$locator;
@@ -391,8 +390,6 @@ class BuildingLocatorTest extends TestCase
         $this->assertEquals($expectedPaths, $locator->findResources($uri, false));
     }
 
-    /**
-     */
     public function testListResourcesForSharedStream()
     {
         $list = self::$locator->listResources('cars://');
@@ -462,8 +459,6 @@ class BuildingLocatorTest extends TestCase
         ], array_map('strval', $list));
     }
 
-    /**
-     */
     public function testFindCachedReturnFalseOnBadUriPart()
     {
         $locator = new ResourceLocator();
@@ -471,8 +466,6 @@ class BuildingLocatorTest extends TestCase
         $this->assertFalse($resource);
     }
 
-    /**
-     */
     public function testFindCachedReturnFalseOnBadUriPartWithArray()
     {
         $locator = new ResourceLocator();
@@ -508,7 +501,7 @@ class BuildingLocatorTest extends TestCase
 
         $this->assertTrue(file_exists($filename));
 
-        $handle = fopen($filename, "r");
+        $handle = fopen($filename, 'r');
         $contents = fread($handle, filesize($filename));
 
         $this->assertNotEquals('', $contents);

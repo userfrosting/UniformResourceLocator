@@ -1,9 +1,10 @@
 <?php
 /**
- * UserFrosting (http://www.userfrosting.com)
+ * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
- * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/licenses/UserFrosting.md (MIT License)
+ * @copyright Copyright (c) 2013-2019 Alexander Weissman, Louis Charette
+ * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/LICENSE.md (MIT License)
  */
 
 namespace UserFrosting\UniformResourceLocator;
@@ -52,10 +53,10 @@ class Resource
     /**
      * Constructor
      *
-     * @param ResourceStream        $stream            ResourceStream used to locate this resource
-     * @param ResourceLocation|null $location          ResourceLocation used to locate this resource
-     * @param string                $path              Resource path, relative to the locator base path, and containing the stream and location path
-     * @param string                $locatorBasePath   Locator base Path (default to '')
+     * @param ResourceStream        $stream          ResourceStream used to locate this resource
+     * @param ResourceLocation|null $location        ResourceLocation used to locate this resource
+     * @param string                $path            Resource path, relative to the locator base path, and containing the stream and location path
+     * @param string                $locatorBasePath Locator base Path (default to '')
      */
     public function __construct(ResourceStream $stream, ResourceLocation $location = null, $path, $locatorBasePath = '')
     {
@@ -110,14 +111,14 @@ class Resource
     public function getBasePath()
     {
         // Start with the stream relative path as a search path.
-        $searchPattern = preg_replace("#^".preg_quote($this->getLocatorBasePath())."#", '', $this->stream->getPath());
+        $searchPattern = preg_replace('#^'.preg_quote($this->getLocatorBasePath()).'#', '', $this->stream->getPath());
 
         // Add the location path to the search path if there's a location
         if (!is_null($this->getLocation())) {
 
             // We'll also need to remove the locator base path from the locator path
             // as it won't be removed by the previous attempt
-            $locatorPath = preg_replace("#^".preg_quote($this->getLocatorBasePath())."#", '', $this->getLocation()->getPath());
+            $locatorPath = preg_replace('#^'.preg_quote($this->getLocatorBasePath()).'#', '', $this->getLocation()->getPath());
             $searchPattern = $locatorPath . $this->getSeparator() . $searchPattern;
         }
 

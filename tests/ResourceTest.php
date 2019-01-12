@@ -1,9 +1,10 @@
 <?php
 /**
- * UserFrosting (http://www.userfrosting.com)
+ * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
- * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/licenses/UserFrosting.md (MIT License)
+ * @copyright Copyright (c) 2013-2019 Alexander Weissman, Louis Charette
+ * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/LICENSE.md (MIT License)
  */
 
 namespace UserFrosting\UniformResourceLocator\Tests;
@@ -53,7 +54,7 @@ class ResourceTest extends TestCase
 
     /**
      * @depends testConstructor
-     * @param Resource $resource
+     * @param resource $resource
      */
     public function testGetStreamAndGetLocation(Resource $resource)
     {
@@ -63,7 +64,7 @@ class ResourceTest extends TestCase
 
     /**
      * @depends testConstructor
-     * @param Resource $resource
+     * @param resource $resource
      */
     public function testGetSetSeparator(Resource $resource)
     {
@@ -74,7 +75,7 @@ class ResourceTest extends TestCase
 
     /**
      * @depends testConstructor
-     * @param Resource $resource
+     * @param resource $resource
      */
     public function testGetSetLocatorBasePath(Resource $resource)
     {
@@ -85,9 +86,9 @@ class ResourceTest extends TestCase
 
     /**
      * @dataProvider resourcesProvider
-     * @param  bool $useLocation
-     * @param  string $path
-     * @param  string $basePath
+     * @param bool   $useLocation
+     * @param string $path
+     * @param string $basePath
      */
     public function testGetBasePath($useLocation, $path, $basePath)
     {
@@ -194,10 +195,10 @@ class ResourceTest extends TestCase
 
     /**
      * @dataProvider FilesProvider
-     * @param  string $path
-     * @param  string $expectedBasename
-     * @param  string $expectedFilename
-     * @param  string $expectedExtension
+     * @param string $path
+     * @param string $expectedBasename
+     * @param string $expectedFilename
+     * @param string $expectedExtension
      */
     public function testFilePropertiesGetters($path, $expectedBasename, $expectedFilename, $expectedExtension)
     {

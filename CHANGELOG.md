@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 4.2.1
+ - Added `ResourceInterface`, `ResourceLocationInterface`, `ResourceLocatorInterface` & `ResourceStreamInterface`
+
+## 4.2.0
+ - Initial Release
+
+<!--
 ## [Unreleased]
 
 ### Added
@@ -17,3 +24,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 ### Security
+-->
+
+[4.2.1]: https://github.com/userfrosting/cache/compare/4.2.0...4.2.1

@@ -23,10 +23,10 @@ namespace UserFrosting\UniformResourceLocator;
  *
  * @author Louis Charette
  */
-class Resource
+class Resource implements ResourceInterface
 {
     /**
-     * @var ResourceLocation $location
+     * @var ResourceLocationInterface $location
      */
     protected $location;
 
@@ -46,19 +46,19 @@ class Resource
     protected $separator = '/';
 
     /**
-     * @var ResourceStream $stream
+     * @var ResourceStreamInterface $stream
      */
     protected $stream;
 
     /**
      * Constructor
      *
-     * @param ResourceStream        $stream          ResourceStream used to locate this resource
-     * @param ResourceLocation|null $location        ResourceLocation used to locate this resource
-     * @param string                $path            Resource path, relative to the locator base path, and containing the stream and location path
-     * @param string                $locatorBasePath Locator base Path (default to '')
+     * @param ResourceStreamInterface        $stream          ResourceStream used to locate this resource
+     * @param ResourceLocationInterface|null $location        ResourceLocation used to locate this resource
+     * @param string                         $path            Resource path, relative to the locator base path, and containing the stream and location path
+     * @param string                         $locatorBasePath Locator base Path (default to '')
      */
-    public function __construct(ResourceStream $stream, ResourceLocation $location = null, $path, $locatorBasePath = '')
+    public function __construct(ResourceStreamInterface $stream, ResourceLocationInterface $location = null, $path, $locatorBasePath = '')
     {
         $this->stream = $stream;
         $this->location = $location;
@@ -162,7 +162,7 @@ class Resource
     }
 
     /**
-     * @return ResourceLocation
+     * @return ResourceLocationInterface
      */
     public function getLocation()
     {
@@ -236,7 +236,7 @@ class Resource
     }
 
     /**
-     * @return ResourceStream
+     * @return ResourceStreamInterface
      */
     public function getStream()
     {

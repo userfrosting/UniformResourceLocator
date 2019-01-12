@@ -16,7 +16,7 @@ namespace UserFrosting\UniformResourceLocator;
  *
  * @author    Louis Charette
  */
-class ResourceLocation
+class ResourceLocation implements ResourceLocationInterface
 {
     /**
      * @var string The name of the location

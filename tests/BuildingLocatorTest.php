@@ -12,8 +12,9 @@ namespace UserFrosting\UniformResourceLocator\Tests;
 use PHPUnit\Framework\TestCase;
 use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface;
 use UserFrosting\UniformResourceLocator\Resource;
+use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
-use UserFrosting\UniformResourceLocator\ResourceStream;
+use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
  * Tests for ResourceLocator
@@ -103,7 +104,7 @@ class BuildingLocatorTest extends TestCase
         // find($scheme, $file, $array, $all)
         $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, false]);
 
-        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resource->getAbsolutePath());
     }
 
@@ -140,7 +141,7 @@ class BuildingLocatorTest extends TestCase
         // find($scheme, $file, $array, $all)
         $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, true]);
 
-        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertEquals($this->getBasePath() . $expectedAllPaths[0], $resource->getAbsolutePath());
     }
 
@@ -201,12 +202,12 @@ class BuildingLocatorTest extends TestCase
         $uri = $scheme . '://' . $file;
 
         $resource = $locator->getResource($uri);
-        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resource);
         $this->assertEquals($expectedPaths[0], $resource->getPath());
         $this->assertNull($resource->getLocation());
         $this->assertEquals($uri, $resource->getUri());
-        $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
+        $this->assertInstanceOf(ResourceStreamInterface::class, $resource->getStream());
     }
 
     /**
@@ -237,7 +238,7 @@ class BuildingLocatorTest extends TestCase
         $resources = $locator->getResources($uri);
         $this->assertInternalType('array', $resources);
         $this->assertCount(count($expectedPaths), $resources);
-        $this->assertInstanceOf(Resource::class, $resources[0]);
+        $this->assertInstanceOf(ResourceInterface::class, $resources[0]);
         $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resources[0]);
         $this->assertEquals($uri, $resources[0]->getUri());
     }
@@ -331,11 +332,11 @@ class BuildingLocatorTest extends TestCase
         $uri = $scheme . '://' . $file;
 
         $resource = $locator->getResource($uri);
-        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resource);
         $this->assertEquals($expectedPaths[0], $resource->getPath());
         $this->assertEquals($uri, $resource->getUri());
-        $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
+        $this->assertInstanceOf(ResourceStreamInterface::class, $resource->getStream());
 
         if (is_null($location)) {
             $this->assertNull($resource->getLocation());
@@ -361,7 +362,7 @@ class BuildingLocatorTest extends TestCase
         $this->assertInternalType('array', $resources);
         $this->assertCount(count($expectedPaths), $resources);
         $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resources);
-        $this->assertInstanceOf(Resource::class, $resources[0]);
+        $this->assertInstanceOf(ResourceInterface::class, $resources[0]);
         $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resources[0]);
         $this->assertEquals($uri, $resources[0]->getUri());
     }

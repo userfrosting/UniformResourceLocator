@@ -10,10 +10,10 @@
 namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
-use UserFrosting\UniformResourceLocator\Resource;
+use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
-use UserFrosting\UniformResourceLocator\ResourceStream;
-use UserFrosting\UniformResourceLocator\ResourceLocation;
+use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
+use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 
 /**
  * Tests for the example code in the docs/Readme.md
@@ -43,7 +43,7 @@ class DocTest extends TestCase
 
         // 2) getRerouce
         $defaultResource = $locator->getResource('config://default.json');
-        $this->assertInstanceOf(Resource::class, $defaultResource);
+        $this->assertInstanceOf(ResourceInterface::class, $defaultResource);
 
         $this->assertSame(__DIR__ . '/app/floors/Floor2/config/default.json', $defaultResource->getAbsolutePath());
         $this->assertSame('floors/Floor2/config/default.json', $defaultResource->getPath());
@@ -55,14 +55,14 @@ class DocTest extends TestCase
 
         // 3) GetLocation
         $defaultResourceLocation = $defaultResource->getLocation();
-        $this->assertInstanceOf(ResourceLocation::class, $defaultResourceLocation);
+        $this->assertInstanceOf(ResourceLocationInterface::class, $defaultResourceLocation);
 
         $this->assertSame('Floor2', $defaultResourceLocation->getName());
         $this->assertSame('floors/Floor2', $defaultResourceLocation->getPath());
 
         // 4) GetStream
         $defaultResourceStream = $defaultResource->getStream();
-        $this->assertInstanceOf(ResourceStream::class, $defaultResourceStream);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $defaultResourceStream);
 
         $this->assertSame('config', $defaultResourceStream->getPath());
         $this->assertSame('', $defaultResourceStream->getPrefix());
@@ -83,7 +83,7 @@ class DocTest extends TestCase
 
         // 2) getRerouce
         $uploadResource = $locator->getResource('upload://profile');
-        $this->assertInstanceOf(Resource::class, $uploadResource);
+        $this->assertInstanceOf(ResourceInterface::class, $uploadResource);
 
         $this->assertSame(__DIR__ . '/app/uploads/profile', $uploadResource->getAbsolutePath());
         $this->assertSame('uploads/profile', $uploadResource->getPath());

@@ -11,6 +11,7 @@ namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceStream;
+use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
  * Tests for ResourceLocator
@@ -24,7 +25,7 @@ class ResourceStreamTest extends TestCase
     {
         // Test instance & default values
         $stream = new ResourceStream('');
-        $this->assertInstanceOf(ResourceStream::class, $stream);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $stream);
         $this->assertEquals('', $stream->getScheme());
         $this->assertEquals('', $stream->getPath());
         $this->assertFalse($stream->isShared());

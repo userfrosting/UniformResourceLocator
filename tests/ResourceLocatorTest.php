@@ -10,11 +10,14 @@
 namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
-use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface;
+use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface as BaseResourceLocatorInterface;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
+use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 use UserFrosting\UniformResourceLocator\ResourceStream;
+use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
  * Tests for ResourceLocator
@@ -28,6 +31,7 @@ class ResourceLocatorTest extends TestCase
     {
         $locator = new ResourceLocator();
         $this->assertInstanceOf(ResourceLocatorInterface::class, $locator);
+        $this->assertInstanceOf(BaseResourceLocatorInterface::class, $locator);
 
         return $locator;
     }
@@ -85,7 +89,7 @@ class ResourceLocatorTest extends TestCase
 
         $barStream = $locator->getStream('bar');
         $this->assertInternalType('array', $barStream);
-        $this->assertInstanceOf(ResourceStream::class, $barStream[''][0]);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
         $this->assertEquals('foo', $barStream[''][0]->getPath());
     }
 
@@ -103,7 +107,7 @@ class ResourceLocatorTest extends TestCase
 
         $barStream = $locator->getStream('bar');
         $this->assertInternalType('array', $barStream);
-        $this->assertInstanceOf(ResourceStream::class, $barStream[''][0]);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
         $this->assertEquals('foo', $barStream[''][0]->getPath());
     }
 
@@ -121,7 +125,7 @@ class ResourceLocatorTest extends TestCase
 
         $barStream = $locator->getStream('bar');
         $this->assertInternalType('array', $barStream);
-        $this->assertInstanceOf(ResourceStream::class, $barStream[''][0]);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
         $this->assertEquals('bar', $barStream[''][0]->getPath());
     }
 
@@ -199,7 +203,7 @@ class ResourceLocatorTest extends TestCase
         $streams = $locator->getStreams();
         $this->assertInternalType('array', $streams);
         $this->assertCount(2, $streams);
-        $this->assertInstanceOf(ResourceStream::class, $streams['bar'][''][0]);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $streams['bar'][''][0]);
         $this->assertEquals('bar', $streams['bar'][''][0]->getPath());
     }
 
@@ -247,7 +251,7 @@ class ResourceLocatorTest extends TestCase
         $locator->addLocation($location);
 
         $barLocation = $locator->getLocation('bar');
-        $this->assertInstanceOf(ResourceLocation::class, $barLocation);
+        $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
         $this->assertEquals('/foo', $barLocation->getPath());
     }
 
@@ -261,7 +265,7 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('bar', '/foo');
 
         $barLocation = $locator->getLocation('bar');
-        $this->assertInstanceOf(ResourceLocation::class, $barLocation);
+        $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
         $this->assertEquals('/foo', $barLocation->getPath());
     }
 
@@ -275,7 +279,7 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('blah');
 
         $barLocation = $locator->getLocation('blah');
-        $this->assertInstanceOf(ResourceLocation::class, $barLocation);
+        $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
         $this->assertEquals('blah', $barLocation->getPath());
     }
 
@@ -301,7 +305,7 @@ class ResourceLocatorTest extends TestCase
         $locations = $locator->getLocations();
         $this->assertInternalType('array', $locations);
         $this->assertCount(2, $locations);
-        $this->assertInstanceOf(ResourceLocation::class, $locations['bar']);
+        $this->assertInstanceOf(ResourceLocationInterface::class, $locations['bar']);
         $this->assertEquals('/foo', $locations['bar']->getPath());
     }
 

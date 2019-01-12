@@ -11,8 +11,10 @@ namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\Resource;
+use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceStream;
+use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
  * Tests for ResourceLocator
@@ -42,21 +44,21 @@ class ResourceTest extends TestCase
     }
 
     /**
-     * @return Resource
+     * @return resource
      */
     public function testConstructor()
     {
         $resource = new Resource($this->stream, $this->location, $this->streamPath . 'test.txt', 'basePath/');
-        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
 
         return $resource;
     }
 
     /**
      * @depends testConstructor
-     * @param resource $resource
+     * @param ResourceInterface $resource
      */
-    public function testGetStreamAndGetLocation(Resource $resource)
+    public function testGetStreamAndGetLocation(ResourceInterface $resource)
     {
         $this->assertEquals($this->stream, $resource->getStream());
         $this->assertEquals($this->location, $resource->getLocation());
@@ -64,9 +66,9 @@ class ResourceTest extends TestCase
 
     /**
      * @depends testConstructor
-     * @param resource $resource
+     * @param ResourceInterface $resource
      */
-    public function testGetSetSeparator(Resource $resource)
+    public function testGetSetSeparator(ResourceInterface $resource)
     {
         $this->assertSame('/', $resource->getSeparator());
         $resource->setSeparator('&');
@@ -75,9 +77,9 @@ class ResourceTest extends TestCase
 
     /**
      * @depends testConstructor
-     * @param resource $resource
+     * @param ResourceInterface $resource
      */
-    public function testGetSetLocatorBasePath(Resource $resource)
+    public function testGetSetLocatorBasePath(ResourceInterface $resource)
     {
         $this->assertSame('basePath/', $resource->getLocatorBasePath());
         $resource->setLocatorBasePath('pathBase/');
@@ -167,12 +169,12 @@ class ResourceTest extends TestCase
         $stream = new ResourceStream('cars', '', $path, true);
         $resource = new Resource($stream, null, $path);
 
-        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertEquals($path, $resource);
         $this->assertEquals($path, $resource->getPath());
         $this->assertNull($resource->getLocation());
         $this->assertEquals('cars://', $resource->getUri());
-        $this->assertInstanceOf(ResourceStream::class, $resource->getStream());
+        $this->assertInstanceOf(ResourceStreamInterface::class, $resource->getStream());
     }
 
     /**

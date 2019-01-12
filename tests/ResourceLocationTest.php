@@ -11,6 +11,7 @@ namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
+use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 
 /**
  * Tests for ResourceLocator
@@ -24,7 +25,7 @@ class ResourceLocationTest extends TestCase
     {
         // Test instance & default values
         $location = new ResourceLocation('');
-        $this->assertInstanceOf(ResourceLocation::class, $location);
+        $this->assertInstanceOf(ResourceLocationInterface::class, $location);
         $this->assertEquals('', $location->getName());
         $this->assertEquals('', $location->getPath());
 

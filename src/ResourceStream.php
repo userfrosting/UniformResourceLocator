@@ -16,7 +16,7 @@ namespace UserFrosting\UniformResourceLocator;
  *
  * @author    Louis Charette
  */
-class ResourceStream
+class ResourceStream implements ResourceStreamInterface
 {
     /**
      * @var string The path scheme

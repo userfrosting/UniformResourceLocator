@@ -102,7 +102,7 @@ $rules = [
 ];
 
 $finder = PhpCsFixer\Finder::create()
-    ->in([__DIR__ . '/src', __DIR__ . '/tests']);
+    ->in([__DIR__ . '/src']);
 
 return PhpCsFixer\Config::create()
     ->setRules($rules)

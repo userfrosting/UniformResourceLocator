@@ -1,4 +1,4 @@
-# Style guide for contributing to userfrosting/UniformResourceLocator
+# Style guide for contributing
 
 ## PHP
 
@@ -13,7 +13,7 @@ In addition:
 
 ```
 /**
- * UserFrosting (http://www.userfrosting.com)
+ * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
  * @copyright Copyright (c) 2013-2019 Alexander Weissman, Louis Charette
@@ -39,13 +39,12 @@ In addition:
  - Array keys MUST NOT contain `.`.  This is because `.` is a reserved operator in Laravel and Twig's [dot syntax](https://medium.com/@assertchris/dot-notation-3fd3e42edc61).
  - Multidimensional arrays SHOULD be referenced using dot syntax whenever possible.  So, instead of doing `$myArray['person1']['email']`, you should use `$myArray['person1.email']` if your array structure supports it.
 
+## Automatically fixing coding style with PHP-CS-Fixer
 
- ## Automatically fixing coding style with PHP-CS-Fixer
+[PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) can be used to automatically fix PHP code styling. UserFrosting provides a project specific configuration file ([`.php_cs`](.php_cs)) with a set of rules reflecting our style guidelines. This tool should be used before submitting any code change to assure the style guidelines are met. Every sprinkles will also be parsed by the fixer.
 
- [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) can be used to automatically fix PHP code styling. UserFrosting provides a project specific configuration file ([`.php_cs`](.php_cs)) with a set of rules reflecting our style guidelines. This tool should be used before submitting any code change to assure the style guidelines are met. Every sprinkles will also be parsed by the fixer.
+PHP-CS-Fixer is automatically loaded by Composer and can be used from the UserFrosting root directory :
 
- PHP-CS-Fixer is automatically loaded by Composer and can be used from the UserFrosting root directory :
-
- ```
- vendor/bin/php-cs-fixer fix
- ```
+```
+vendor/bin/php-cs-fixer fix
+```

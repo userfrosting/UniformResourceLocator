@@ -1,7 +1,7 @@
 # Uniform Resource Locator
 
 [![Latest Version](https://img.shields.io/github/release/userfrosting/UniformResourceLocator.svg)](https://github.com/userfrosting/UniformResourceLocator/releases)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](licenses/UserFrosting.md)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Build Status](https://travis-ci.org/userfrosting/UniformResourceLocator.svg?branch=master)](https://travis-ci.org/userfrosting/UniformResourceLocator)
 [![codecov](https://codecov.io/gh/userfrosting/UniformResourceLocator/branch/master/graph/badge.svg)](https://codecov.io/gh/userfrosting/UniformResourceLocator)
 [![Join the chat at https://chat.userfrosting.com/channel/support](https://demo.rocket.chat/images/join-chat.svg)](https://chat.userfrosting.com/channel/support)
@@ -25,15 +25,15 @@ It's like trying to find someone in a one story house vs. a 25 stories office bu
 * [API docs](docs/api.md)
 * [Working example / tutorial](docs/Example.md).
 
-# Testing
-
-See [the Running Tests](docs/RUNNING_TESTS.md) page.
-
-# Building doc
+## Building doc
 
 ```
 vendor/bin/phpdoc-md generate src/ > docs/api.md
 ```
+
+## [Style Guide](STYLE-GUIDE.md)
+
+## [Testing](RUNNING_TESTS.md)
 
 # References
 

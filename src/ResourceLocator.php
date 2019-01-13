@@ -154,7 +154,7 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param  string            $scheme
      * @param  string            $prefix (default '')
      * @param  string|array|null $paths  (default null). When using null path, the scheme will be used as a path
-     * @param  bool              $shared (default false) Shared resoureces are not affected by locations
+     * @param  bool              $shared (default false) Shared ressources are not affected by locations
      * @return static
      */
     public function registerStream($scheme, $prefix = '', $paths = null, $shared = false)

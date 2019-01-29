@@ -61,7 +61,8 @@ class ResourceLocatorTest extends TestCase
     public function testSetBasePathWithConstructorArgument()
     {
         $locator = new ResourceLocator(__DIR__ . '/Building');
-        $this->assertEquals(__DIR__ . '/Building', $locator->getBasePath());
+        $path = str_replace('\\', '/', __DIR__);
+        $this->assertEquals($path . '/Building', $locator->getBasePath());
     }
 
     /**
@@ -71,7 +72,8 @@ class ResourceLocatorTest extends TestCase
     {
         $locator = new ResourceLocator();
         $locator->setBasePath(__DIR__ . '/Building');
-        $this->assertEquals(__DIR__ . '/Building', $locator->getBasePath());
+        $path = str_replace('\\', '/', __DIR__);
+        $this->assertEquals($path . '/Building', $locator->getBasePath());
     }
 
     /**

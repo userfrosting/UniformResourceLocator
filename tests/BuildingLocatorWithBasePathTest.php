@@ -22,6 +22,6 @@ class BuildingLocatorWithBasePathTest extends BuildingLocatorTest
      */
     protected function getBasePath()
     {
-        return $this->basePath . '/';
+        return self::$locator->normalize($this->basePath) . '/';
     }
 }

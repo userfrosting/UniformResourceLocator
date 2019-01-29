@@ -1,5 +1,8 @@
 ## Thanks to Cees-Jan Kiewiet: https://blog.wyrihaximus.net/2016/11/running-php-unit-tests-on-windows-using-appveyor-and-chocolatey/
 
+## Versioning pattern
+version: {build}
+
 ## Disable unneeded features
 build: off
 deploy: off
@@ -44,7 +47,7 @@ install:
   - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini
   - IF %PHP%==1 echo @php %%~dp0composer.phar %%* > composer.bat
   - appveyor-retry appveyor DownloadFile https://getcomposer.org/composer.phar
-  - cd c:\projects\UniformResourceLocator
+  - cd c:\projects\uniformresourcelocator
   - appveyor-retry composer update --no-progress
 
 ## Run the actual test

@@ -685,7 +685,7 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function setBasePath($basePath)
     {
-        $this->basePath = $basePath;
+        $this->basePath = $this->normalize($basePath);
 
         return $this;
     }

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.2.2]
+ - Normalize base path to fix Windows paths separator issue
+ - Added AppVeyor config for Windows based CI
+
 ## [4.2.1]
  - Added `ResourceInterface`, `ResourceLocationInterface`, `ResourceLocatorInterface` & `ResourceStreamInterface`
 
@@ -26,4 +30,5 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Security
 -->
 
+[4.2.2]: https://github.com/userfrosting/uniformresourcelocator/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/userfrosting/uniformresourcelocator/compare/4.2.0...4.2.1

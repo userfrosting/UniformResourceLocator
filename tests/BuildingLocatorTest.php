@@ -670,6 +670,6 @@ class BuildingLocatorTest extends TestCase
      */
     protected function getBasePath()
     {
-        return $this->basePath;
+        return self::$locator->normalize($this->basePath);
     }
 }

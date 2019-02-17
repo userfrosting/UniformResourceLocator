@@ -118,6 +118,15 @@ class DocTest extends TestCase
             $this->getBasePath() . '/app/floors/Floor2/config/production.json'
         ], $list);
 
+        // ListResources - Sort
+        $list = $locator->listResources('config://', false, false);
+        $this->assertEquals([
+            $this->getBasePath() . '/app/floors/Floor2/config/default.json',
+            $this->getBasePath() . '/app/floors/Floor2/config/foo/bar.json',
+            $this->getBasePath() . '/app/floors/Floor2/config/production.json',
+            $this->getBasePath() . '/app/floors/Floor1/config/debug.json'
+        ], $list);
+
         // ListReources - Folder
         $list = $locator->listResources('config://foo/', true);
         $this->assertEquals([

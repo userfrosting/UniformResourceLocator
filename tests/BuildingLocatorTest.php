@@ -447,6 +447,24 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
+     * List all ressources under listResources and apply global sorting
+     * @depends testListResourcesForFilesWithAllArgument
+     */
+    public function testListResourcesForFilesWithAllArgumentAndSort()
+    {
+        $list = self::$locator->listResources('files://', true, false);
+        $this->assertCount(6, $list);
+        $this->assertEquals([
+            $this->getBasePath() . 'Floors/Floor3/files/test.json',
+            $this->getBasePath() . 'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath() . 'Floors/Floor2/files/foo.json',
+            $this->getBasePath() . 'Floors/Floor2/files/test.json',
+            $this->getBasePath() . 'Floors/Floor/files/test.json',
+            $this->getBasePath() . 'Floors/Floor/files/test/blah.json',
+        ], array_map('strval', $list));
+    }
+
+    /**
      * upload file will be showed here, as we're in the data prefix
      * @depends testListResourcesForFilesWithAllArgument
      */
@@ -457,6 +475,20 @@ class BuildingLocatorTest extends TestCase
         $this->assertEquals([
             $this->getBasePath() . 'Floors/Floor2/files/data/foo.json',
             $this->getBasePath() . 'upload/data/files/foo.json',
+        ], array_map('strval', $list));
+    }
+
+    /**
+     * upload will be listed first, as that stream is registered after the normal file stream
+     * @depends testListResourcesForDataFilesWithAllArgument
+     */
+    public function testListResourcesForDataFilesWithAllArgumentAndSort()
+    {
+        $list = self::$locator->listResources('files://data', true, false);
+        $this->assertCount(2, $list);
+        $this->assertEquals([
+            $this->getBasePath() . 'upload/data/files/foo.json',
+            $this->getBasePath() . 'Floors/Floor2/files/data/foo.json',
         ], array_map('strval', $list));
     }
 

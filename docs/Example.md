@@ -232,6 +232,21 @@ $locator->listResources('config://', true);
 */
 ```
 
+By default, the list will be sorted alphabetically. The location priority can be preserved with the optional third `$sort` argument. When set to false, the list will be sorted by location then by alphabetical order. This can be useful if a higher priority location can override data from a lower priority one, while not necessarily enforcing file name overrides.
+
+```
+$locator->listResources('config://', false, false);
+
+/*
+[
+    '/app/floors/Floor2/config/default.json',
+    '/app/floors/Floor2/config/foo/bar.json',
+    '/app/floors/Floor2/config/production.json',
+    '/app/floors/Floor1/config/debug.json'
+]
+*/
+```
+
 Of course, the URI can reflect a desired sub directory :
 
 ```

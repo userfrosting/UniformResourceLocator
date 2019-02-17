@@ -366,16 +366,27 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @param  string                   $uri Input URI to be searched (can be a uri/path ONLY)
      * @param  bool                     $all If true, all resources will be returned, not only topmost ones
+     * @param  bool                     $sort Set to true to sort results alphabetically by absolute path. Set to false to sort by absolute priority, higest location first. Default to true.
      * @return array[ResourceInterface] The ressources list
      */
-    public function listResources($uri, $all = false)
+    public function listResources($uri, $all = false, $sort = true)
     {
         $list = [];
+
+        // Get all directory where we can find this ressource. Will be returned with the priority order
         $directories = $this->getResources($uri);
-        $directories = array_reverse($directories);
 
         foreach ($directories as $directory) {
+
+            // Use Filesystem to list all file in the directory
             $files = $this->filesystem->allFiles($directory->getAbsolutePath());
+
+            // Sort files. Filesystem can return inconsistant order sometime
+            // Files will be sorted alphabetically inside a location even if don't resort later across all sprinkles
+            $files = array_sort($files, function ($resource) {
+                return $resource->getRealPath();
+            });
+
             foreach ($files as $file) {
 
                 // Calculate the relative path
@@ -388,18 +399,24 @@ class ResourceLocator implements ResourceLocatorInterface
                 $resource = new Resource($directory->getStream(), $directory->getLocation(), $relPath, $basePath);
 
                 if ($all) {
+                    // Add all files to the list
                     $list[] = $resource;
                 } else {
-                    $list[$resource->getUri()] = $resource;
+                    // Add file to the list it it's not already there from an higher priority location
+                    if (!isset($list[$resource->getUri()])) {
+                        $list[$resource->getUri()] = $resource;
+                    }
                 }
             }
         }
 
-        // Sort files. Filesystem can return inconsistant order sometime
-        // Without sorting, the order of the resources would be by locations
-        $list = array_sort($list, function ($resource) {
-            return $resource->getAbsolutePath();
-        });
+        // Apply global sorting if required. This will return all resources sorted
+        // alphabetically instead of by priority
+        if ($sort) {
+            $list = array_sort($list, function ($resource) {
+                return $resource->getAbsolutePath();
+            });
+        }
 
         return array_values($list);
     }

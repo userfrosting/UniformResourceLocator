@@ -18,18 +18,18 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
 use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
- * Tests for ResourceLocator
+ * Tests for ResourceLocator.
  */
 class BuildingLocatorTest extends TestCase
 {
     /** @var string $basePath */
-    protected $basePath = __DIR__ . '/Building/';
+    protected $basePath = __DIR__.'/Building/';
 
     /** @var ResourceLocatorInterface */
     protected static $locator;
 
     /**
-     * Setup shared locator for resources tests
+     * Setup shared locator for resources tests.
      *
      * This will setup the following streams:
      *      cars://     -> A Shared stream, loading from Building/Garage/cars, not subject to locations
@@ -81,7 +81,7 @@ class BuildingLocatorTest extends TestCase
         // Floor2 simulate an absolute path for that location. Note it won't make any sense (and fail) if both
         // the location and the stream uses absolute paths
         self::$locator->registerLocation('Floor1', 'Floors/Floor/');
-        self::$locator->registerLocation('Floor2', $this->getBasePath() . 'Floors/Floor2/');
+        self::$locator->registerLocation('Floor2', $this->getBasePath().'Floors/Floor2/');
         self::$locator->registerLocation('Floor3', 'Floors/Floor3');
 
         // Register the streams
@@ -89,12 +89,13 @@ class BuildingLocatorTest extends TestCase
         self::$locator->registerStream('files', 'data', 'upload/data/files', true);            // Search path -> Building/upload/data/files/ (Stream with prefix + shared)
         self::$locator->registerStream('conf', '', 'config');                                  // Search path -> Building/Floors/{floorX}/config (stream where scheme != path)
         self::$locator->registerStream('cars', '', 'Garage/cars/', true);                      // Search path -> Building/Garage/cars (Stream shared, no prefix)
-        self::$locator->registerStream('absCars', '', $this->getBasePath() . 'Garage/cars/', true); // Search path -> Building/Garage/cars (Stream shared, no prefix, using absolute path)
+        self::$locator->registerStream('absCars', '', $this->getBasePath().'Garage/cars/', true); // Search path -> Building/Garage/cars (Stream shared, no prefix, using absolute path)
     }
 
     /**
      * @dataProvider resourceProvider
      * @dataProvider sharedResourceProvider
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -106,13 +107,14 @@ class BuildingLocatorTest extends TestCase
         $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, false]);
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resource->getAbsolutePath());
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resource->getAbsolutePath());
     }
 
     /**
      * @dataProvider resourceProvider
      * @dataProvider sharedResourceProvider
      * @depends testFind
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -131,6 +133,7 @@ class BuildingLocatorTest extends TestCase
      * @dataProvider resourceProvider
      * @dataProvider sharedResourceProvider
      * @depends testFind
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -143,13 +146,14 @@ class BuildingLocatorTest extends TestCase
         $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, true]);
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
-        $this->assertEquals($this->getBasePath() . $expectedAllPaths[0], $resource->getAbsolutePath());
+        $this->assertEquals($this->getBasePath().$expectedAllPaths[0], $resource->getAbsolutePath());
     }
 
     /**
      * @dataProvider resourceProvider
      * @dataProvider sharedResourceProvider
      * @depends testFind
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -192,6 +196,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider sharedResourceProvider
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -200,11 +205,11 @@ class BuildingLocatorTest extends TestCase
     public function testGetResourceForSharedStream($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
-        $uri = $scheme . '://' . $file;
+        $uri = $scheme.'://'.$file;
 
         $resource = $locator->getResource($uri);
         $this->assertInstanceOf(ResourceInterface::class, $resource);
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resource);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resource);
         $this->assertEquals($expectedPaths[0], $resource->getPath());
         $this->assertNull($resource->getLocation());
         $this->assertEquals($uri, $resource->getUri());
@@ -226,6 +231,7 @@ class BuildingLocatorTest extends TestCase
     /**
      * @dataProvider sharedResourceProvider
      * @depends testGetResourceForSharedStream
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -234,13 +240,13 @@ class BuildingLocatorTest extends TestCase
     public function testGetResourcesForSharedStream($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
-        $uri = $scheme . '://' . $file;
+        $uri = $scheme.'://'.$file;
 
         $resources = $locator->getResources($uri);
         $this->assertInternalType('array', $resources);
         $this->assertCount(count($expectedPaths), $resources);
         $this->assertInstanceOf(ResourceInterface::class, $resources[0]);
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resources[0]);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resources[0]);
         $this->assertEquals($uri, $resources[0]->getUri());
     }
 
@@ -260,6 +266,7 @@ class BuildingLocatorTest extends TestCase
      * @dataProvider sharedResourceProvider
      * @depends testGetResourceForSharedStream
      * @depends testGetResourcesForSharedStream
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -268,12 +275,12 @@ class BuildingLocatorTest extends TestCase
     public function testFindResourceForSharedStream($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
-        $uri = $scheme . '://' . $file;
+        $uri = $scheme.'://'.$file;
 
         // Same tests, for `__invoke`, findResource` & `findResources`
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $locator($uri));
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $locator->findResource($uri));
-        $this->assertEquals([$this->getBasePath() . $expectedPaths[0]], $locator->findResources($uri));
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $locator($uri));
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $locator->findResource($uri));
+        $this->assertEquals([$this->getBasePath().$expectedPaths[0]], $locator->findResources($uri));
 
         // Expect same result with relative paths
         $this->assertEquals($expectedPaths[0], $locator->findResource($uri, false));
@@ -322,6 +329,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * @dataProvider resourceProvider
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -330,11 +338,11 @@ class BuildingLocatorTest extends TestCase
     public function testGetResource($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
-        $uri = $scheme . '://' . $file;
+        $uri = $scheme.'://'.$file;
 
         $resource = $locator->getResource($uri);
         $this->assertInstanceOf(ResourceInterface::class, $resource);
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resource);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resource);
         $this->assertEquals($expectedPaths[0], $resource->getPath());
         $this->assertEquals($uri, $resource->getUri());
         $this->assertInstanceOf(ResourceStreamInterface::class, $resource->getStream());
@@ -349,6 +357,7 @@ class BuildingLocatorTest extends TestCase
     /**
      * @dataProvider resourceProvider
      * @depends testGetResource
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -357,14 +366,14 @@ class BuildingLocatorTest extends TestCase
     public function testGetResources($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
-        $uri = $scheme . '://' . $file;
+        $uri = $scheme.'://'.$file;
 
         $resources = $locator->getResources($uri);
         $this->assertInternalType('array', $resources);
         $this->assertCount(count($expectedPaths), $resources);
         $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resources);
         $this->assertInstanceOf(ResourceInterface::class, $resources[0]);
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $resources[0]);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resources[0]);
         $this->assertEquals($uri, $resources[0]->getUri());
     }
 
@@ -372,6 +381,7 @@ class BuildingLocatorTest extends TestCase
      * @dataProvider resourceProvider
      * @depends testGetResource
      * @depends testGetResources
+     *
      * @param string       $scheme
      * @param string       $file
      * @param string|null  $location
@@ -380,11 +390,11 @@ class BuildingLocatorTest extends TestCase
     public function testFindResource($scheme, $file, $location, $expectedPaths)
     {
         $locator = self::$locator;
-        $uri = $scheme . '://' . $file;
+        $uri = $scheme.'://'.$file;
 
         // Same tests, for `__invoke`, findResource` & `findResources`
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $locator($uri));
-        $this->assertEquals($this->getBasePath() . $expectedPaths[0], $locator->findResource($uri));
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $locator($uri));
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $locator->findResource($uri));
         $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $locator->findResources($uri));
 
         // Expect same result with relative paths
@@ -397,7 +407,7 @@ class BuildingLocatorTest extends TestCase
         $list = self::$locator->listResources('cars://');
         $this->assertCount(1, $list);
         $this->assertEquals([
-            $this->getBasePath() . 'Garage/cars/cars.json'
+            $this->getBasePath().'Garage/cars/cars.json',
         ], array_map('strval', $list));
     }
 
@@ -409,28 +419,29 @@ class BuildingLocatorTest extends TestCase
         $list = self::$locator->listResources('cars://', true);
         $this->assertCount(1, $list);
         $this->assertEquals([
-            $this->getBasePath() . 'Garage/cars/cars.json'
+            $this->getBasePath().'Garage/cars/cars.json',
         ], array_map('strval', $list));
     }
 
     /**
      * In this test, `Floors/Floor2/files/data/foo.json` is not returned,
-     * because we don't list recursively
+     * because we don't list recursively.
      */
     public function testListResourcesForFiles()
     {
         $list = self::$locator->listResources('files://');
         $this->assertCount(4, $list);
         $this->assertEquals([
-            $this->getBasePath() . 'Floors/Floor/files/test/blah.json',
-            $this->getBasePath() . 'Floors/Floor2/files/data/foo.json',
-            $this->getBasePath() . 'Floors/Floor2/files/foo.json',
-            $this->getBasePath() . 'Floors/Floor3/files/test.json'
+            $this->getBasePath().'Floors/Floor/files/test/blah.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/foo.json',
+            $this->getBasePath().'Floors/Floor3/files/test.json',
         ], array_map('strval', $list));
     }
 
     /**
-     * List all ressources under listResources
+     * List all ressources under listResources.
+     *
      * @depends testListResourcesForFiles
      */
     public function testListResourcesForFilesWithAllArgument()
@@ -438,17 +449,18 @@ class BuildingLocatorTest extends TestCase
         $list = self::$locator->listResources('files://', true);
         $this->assertCount(6, $list);
         $this->assertEquals([
-            $this->getBasePath() . 'Floors/Floor/files/test.json',
-            $this->getBasePath() . 'Floors/Floor/files/test/blah.json',
-            $this->getBasePath() . 'Floors/Floor2/files/data/foo.json',
-            $this->getBasePath() . 'Floors/Floor2/files/foo.json',
-            $this->getBasePath() . 'Floors/Floor2/files/test.json',
-            $this->getBasePath() . 'Floors/Floor3/files/test.json',
+            $this->getBasePath().'Floors/Floor/files/test.json',
+            $this->getBasePath().'Floors/Floor/files/test/blah.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/test.json',
+            $this->getBasePath().'Floors/Floor3/files/test.json',
         ], array_map('strval', $list));
     }
 
     /**
-     * List all ressources under listResources and apply global sorting
+     * List all ressources under listResources and apply global sorting.
+     *
      * @depends testListResourcesForFilesWithAllArgument
      */
     public function testListResourcesForFilesWithAllArgumentAndSort()
@@ -456,17 +468,18 @@ class BuildingLocatorTest extends TestCase
         $list = self::$locator->listResources('files://', true, false);
         $this->assertCount(6, $list);
         $this->assertEquals([
-            $this->getBasePath() . 'Floors/Floor3/files/test.json',
-            $this->getBasePath() . 'Floors/Floor2/files/data/foo.json',
-            $this->getBasePath() . 'Floors/Floor2/files/foo.json',
-            $this->getBasePath() . 'Floors/Floor2/files/test.json',
-            $this->getBasePath() . 'Floors/Floor/files/test.json',
-            $this->getBasePath() . 'Floors/Floor/files/test/blah.json',
+            $this->getBasePath().'Floors/Floor3/files/test.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/test.json',
+            $this->getBasePath().'Floors/Floor/files/test.json',
+            $this->getBasePath().'Floors/Floor/files/test/blah.json',
         ], array_map('strval', $list));
     }
 
     /**
-     * upload file will be showed here, as we're in the data prefix
+     * upload file will be showed here, as we're in the data prefix.
+     *
      * @depends testListResourcesForFilesWithAllArgument
      */
     public function testListResourcesForDataFilesWithAllArgument()
@@ -474,13 +487,14 @@ class BuildingLocatorTest extends TestCase
         $list = self::$locator->listResources('files://data', true);
         $this->assertCount(2, $list);
         $this->assertEquals([
-            $this->getBasePath() . 'Floors/Floor2/files/data/foo.json',
-            $this->getBasePath() . 'upload/data/files/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'upload/data/files/foo.json',
         ], array_map('strval', $list));
     }
 
     /**
-     * upload will be listed first, as that stream is registered after the normal file stream
+     * upload will be listed first, as that stream is registered after the normal file stream.
+     *
      * @depends testListResourcesForDataFilesWithAllArgument
      */
     public function testListResourcesForDataFilesWithAllArgumentAndSort()
@@ -488,8 +502,8 @@ class BuildingLocatorTest extends TestCase
         $list = self::$locator->listResources('files://data', true, false);
         $this->assertCount(2, $list);
         $this->assertEquals([
-            $this->getBasePath() . 'upload/data/files/foo.json',
-            $this->getBasePath() . 'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'upload/data/files/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
         ], array_map('strval', $list));
     }
 
@@ -509,7 +523,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * Test streamWrapper setup making sure a file that don't exist doesn't
-     * return false positive
+     * return false positive.
      */
     public function testStreamWrapper()
     {
@@ -526,7 +540,8 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * Test streamWrapper setup by reading a file using it's uri
+     * Test streamWrapper setup by reading a file using it's uri.
+     *
      * @depends testStreamWrapper
      */
     public function testStreamWrapperReadFile()
@@ -546,7 +561,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * Test streamWrapper setup making sure a file that don't exist doesn't
-     * return false positive
+     * return false positive.
      */
     public function testStreamWrapperNotExist()
     {
@@ -555,7 +570,7 @@ class BuildingLocatorTest extends TestCase
 
     /**
      * DataProvider for testFind
-     * Return all files available from our test case
+     * Return all files available from our test case.
      */
     public function resourceProvider()
     {
@@ -574,7 +589,7 @@ class BuildingLocatorTest extends TestCase
 
             // #1
             ['files', 'foo.json', 'Floor2', [
-                'Floors/Floor2/files/foo.json'
+                'Floors/Floor2/files/foo.json',
             ], [
                 'Floors/Floor3/files/foo.json',
                 'Floors/Floor2/files/foo.json',
@@ -584,21 +599,21 @@ class BuildingLocatorTest extends TestCase
             // #2
             ['files', 'data/foo.json', null, [
                 'upload/data/files/foo.json',
-                'Floors/Floor2/files/data/foo.json'
+                'Floors/Floor2/files/data/foo.json',
             ], [
                 'upload/data/files/foo.json',
                 'Floors/Floor3/files/data/foo.json',
                 'Floors/Floor2/files/data/foo.json',
-                'Floors/Floor/files/data/foo.json'
+                'Floors/Floor/files/data/foo.json',
             ]],
 
             // #3
             ['files', 'test/blah.json', 'Floor1', [
-                'Floors/Floor/files/test/blah.json'
+                'Floors/Floor/files/test/blah.json',
             ], [
                 'Floors/Floor3/files/test/blah.json',
                 'Floors/Floor2/files/test/blah.json',
-                'Floors/Floor/files/test/blah.json'
+                'Floors/Floor/files/test/blah.json',
             ]],
 
             // #4
@@ -622,22 +637,22 @@ class BuildingLocatorTest extends TestCase
                 'upload/data/files',
                 'Floors/Floor3/files/data',
                 'Floors/Floor2/files/data',
-                'Floors/Floor/files/data'
+                'Floors/Floor/files/data',
             ]],
 
             // #6
             ['conf', 'test.json', 'Floor2', [
-                'Floors/Floor2/config/test.json'
+                'Floors/Floor2/config/test.json',
             ], [
                 'Floors/Floor3/config/test.json',
                 'Floors/Floor2/config/test.json',
-                'Floors/Floor/config/test.json'
+                'Floors/Floor/config/test.json',
             ]],
         ];
     }
 
     /**
-     * Data provider for shared stream tests
+     * Data provider for shared stream tests.
      */
     public function sharedResourceProvider()
     {
@@ -645,37 +660,39 @@ class BuildingLocatorTest extends TestCase
             //[$scheme, $file, $lcoation, $expectedPaths, $expectedAllPaths],
             // #0
             ['cars', 'cars.json', null, [
-                'Garage/cars/cars.json'
+                'Garage/cars/cars.json',
             ], [
-                'Garage/cars/cars.json'
+                'Garage/cars/cars.json',
             ]],
 
             // #1
             ['cars', '', null, [
-                'Garage/cars'
+                'Garage/cars',
             ], [
-                'Garage/cars'
+                'Garage/cars',
             ]],
 
             // #2
             ['absCars', 'cars.json', null, [
-                'Garage/cars/cars.json'
+                'Garage/cars/cars.json',
             ], [
-                'Garage/cars/cars.json'
+                'Garage/cars/cars.json',
             ]],
         ];
     }
 
     /**
-     * Convert an array of relative paths to absolute paths
-     * @param  array $paths relative paths
+     * Convert an array of relative paths to absolute paths.
+     *
+     * @param array $paths relative paths
+     *
      * @return array absolute paths
      */
     protected function relativeToAbsolutePaths(array $paths)
     {
         $pathsWithAbsolute = [];
         foreach ($paths as $p) {
-            $pathsWithAbsolute[] = $this->getBasePath() . $p;
+            $pathsWithAbsolute[] = $this->getBasePath().$p;
         }
 
         return $pathsWithAbsolute;
@@ -684,10 +701,11 @@ class BuildingLocatorTest extends TestCase
     /**
      * Call protected/private method of a class.
      *
-     * @param  object &$object    Instantiated object that we will run method on.
-     * @param  string $methodName Method name to call
-     * @param  array  $parameters Array of parameters to pass into method.
-     * @return mixed  Method return.
+     * @param object &$object    Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     *
+     * @return mixed Method return.
      */
     protected function invokeMethod(&$object, $methodName, array $parameters = [])
     {

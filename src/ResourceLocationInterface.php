@@ -11,7 +11,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceLocationInterface Interface
+ * ResourceLocationInterface Interface.
  *
  * @author    Louis Charette
  */

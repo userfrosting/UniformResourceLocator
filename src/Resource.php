@@ -11,7 +11,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * Resource Class
+ * Resource Class.
  *
  * Resources are used to represent a file with info regarding the stream and
  * Location used to find it. When a resource is created, we save the stream used
@@ -27,32 +27,32 @@ namespace UserFrosting\UniformResourceLocator;
 class Resource implements ResourceInterface
 {
     /**
-     * @var ResourceLocationInterface $location
+     * @var ResourceLocationInterface
      */
     protected $location;
 
     /**
-     * @var string $path Relative path to the resource, above the locator base path
+     * @var string Relative path to the resource, above the locator base path
      */
     protected $path;
 
     /**
-     * @var string $locatorBasePath Relative path to the resource, above the locator base path
+     * @var string Relative path to the resource, above the locator base path
      */
     protected $locatorBasePath;
 
     /**
-     * @var string $separator Directory separator
+     * @var string Directory separator
      */
     protected $separator = '/';
 
     /**
-     * @var ResourceStreamInterface $stream
+     * @var ResourceStreamInterface
      */
     protected $stream;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param ResourceStreamInterface        $stream          ResourceStream used to locate this resource
      * @param ResourceLocationInterface|null $location        ResourceLocation used to locate this resource
@@ -92,7 +92,7 @@ class Resource implements ResourceInterface
         // Glue parts togeter.
         $path = implode($this->getSeparator(), $parts);
 
-        return $this->stream->getScheme() . '://' . $path;
+        return $this->stream->getScheme().'://'.$path;
     }
 
     /**
@@ -120,7 +120,7 @@ class Resource implements ResourceInterface
             // We'll also need to remove the locator base path from the locator path
             // as it won't be removed by the previous attempt
             $locatorPath = preg_replace('#^'.preg_quote($this->getLocatorBasePath()).'#', '', $this->getLocation()->getPath());
-            $searchPattern = $locatorPath . $this->getSeparator() . $searchPattern;
+            $searchPattern = $locatorPath.$this->getSeparator().$searchPattern;
         }
 
         // Remove the search path from the beginning of the resource path
@@ -133,7 +133,7 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Extract the resource filename (test.txt -> test)
+     * Extract the resource filename (test.txt -> test).
      *
      * @return string
      */
@@ -143,7 +143,7 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Extract the trailing name component (test.txt -> test.txt)
+     * Extract the trailing name component (test.txt -> test.txt).
      *
      * @return string
      */
@@ -153,7 +153,7 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Extract the resource extension (test.txt -> txt)
+     * Extract the resource extension (test.txt -> txt).
      *
      * @return string
      */
@@ -175,11 +175,11 @@ class Resource implements ResourceInterface
      */
     public function getAbsolutePath()
     {
-        return $this->getLocatorBasePath() . $this->getPath();
+        return $this->getLocatorBasePath().$this->getPath();
     }
 
     /**
-     * Magic function to convert the class into the resource absolute path
+     * Magic function to convert the class into the resource absolute path.
      *
      * @return string The resource absolute path
      */

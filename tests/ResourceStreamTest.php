@@ -15,12 +15,12 @@ use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
- * Tests for ResourceLocator
+ * Tests for ResourceLocator.
  */
 class ResourceStreamTest extends TestCase
 {
     /**
-     * Test ResourceStream Class
+     * Test ResourceStream Class.
      */
     public function testResourceStream()
     {
@@ -43,7 +43,7 @@ class ResourceStreamTest extends TestCase
     }
 
     /**
-     * Now try again with the info in the constructor
+     * Now try again with the info in the constructor.
      */
     public function testResourceStream_ctor()
     {
@@ -54,7 +54,7 @@ class ResourceStreamTest extends TestCase
     }
 
     /**
-     * When no path is defined, the name should be used
+     * When no path is defined, the name should be used.
      */
     public function testResourceStream_noPath()
     {

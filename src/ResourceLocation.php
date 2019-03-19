@@ -11,7 +11,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceLocation Class
+ * ResourceLocation Class.
  *
  * The representation of a location
  *
@@ -30,12 +30,12 @@ class ResourceLocation implements ResourceLocationInterface
     protected $path;
 
     /**
-     * @var string $separator Directory separator
+     * @var string Directory separator
      */
     protected $separator = '/';
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string      $name
      * @param string|null $path

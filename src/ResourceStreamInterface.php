@@ -11,7 +11,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceStreamInterface Interface
+ * ResourceStreamInterface Interface.
  *
  * @author    Louis Charette
  */

@@ -11,14 +11,14 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * Resource Interface
+ * Resource Interface.
  *
  * @author Louis Charette
  */
 interface ResourceInterface
 {
     /**
-     * Get Resource URI
+     * Get Resource URI.
      *
      * @return string
      */
@@ -32,21 +32,21 @@ interface ResourceInterface
     public function getBasePath();
 
     /**
-     * Extract the resource filename (test.txt -> test)
+     * Extract the resource filename (test.txt -> test).
      *
      * @return string
      */
     public function getFilename();
 
     /**
-     * Extract the trailing name component (test.txt -> test.txt)
+     * Extract the trailing name component (test.txt -> test.txt).
      *
      * @return string
      */
     public function getBasename();
 
     /**
-     * Extract the resource extension (test.txt -> txt)
+     * Extract the resource extension (test.txt -> txt).
      *
      * @return string
      */

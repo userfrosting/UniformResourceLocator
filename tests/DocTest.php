@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
@@ -151,6 +152,7 @@ class DocTest extends TestCase
     protected function getBasePath()
     {
         $locator = new ResourceLocator();
+
         return $locator->normalize(__DIR__);
     }
 }

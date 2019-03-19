@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
@@ -364,8 +365,8 @@ class ResourceLocator implements ResourceLocatorInterface
      * Same as listing all file in a directory, except here all topmost
      * ressources will be returned when considering all locations
      *
-     * @param  string                   $uri Input URI to be searched (can be a uri/path ONLY)
-     * @param  bool                     $all If true, all resources will be returned, not only topmost ones
+     * @param  string                   $uri  Input URI to be searched (can be a uri/path ONLY)
+     * @param  bool                     $all  If true, all resources will be returned, not only topmost ones
      * @param  bool                     $sort Set to true to sort results alphabetically by absolute path. Set to false to sort by absolute priority, higest location first. Default to true.
      * @return array[ResourceInterface] The ressources list
      */

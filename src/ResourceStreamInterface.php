@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
@@ -10,7 +11,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceStreamInterface Interface
+ * ResourceStreamInterface Interface.
  *
  * @author    Louis Charette
  */

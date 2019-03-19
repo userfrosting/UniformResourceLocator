@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
@@ -10,7 +11,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceStream Class
+ * ResourceStream Class.
  *
  * The representation of a stream
  *
@@ -39,12 +40,12 @@ class ResourceStream implements ResourceStreamInterface
     protected $shared;
 
     /**
-     * @var string $separator Directory separator
+     * @var string Directory separator
      */
     protected $separator = '/';
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $scheme
      * @param string $prefix

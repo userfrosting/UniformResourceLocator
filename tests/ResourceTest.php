@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
@@ -17,7 +18,7 @@ use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
- * Tests for ResourceLocator
+ * Tests for ResourceLocator.
  */
 class ResourceTest extends TestCase
 {
@@ -48,7 +49,7 @@ class ResourceTest extends TestCase
      */
     public function testConstructor()
     {
-        $resource = new Resource($this->stream, $this->location, $this->streamPath . 'test.txt', 'basePath/');
+        $resource = new Resource($this->stream, $this->location, $this->streamPath.'test.txt', 'basePath/');
         $this->assertInstanceOf(ResourceInterface::class, $resource);
 
         return $resource;
@@ -56,6 +57,7 @@ class ResourceTest extends TestCase
 
     /**
      * @depends testConstructor
+     *
      * @param ResourceInterface $resource
      */
     public function testGetStreamAndGetLocation(ResourceInterface $resource)
@@ -66,6 +68,7 @@ class ResourceTest extends TestCase
 
     /**
      * @depends testConstructor
+     *
      * @param ResourceInterface $resource
      */
     public function testGetSetSeparator(ResourceInterface $resource)
@@ -77,6 +80,7 @@ class ResourceTest extends TestCase
 
     /**
      * @depends testConstructor
+     *
      * @param ResourceInterface $resource
      */
     public function testGetSetLocatorBasePath(ResourceInterface $resource)
@@ -88,6 +92,7 @@ class ResourceTest extends TestCase
 
     /**
      * @dataProvider resourcesProvider
+     *
      * @param bool   $useLocation
      * @param string $path
      * @param string $basePath
@@ -103,16 +108,16 @@ class ResourceTest extends TestCase
             $locationPath = '';
         }
 
-        $resource = new Resource($this->stream, $location, $locationPath . $this->streamPath . $path, $basePath);
+        $resource = new Resource($this->stream, $location, $locationPath.$this->streamPath.$path, $basePath);
 
         // getBasePath
         $this->assertSame($path, $resource->getBasePath());
 
         // Test `getUri` as the too are connected
-        $this->assertSame($this->streamScheme . '://' . $path, $resource->getUri());
+        $this->assertSame($this->streamScheme.'://'.$path, $resource->getUri());
 
         // Test `getAbsolutePath` and `__toString`
-        $this->assertSame($basePath . $locationPath . $this->streamPath . $path, $resource->getAbsolutePath());
+        $this->assertSame($basePath.$locationPath.$this->streamPath.$path, $resource->getAbsolutePath());
         $this->assertSame($resource->getAbsolutePath(), (string) $resource);
     }
 
@@ -138,14 +143,14 @@ class ResourceTest extends TestCase
             'foo/',                   // With out extensions
             'foo',
             'foo/foo/',
-            'foo/foo'
+            'foo/foo',
         ];
 
         $basePaths = [
             '',
             '/',
             'BasePath/',
-            '/BasePath/'
+            '/BasePath/',
         ];
 
         $data = [];
@@ -162,6 +167,7 @@ class ResourceTest extends TestCase
 
     /**
      * @dataProvider sharedResourceStreamProvider
+     *
      * @param string $path
      */
     public function testSharedResourceStream($path)
@@ -178,7 +184,7 @@ class ResourceTest extends TestCase
     }
 
     /**
-     * Data provider for testSharedResourceStream
+     * Data provider for testSharedResourceStream.
      *
      * Test different placement of slashes to make sure getUri and getBasePath
      * returns the correct path
@@ -197,6 +203,7 @@ class ResourceTest extends TestCase
 
     /**
      * @dataProvider FilesProvider
+     *
      * @param string $path
      * @param string $expectedBasename
      * @param string $expectedFilename
@@ -204,7 +211,7 @@ class ResourceTest extends TestCase
      */
     public function testFilePropertiesGetters($path, $expectedBasename, $expectedFilename, $expectedExtension)
     {
-        $resource = new Resource($this->stream, $this->location, $this->locationPath . $this->streamPath . $path);
+        $resource = new Resource($this->stream, $this->location, $this->locationPath.$this->streamPath.$path);
 
         $this->assertSame($expectedBasename, $resource->getBasename());
         $this->assertSame($expectedFilename, $resource->getFilename());

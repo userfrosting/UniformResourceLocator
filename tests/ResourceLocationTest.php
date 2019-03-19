@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
@@ -14,12 +15,12 @@ use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 
 /**
- * Tests for ResourceLocator
+ * Tests for ResourceLocator.
  */
 class ResourceLocationTest extends TestCase
 {
     /**
-     * Test ResourceLocation class
+     * Test ResourceLocation class.
      */
     public function testResourceLocation()
     {
@@ -38,7 +39,7 @@ class ResourceLocationTest extends TestCase
     }
 
     /**
-     * Now try again with the info in the constructor
+     * Now try again with the info in the constructor.
      */
     public function testResourceLocation_ctor()
     {

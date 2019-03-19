@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
@@ -10,18 +11,18 @@
 namespace UserFrosting\UniformResourceLocator\Tests;
 
 /**
- * Tests for ResourceLocator
+ * Tests for ResourceLocator.
  */
 class BuildingLocatorWithBasePathTest extends BuildingLocatorTest
 {
     /** @var string $basePath */
-    protected $basePath = __DIR__ . '/Building';
+    protected $basePath = __DIR__.'/Building';
 
     /**
      * @return string
      */
     protected function getBasePath()
     {
-        return self::$locator->normalize($this->basePath) . '/';
+        return self::$locator->normalize($this->basePath).'/';
     }
 }

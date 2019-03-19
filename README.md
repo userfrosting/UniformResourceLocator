@@ -2,11 +2,31 @@
 
 [![Latest Version](https://img.shields.io/github/release/userfrosting/UniformResourceLocator.svg)](https://github.com/userfrosting/UniformResourceLocator/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Build Status](https://travis-ci.org/userfrosting/UniformResourceLocator.svg?branch=master)](https://travis-ci.org/userfrosting/UniformResourceLocator)
-[![Windows Build](https://ci.appveyor.com/api/projects/status/cu1hfuar357788u1?svg=true)](https://ci.appveyor.com/project/userfrosting/uniformresourcelocator)
-[![codecov](https://codecov.io/gh/userfrosting/UniformResourceLocator/branch/master/graph/badge.svg)](https://codecov.io/gh/userfrosting/UniformResourceLocator)
 [![Join the chat at https://chat.userfrosting.com/channel/support](https://demo.rocket.chat/images/join-chat.svg)](https://chat.userfrosting.com/channel/support)
 [![Donate](https://img.shields.io/badge/Open%20Collective-Donate-blue.svg)](https://opencollective.com/userfrosting#backer)
+
+| Branch | Build | Windows Build | Coverage | Style |
+| ------ |:-----:|:-------------:|:--------:|:-----:|
+| [master][UniformResourceLocator] | [![][URI-master-build]][URI-travis] | [![][URI-appveyor-master]][URI-appveyor] | [![][URI-master-codecov]][URI-codecov] | [![][URI-style-master]][URI-style] |
+| [develop][URI-develop] | [![][URI-develop-build]][URI-travis] | [![][URI-appveyor-master]][URI-appveyor] | [![][URI-develop-codecov]][URI-codecov] | [![][URI-style-develop]][URI-style] |
+
+<!-- Links -->
+[UniformResourceLocator]: https://github.com/userfrosting/uniformresourcelocator
+[URI-develop]: https://github.com/userfrosting/uniformresourcelocator/tree/develop
+[URI-version]: https://img.shields.io/github/release/userfrosting/UniformResourceLocator.svg
+[URI-master-build]: https://travis-ci.org/userfrosting/UniformResourceLocator.svg?branch=master
+[URI-master-codecov]: https://codecov.io/gh/userfrosting/UniformResourceLocator/branch/master/graph/badge.svg
+[URI-develop-build]: https://travis-ci.org/userfrosting/UniformResourceLocator.svg?branch=develop
+[URI-develop-codecov]: https://codecov.io/gh/userfrosting/UniformResourceLocator/branch/develop/graph/badge.svg
+[URI-releases]: https://github.com/userfrosting/UniformResourceLocator/releases
+[URI-travis]: https://travis-ci.org/userfrosting/UniformResourceLocator
+[URI-codecov]: https://codecov.io/gh/userfrosting/UniformResourceLocator
+[URI-style-master]: https://github.styleci.io/repos/128138460/shield?branch=master&style=flat
+[URI-style-develop]: https://github.styleci.io/repos/128138460/shield?branch=develop&style=flat
+[URI-style]: https://github.styleci.io/repos/128138460
+[URI-appveyor]: https://ci.appveyor.com/project/userfrosting/uniformresourcelocator
+[URI-appveyor-master]: https://ci.appveyor.com/api/projects/status/cu1hfuar357788u1/branch/master?svg=true
+[URI-appveyor-develop]: https://ci.appveyor.com/api/projects/status/cu1hfuar357788u1/branch/develop?svg=true
 
 Louis Charette 2018
 

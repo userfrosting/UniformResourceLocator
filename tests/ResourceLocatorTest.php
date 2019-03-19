@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
  *
  * @link      https://github.com/userfrosting/UniformResourceLocator
@@ -20,12 +21,12 @@ use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
- * Tests for ResourceLocator
+ * Tests for ResourceLocator.
  */
 class ResourceLocatorTest extends TestCase
 {
     /**
-     * Test instance & default values
+     * Test instance & default values.
      */
     public function testConstructor()
     {
@@ -60,9 +61,9 @@ class ResourceLocatorTest extends TestCase
      */
     public function testSetBasePathWithConstructorArgument()
     {
-        $locator = new ResourceLocator(__DIR__ . '/Building');
+        $locator = new ResourceLocator(__DIR__.'/Building');
         $path = str_replace('\\', '/', __DIR__);
-        $this->assertEquals($path . '/Building', $locator->getBasePath());
+        $this->assertEquals($path.'/Building', $locator->getBasePath());
     }
 
     /**
@@ -71,9 +72,9 @@ class ResourceLocatorTest extends TestCase
     public function testSetBasePath()
     {
         $locator = new ResourceLocator();
-        $locator->setBasePath(__DIR__ . '/Building');
+        $locator->setBasePath(__DIR__.'/Building');
         $path = str_replace('\\', '/', __DIR__);
-        $this->assertEquals($path . '/Building', $locator->getBasePath());
+        $this->assertEquals($path.'/Building', $locator->getBasePath());
     }
 
     /**
@@ -165,6 +166,7 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @dataProvider addPathProvider
+     *
      * @param string       $scheme
      * @param string       $path
      * @param string|array $lookup
@@ -181,7 +183,7 @@ class ResourceLocatorTest extends TestCase
     }
 
     /**
-     * Data provider for testAddPath
+     * Data provider for testAddPath.
      */
     public function addPathProvider()
     {
@@ -372,7 +374,7 @@ class ResourceLocatorTest extends TestCase
     }
 
     /**
-     * Data provider for testNormalize
+     * Data provider for testNormalize.
      */
     public function normalizeProvider()
     {

@@ -441,4 +441,37 @@ class ResourceLocatorTest extends TestCase
         $locator = new ResourceLocator();
         $locator->normalize('path/to/../../../file.txt', true);
     }
+
+
+    /**
+     * Verifies that a blacklist can add/set, get, and remove values
+     * @depends testAddStream
+     *
+     */
+    public function testAddGetBlacklist() {
+        $locator = new ResourceLocator();
+        $locator->addStream(new ResourceStream('foo'));
+        $locator->addStream(new ResourceStream('bar'));
+
+        $this->assertEmpty($locator->getBlacklistedExtensions('foo'));
+        $this->assertEmpty($locator->getBlacklistedExtensions('bar'));
+
+        // testing add/get
+        $locator->addBlacklistedExtension('foo', 'json');
+        $locator->addBlacklistedExtension('foo', 'csv');
+        $locator->addBlacklistedExtension('foo', 'xls');
+        $this->assertContains('json', $locator->getBlacklistedExtensions('foo'));
+        $this->assertContains('csv', $locator->getBlacklistedExtensions('foo'));
+        $this->assertContains('xls', $locator->getBlacklistedExtensions('foo'));
+        $this->assertEmpty($locator->getBlacklistedExtensions('bar'));
+
+        // testing remove/get
+        $locator->removeBlacklistedExtension('foo', 'json');
+        $locator->removeBlacklistedExtension('foo', 'csv');
+        $this->assertNotContains('json', $locator->getBlacklistedExtensions('foo'));
+        $this->assertNotContains('csv', $locator->getBlacklistedExtensions('foo'));
+        $this->assertContains('xls', $locator->getBlacklistedExtensions('foo'));
+        $this->assertEmpty($locator->getBlacklistedExtensions('bar'));
+    }
+
 }

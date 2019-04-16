@@ -156,8 +156,8 @@ class ResourceLocator implements ResourceLocatorInterface
         // quicker to check here than call array_unique() after adding
         // @todo consider setting up a Map<String, Set> of sort instead for a true set behavior
         $key = array_keys($this->blacklistedExtensions[$scheme], $extension, true);
-        if ($key) {
-            unset($this->blacklistedExtensions[$scheme][$key]);
+        if (!empty($key)) {
+            unset($this->blacklistedExtensions[$scheme][$key[0]]);
         }
     }
 

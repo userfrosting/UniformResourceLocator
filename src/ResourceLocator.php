@@ -66,6 +66,11 @@ class ResourceLocator implements ResourceLocatorInterface
     protected $reservedStreams = ['file'];
 
     /**
+     * @var string[][] a case-insensitive map of file extensions to ignore, with the key as the particular scheme and the value a set of extensions
+     */
+    protected $blacklistedExtensions = [];
+
+    /**
      * Constructor.
      *
      * @param string|null $basePath (default null)
@@ -98,7 +103,53 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Add an exisitng ResourceStream to the stream list.
+     * Gets a list of the blacklisted extensions
+     * @param string $scheme the scheme for which to limit our search
+     * @return string[] the blacklisted extensions for that scheme
+     */
+    public function getBlacklistedExtensions($scheme) {
+        return $this->blacklistedExtensions[$scheme];
+    }
+
+    /**
+     * Adds an extension to the blacklist
+     * @param string $scheme the scheme for which to apply the blacklist to
+     * @param string $extension the extension to blacklist
+     *
+     * @return void
+     */
+    public function addBlacklistedExtension($scheme, $extension) {
+        $extension =  strtolower($extension);
+
+        // quicker to check here than call array_unique() after adding
+        // @todo consider setting up a Map<String, Set> of sort instead for a true set behavior
+        if (in_array($extension, $this->blacklistedExtensions[$scheme])) {
+            return;
+        }
+
+        $this->blacklistedExtensions[$scheme][] = $extension;
+    }
+
+    /**
+     * Removes an extension from the blacklist
+     * @param string $scheme the scheme for which to apply the blacklist to
+     * @param string $extension the extension to remove from blacklist
+     *
+     * @return void
+     */
+    public function removeBlacklistedExtension($scheme, $extension) {
+        $extension =  strtolower($extension);
+
+        // quicker to check here than call array_unique() after adding
+        // @todo consider setting up a Map<String, Set> of sort instead for a true set behavior
+        $key = array_keys($this->blacklistedExtensions[$scheme], $extension, true);
+        if ($key) {
+            unset($this->blacklistedExtensions[$scheme][$key]);
+        }
+    }
+
+    /**
+     * Add an existing ResourceStream to the stream list.
      *
      * @param ResourceStreamInterface $stream
      *
@@ -115,6 +166,9 @@ class ResourceLocator implements ResourceLocatorInterface
 
         // Sort in reverse order to get longer prefixes to be matched first.
         krsort($this->streams[$stream->getScheme()]);
+
+        // create an empty array to record our blacklist for the given scheme
+        $this->blacklistedExtensions[$stream->getScheme()] = [];
 
         return $this;
     }
@@ -496,6 +550,10 @@ class ResourceLocator implements ResourceLocatorInterface
                     }
                 } elseif (($i && $part === '') || $part === '.') {
                     continue;
+
+                } elseif(in_array(strtolower(pathinfo($part, PATHINFO_EXTENSION)), $this->blacklistedExtensions[$scheme])) {
+                    // don't include any files types that are ignored
+                    continue;
                 } else {
                     $list[] = $part;
                 }
@@ -568,10 +626,10 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function findResources($uri, $absolute = true, $all = false)
     {
-        $reources = $this->getResources($uri, $all);
+        $resources = $this->getResources($uri, $all);
 
         $paths = [];
-        foreach ($reources as $resource) {
+        foreach ($resources as $resource) {
             if ($absolute) {
                 $paths[] = $resource->getAbsolutePath();
             } else {

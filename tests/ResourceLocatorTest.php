@@ -144,7 +144,7 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @depends testRegisterStream
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testAddStreamThrowExceptionOnRestrictedScheme()
     {
@@ -291,7 +291,7 @@ class ResourceLocatorTest extends TestCase
      * @depends testAddLocation
      * @expectedException \UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException
      */
-    public function testgetLocationThrowExceptionIfNotFound()
+    public function testGetLocationThrowExceptionIfNotFound()
     {
         $locator = new ResourceLocator();
         $locator->getLocation('etc');
@@ -322,7 +322,7 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('bar', '/foo');
         $locator->registerLocation('foo', '/bar');
 
-        // N.B.: Locations are list with the latest one (top prioriry) first
+        // N.B.: Locations are list with the latest one (top priority) first
         $this->assertEquals(['foo', 'bar'], $locator->listLocations());
     }
 

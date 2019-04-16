@@ -10,6 +10,7 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
+use http\Exception\InvalidArgumentException;
 use Illuminate\Filesystem\Filesystem;
 use RocketTheme\Toolbox\StreamWrapper\Stream;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
@@ -105,9 +106,13 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * Gets a list of the blacklisted extensions
      * @param string $scheme the scheme for which to limit our search
-     * @return string[] the blacklisted extensions for that scheme
+     * @return string[] the blacklisted extensions for that scheme, or an empty array if the scheme doesn't exist
      */
     public function getBlacklistedExtensions($scheme) {
+        if (!$this->schemeExists($scheme)) {
+            return [];
+        }
+
         return $this->blacklistedExtensions[$scheme];
     }
 
@@ -115,14 +120,18 @@ class ResourceLocator implements ResourceLocatorInterface
      * Adds an extension to the blacklist
      * @param string $scheme the scheme for which to apply the blacklist to
      * @param string $extension the extension to blacklist
+     * @throws \InvalidArgumentException on invalid stream
      *
      * @return void
      */
     public function addBlacklistedExtension($scheme, $extension) {
+        if (!$this->schemeExists($scheme)) {
+            throw new \InvalidArgumentException("Scheme '{$scheme}' does not exist.");
+        }
+
         $extension =  strtolower($extension);
 
         // quicker to check here than call array_unique() after adding
-        // @todo consider setting up a Map<String, Set> of sort instead for a true set behavior
         if (in_array($extension, $this->blacklistedExtensions[$scheme])) {
             return;
         }
@@ -138,6 +147,10 @@ class ResourceLocator implements ResourceLocatorInterface
      * @return void
      */
     public function removeBlacklistedExtension($scheme, $extension) {
+        if (!$this->schemeExists($scheme)) {
+            return;
+        }
+
         $extension =  strtolower($extension);
 
         // quicker to check here than call array_unique() after adding
@@ -158,7 +171,7 @@ class ResourceLocator implements ResourceLocatorInterface
     public function addStream(ResourceStreamInterface $stream)
     {
         if (in_array($stream->getScheme(), $this->reservedStreams)) {
-            throw new \InvalidArgumentException("Can't add restriced stream scheme {$stream->getScheme()}.");
+            throw new \InvalidArgumentException("Can't add restricted stream scheme {$stream->getScheme()}.");
         }
 
         $this->streams[$stream->getScheme()][$stream->getPrefix()][] = $stream;
@@ -262,6 +275,7 @@ class ResourceLocator implements ResourceLocatorInterface
         if (isset($this->streams[$scheme])) {
             $this->unsetStreamWrapper($scheme);
             unset($this->streams[$scheme]);
+            unset($this->blacklistedExtensions[$scheme]);
         }
 
         return $this;
@@ -503,6 +517,7 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         $this->streams = [];
         $this->locations = [];
+        $this->blacklistedExtensions = [];
 
         return $this;
     }
@@ -530,6 +545,7 @@ class ResourceLocator implements ResourceLocatorInterface
                 return false;
             }
         }
+
         $uri = preg_replace('|\\\|u', $this->separator, $uri);
         $segments = explode('://', $uri, 2);
         $path = array_pop($segments);
@@ -549,10 +565,6 @@ class ResourceLocator implements ResourceLocatorInterface
                         }
                     }
                 } elseif (($i && $part === '') || $part === '.') {
-                    continue;
-
-                } elseif(in_array(strtolower(pathinfo($part, PATHINFO_EXTENSION)), $this->blacklistedExtensions[$scheme])) {
-                    // don't include any files types that are ignored
                     continue;
                 } else {
                     $list[] = $part;
@@ -663,7 +675,13 @@ class ResourceLocator implements ResourceLocatorInterface
         if (!isset($this->cache[$key])) {
             try {
                 list($scheme, $file) = $this->normalize($uri, true, true);
-                $this->cache[$key] = $this->find($scheme, $file, $array, $all);
+
+                // don't include any files types that are ignored
+                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                if(!in_array($extension, $this->getBlacklistedExtensions($scheme))) {
+                    $this->cache[$key] = $this->find($scheme, $file, $array, $all);
+                }
+
             } catch (\BadMethodCallException $e) {
                 // If something couldn't be found, return false or empty array
                 $this->cache[$key] = $array ? [] : false;

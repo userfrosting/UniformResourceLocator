@@ -1,0 +1,31 @@
+name: url.userfrosting
+recipe: lamp
+config:
+  webroot: .
+  php: '7.3'
+  xdebug: true
+
+services:
+  appserver:
+    composer:
+      phpunit/phpunit: '*'
+
+    overrides:
+      environment:
+        PHP_IDE_CONFIG: "serverName=url.userfrosting.site"
+    ssl: false
+
+tooling:
+  phpunit:
+    service: appserver
+    description: "Run PHP Unit tests: lando phpunit"
+  composer:
+
+    # Run the `lando composer` command against the appserver from the services
+    # section above
+    service: appserver
+
+    # Give a nice description to describe what this does.
+    # If ommited this will default to "Run COMMAND commands" where COMMAND is
+    # composer in this case
+    description: Run composer commands

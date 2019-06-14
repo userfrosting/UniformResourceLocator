@@ -10,7 +10,7 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use Illuminate\Filesystem\Filesystem;
 use RocketTheme\Toolbox\StreamWrapper\Stream;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
@@ -120,13 +120,13 @@ class ResourceLocator implements ResourceLocatorInterface
      * Adds an extension to the blacklist
      * @param string $scheme the scheme for which to apply the blacklist to
      * @param string $extension the extension to blacklist
-     * @throws \InvalidArgumentException on invalid stream
+     * @throws InvalidArgumentException on invalid stream
      *
      * @return void
      */
     public function addBlacklistedExtension($scheme, $extension) {
         if (!$this->schemeExists($scheme)) {
-            throw new \InvalidArgumentException("Scheme '{$scheme}' does not exist.");
+            throw new InvalidArgumentException("Scheme '{$scheme}' does not exist.");
         }
 
         $extension =  strtolower($extension);
@@ -171,7 +171,7 @@ class ResourceLocator implements ResourceLocatorInterface
     public function addStream(ResourceStreamInterface $stream)
     {
         if (in_array($stream->getScheme(), $this->reservedStreams)) {
-            throw new \InvalidArgumentException("Can't add restricted stream scheme {$stream->getScheme()}.");
+            throw new InvalidArgumentException("Can't add restricted stream scheme {$stream->getScheme()}.");
         }
 
         $this->streams[$stream->getScheme()][$stream->getPrefix()][] = $stream;
@@ -723,7 +723,7 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param bool   $array  Return an array or a single path
      * @param bool   $all    Whether to return all paths even if they don't exist.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return ResourceInterface|array[ResourceInterface]
      */
@@ -731,7 +731,7 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         // Make sure stream exist
         if (!$this->schemeExists($scheme)) {
-            throw new \InvalidArgumentException("Invalid resource {$scheme}://");
+            throw new InvalidArgumentException("Invalid resource {$scheme}://");
         }
 
         // Prepare result depending on $array parameter

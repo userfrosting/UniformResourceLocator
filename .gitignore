@@ -4,4 +4,3 @@ composer.lock
 *.komodoproject
 .php_cs.cache
 _meta
-.idea

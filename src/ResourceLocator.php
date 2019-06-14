@@ -10,8 +10,8 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
-use InvalidArgumentException;
 use Illuminate\Filesystem\Filesystem;
+use InvalidArgumentException;
 use RocketTheme\Toolbox\StreamWrapper\Stream;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
@@ -104,11 +104,14 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Gets a list of the blacklisted extensions
+     * Gets a list of the blacklisted extensions.
+     *
      * @param string $scheme the scheme for which to limit our search
+     *
      * @return string[] the blacklisted extensions for that scheme, or an empty array if the scheme doesn't exist
      */
-    public function getBlacklistedExtensions($scheme) {
+    public function getBlacklistedExtensions($scheme)
+    {
         if (!$this->schemeExists($scheme)) {
             return [];
         }
@@ -117,19 +120,22 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Adds an extension to the blacklist
-     * @param string $scheme the scheme for which to apply the blacklist to
+     * Adds an extension to the blacklist.
+     *
+     * @param string $scheme    the scheme for which to apply the blacklist to
      * @param string $extension the extension to blacklist
+     *
      * @throws InvalidArgumentException on invalid stream
      *
      * @return void
      */
-    public function addBlacklistedExtension($scheme, $extension) {
+    public function addBlacklistedExtension($scheme, $extension)
+    {
         if (!$this->schemeExists($scheme)) {
             throw new InvalidArgumentException("Scheme '{$scheme}' does not exist.");
         }
 
-        $extension =  strtolower($extension);
+        $extension = strtolower($extension);
 
         // quicker to check here than call array_unique() after adding
         if (in_array($extension, $this->blacklistedExtensions[$scheme])) {
@@ -140,18 +146,20 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Removes an extension from the blacklist
-     * @param string $scheme the scheme for which to apply the blacklist to
+     * Removes an extension from the blacklist.
+     *
+     * @param string $scheme    the scheme for which to apply the blacklist to
      * @param string $extension the extension to remove from blacklist
      *
      * @return void
      */
-    public function removeBlacklistedExtension($scheme, $extension) {
+    public function removeBlacklistedExtension($scheme, $extension)
+    {
         if (!$this->schemeExists($scheme)) {
             return;
         }
 
-        $extension =  strtolower($extension);
+        $extension = strtolower($extension);
 
         // quicker to check here than call array_unique() after adding
         // @todo consider setting up a Map<String, Set> of sort instead for a true set behavior
@@ -678,10 +686,9 @@ class ResourceLocator implements ResourceLocatorInterface
 
                 // don't include any files types that are ignored
                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                if(!in_array($extension, $this->getBlacklistedExtensions($scheme))) {
+                if (!in_array($extension, $this->getBlacklistedExtensions($scheme))) {
                     $this->cache[$key] = $this->find($scheme, $file, $array, $all);
                 }
-
             } catch (\BadMethodCallException $e) {
                 // If something couldn't be found, return false or empty array
                 $this->cache[$key] = $array ? [] : false;

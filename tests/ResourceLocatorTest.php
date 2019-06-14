@@ -442,13 +442,13 @@ class ResourceLocatorTest extends TestCase
         $locator->normalize('path/to/../../../file.txt', true);
     }
 
-
     /**
-     * Verifies that a blacklist can add/set, get, and remove values
-     * @depends testAddStream
+     * Verifies that a blacklist can add/set, get, and remove values.
      *
+     * @depends testAddStream
      */
-    public function testAddGetBlacklist() {
+    public function testAddGetBlacklist()
+    {
         $locator = new ResourceLocator();
         $locator->addStream(new ResourceStream('foo'));
         $locator->addStream(new ResourceStream('bar'));
@@ -473,5 +473,4 @@ class ResourceLocatorTest extends TestCase
         $this->assertContains('xls', $locator->getBlacklistedExtensions('foo'));
         $this->assertEmpty($locator->getBlacklistedExtensions('bar'));
     }
-
 }

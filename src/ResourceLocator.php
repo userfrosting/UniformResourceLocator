@@ -11,6 +11,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 use Illuminate\Filesystem\Filesystem;
+use InvalidArgumentException;
 use RocketTheme\Toolbox\StreamWrapper\Stream;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
@@ -107,7 +108,7 @@ class ResourceLocator implements ResourceLocatorInterface
     public function addStream(ResourceStreamInterface $stream)
     {
         if (in_array($stream->getScheme(), $this->reservedStreams)) {
-            throw new \InvalidArgumentException("Can't add restriced stream scheme {$stream->getScheme()}.");
+            throw new InvalidArgumentException("Can't add restricted stream scheme {$stream->getScheme()}.");
         }
 
         $this->streams[$stream->getScheme()][$stream->getPrefix()][] = $stream;
@@ -476,6 +477,7 @@ class ResourceLocator implements ResourceLocatorInterface
                 return false;
             }
         }
+
         $uri = preg_replace('|\\\|u', $this->separator, $uri);
         $segments = explode('://', $uri, 2);
         $path = array_pop($segments);
@@ -568,10 +570,10 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function findResources($uri, $absolute = true, $all = false)
     {
-        $reources = $this->getResources($uri, $all);
+        $resources = $this->getResources($uri, $all);
 
         $paths = [];
-        foreach ($reources as $resource) {
+        foreach ($resources as $resource) {
             if ($absolute) {
                 $paths[] = $resource->getAbsolutePath();
             } else {
@@ -647,7 +649,7 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param bool   $array  Return an array or a single path
      * @param bool   $all    Whether to return all paths even if they don't exist.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return ResourceInterface|array[ResourceInterface]
      */
@@ -655,7 +657,7 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         // Make sure stream exist
         if (!$this->schemeExists($scheme)) {
-            throw new \InvalidArgumentException("Invalid resource {$scheme}://");
+            throw new InvalidArgumentException("Invalid resource {$scheme}://");
         }
 
         // Prepare result depending on $array parameter

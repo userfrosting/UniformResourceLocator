@@ -83,13 +83,9 @@ class ResourceLocation implements ResourceLocationInterface
      *
      * @return static
      */
-    public function setPath(?string $path = null): ResourceLocationInterface
+    public function setPath(string $path): ResourceLocationInterface
     {
-        if (is_null($path)) {
-            $this->path = $this->getName();
-        } else {
-            $this->path = rtrim($path, $this->separator);
-        }
+        $this->path = rtrim($path, $this->separator);
 
         return $this;
     }

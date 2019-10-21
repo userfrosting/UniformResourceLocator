@@ -39,5 +39,5 @@ interface ResourceLocationInterface
      *
      * @return static
      */
-    public function setPath(?string $path = null): self;
+    public function setPath(string $path): self;
 }

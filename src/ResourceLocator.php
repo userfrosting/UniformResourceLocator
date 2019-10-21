@@ -591,13 +591,8 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return ResourceInterface[]|ResourceInterface|false The ressource path or an array of all the ressources path or false if not resource can be found
      */
-    protected function findCached($uri, $array, $all)
+    protected function findCached(string $uri, bool $array, bool $all)
     {
-        // Validate arguments until php7 comes around
-        if (!is_string($uri)) {
-            throw new \BadMethodCallException('Invalid parameter $uri.');
-        }
-
         // Local caching: make sure that the function gets only called at once for each file.
         // We create a key based on the submitted arguments
         $key = $uri.'@'.(int) $array.(int) $all;
@@ -731,13 +726,7 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function setBasePath(string $basePath)
     {
-        $path = $this->normalize($basePath);
-
-        if (!is_string($path)) {
-            throw new \BadMethodCallException("Path $basePath doesn't normalize to a string.");
-        }
-
-        $this->basePath = $path;
+        $this->basePath = $this->normalize($basePath);
 
         return $this;
     }

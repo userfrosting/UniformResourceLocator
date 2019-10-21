@@ -22,77 +22,84 @@ interface ResourceInterface
      *
      * @return string
      */
-    public function getUri();
+    public function getUri(): string;
 
     /**
      * Get the resource base path, aka the path that comes after the `://`.
      *
      * @return string
      */
-    public function getBasePath();
+    public function getBasePath(): string;
 
     /**
      * Extract the resource filename (test.txt -> test).
      *
      * @return string
      */
-    public function getFilename();
+    public function getFilename(): string;
 
     /**
      * Extract the trailing name component (test.txt -> test.txt).
      *
      * @return string
      */
-    public function getBasename();
+    public function getBasename(): string;
 
     /**
      * Extract the resource extension (test.txt -> txt).
      *
      * @return string
      */
-    public function getExtension();
+    public function getExtension(): string;
 
     /**
-     * @return ResourceLocationInterface
+     * @return ResourceLocationInterface|null
      */
-    public function getLocation();
+    public function getLocation(): ?ResourceLocationInterface;
 
     /**
-     * @return string
+     * Magic function to convert the class into the resource absolute path.
+     *
+     * @return string The resource absolute path
      */
-    public function getAbsolutePath();
-
-    /**
-     * @return string
-     */
-    public function getPath();
+    public function __toString(): string;
 
     /**
      * @return string
      */
-    public function getLocatorBasePath();
+    public function getAbsolutePath(): string;
+
+    /**
+     * @return string
+     */
+    public function getPath(): string;
+
+    /**
+     * @return string
+     */
+    public function getLocatorBasePath(): string;
 
     /**
      * @param string $locatorBasePath
      *
      * @return static
      */
-    public function setLocatorBasePath($locatorBasePath);
+    public function setLocatorBasePath($locatorBasePath): self;
 
     /**
      * @return string
      */
-    public function getSeparator();
+    public function getSeparator(): string;
 
     /**
      * @param string $separator
      *
      * @return static
      */
-    public function setSeparator($separator);
+    public function setSeparator($separator): self;
 
     /**
-     * @return ResourceStream
+     * @return ResourceStreamInterface
      */
-    public function getStream();
+    public function getStream(): ResourceStreamInterface;
 }

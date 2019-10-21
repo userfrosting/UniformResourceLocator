@@ -27,12 +27,12 @@ use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
 class ResourceLocator implements ResourceLocatorInterface
 {
     /**
-     * @var array The list of registered streams
+     * @var array[][string]ResourceStreamInterface The list of registered streams
      */
     protected $streams = [];
 
     /**
-     * @var array The list of registered locations
+     * @var array[string]ResourceLocatorInterface The list of registered locations
      */
     protected $locations = [];
 
@@ -62,16 +62,16 @@ class ResourceLocator implements ResourceLocatorInterface
     protected $streamBuilder;
 
     /**
-     * @var array List of system reserved streams
+     * @var string[] List of system reserved streams
      */
     protected $reservedStreams = ['file'];
 
     /**
      * Constructor.
      *
-     * @param string|null $basePath (default null)
+     * @param string $basePath (default '')
      */
-    public function __construct($basePath = '')
+    public function __construct(string $basePath = '')
     {
         // Set base path
         $this->setBasePath($basePath);
@@ -125,7 +125,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @param string $scheme The stream scheme
      */
-    protected function setupStreamWrapper($scheme)
+    protected function setupStreamWrapper(string $scheme)
     {
         // Make sure stream does not already exist
         if ($this->streamBuilder->isStream($scheme)) {
@@ -144,7 +144,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @param string $scheme The stream scheme
      */
-    protected function unsetStreamWrapper($scheme)
+    protected function unsetStreamWrapper(string $scheme)
     {
         $this->streamBuilder->remove($scheme);
 
@@ -163,7 +163,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function registerStream($scheme, $prefix = '', $paths = null, $shared = false)
+    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false)
     {
         if (is_null($paths)) {
             $stream = new ResourceStream($scheme, $prefix, null, $shared);
@@ -192,7 +192,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @deprecated
      */
-    public function addPath($scheme, $prefix, $paths, $override = false, $force = false)
+    public function addPath(string $scheme, string $prefix, $paths, $override = false, bool $force = false): void
     {
         $this->registerStream($scheme, $prefix, $paths);
     }
@@ -204,7 +204,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function removeStream($scheme)
+    public function removeStream(string $scheme)
     {
         if (isset($this->streams[$scheme])) {
             $this->unsetStreamWrapper($scheme);
@@ -215,13 +215,9 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * @param string $scheme The stream scheme
-     *
-     * @throws StreamNotFoundException If stream is not registered
-     *
-     * @return ResourceStreamInterface
+     * {@inheritdoc}
      */
-    public function getStream($scheme)
+    public function getStream(string $scheme): array
     {
         if ($this->schemeExists($scheme)) {
             return $this->streams[$scheme];
@@ -231,9 +227,9 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * @return array[ResourceStreamInterface]
+     * {@inheritdoc}
      */
-    public function getStreams()
+    public function getStreams(): array
     {
         return $this->streams;
     }
@@ -241,9 +237,9 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * Return a list of all the stream scheme registered.
      *
-     * @return array[string] An array of registered scheme => location
+     * @return string[] An array of registered scheme => location
      */
-    public function listStreams()
+    public function listStreams(): array
     {
         return array_keys($this->streams);
     }
@@ -255,7 +251,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return bool
      */
-    public function schemeExists($scheme)
+    public function schemeExists(string $scheme): bool
     {
         return isset($this->streams[$scheme]);
     }
@@ -264,6 +260,8 @@ class ResourceLocator implements ResourceLocatorInterface
      * Add an existing RessourceLocation instance to the location list.
      *
      * @param ResourceLocationInterface $location
+     *
+     * @return static
      */
     public function addLocation(ResourceLocationInterface $location)
     {
@@ -280,7 +278,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function registerLocation($name, $path = null)
+    public function registerLocation(string $name, ?string $path = null)
     {
         $location = new ResourceLocation($name, $path);
         $this->addLocation($location);
@@ -295,7 +293,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function removeLocation($name)
+    public function removeLocation(string $name)
     {
         unset($this->locations[$name]);
 
@@ -311,7 +309,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return ResourceLocationInterface
      */
-    public function getLocation($name)
+    public function getLocation(string $name): ResourceLocationInterface
     {
         if ($this->locationExist($name)) {
             return $this->locations[$name];
@@ -323,9 +321,9 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * Get a a list of all registered locations.
      *
-     * @return array[ResourceLocationInterface]
+     * @return ResourceLocationInterface[]
      */
-    public function getLocations()
+    public function getLocations(): array
     {
         return array_reverse($this->locations);
     }
@@ -333,9 +331,9 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * Return a list of all the locations registered by name.
      *
-     * @return array[string] An array of registered name => location
+     * @return string[] An array of registered name => location
      */
-    public function listLocations()
+    public function listLocations(): array
     {
         return array_keys(array_reverse($this->locations));
     }
@@ -347,7 +345,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return bool
      */
-    public function locationExist($name)
+    public function locationExist(string $name): bool
     {
         return isset($this->locations[$name]);
     }
@@ -358,9 +356,9 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param string $uri   Input URI to be searched (can be a file/path)
      * @param bool   $first Whether to return first path even if it doesn't exist.
      *
-     * @return ResourceInterface
+     * @return ResourceInterface|bool Returns false if resource is not found
      */
-    public function getResource($uri, $first = false)
+    public function getResource(string $uri, bool $first = false)
     {
         return $this->findCached($uri, false, $first);
     }
@@ -371,9 +369,9 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param string $uri Input URI to be searched (can be a file/path)
      * @param bool   $all Whether to return all paths even if they don't exist.
      *
-     * @return array[ResourceInterface] Array of Resource
+     * @return ResourceInterface[] Array of Resources
      */
-    public function getResources($uri, $all = false)
+    public function getResources(string $uri, bool $all = false): array
     {
         return $this->findCached($uri, true, $all);
     }
@@ -387,9 +385,9 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param bool   $all  If true, all resources will be returned, not only topmost ones
      * @param bool   $sort Set to true to sort results alphabetically by absolute path. Set to false to sort by absolute priority, higest location first. Default to true.
      *
-     * @return array[ResourceInterface] The ressources list
+     * @return ResourceInterface[] The ressources list
      */
-    public function listResources($uri, $all = false, $sort = true)
+    public function listResources(string $uri, bool $all = false, bool $sort = true): array
     {
         $list = [];
 
@@ -472,7 +470,7 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         if (!is_string($uri)) {
             if ($throwException) {
-                throw new \BadMethodCallException('Invalid parameter $uri.');
+                throw new \BadMethodCallException("Invalid parameter $uri.");
             } else {
                 return false;
             }
@@ -518,7 +516,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return bool True if is resolvable
      */
-    public function isStream($uri)
+    public function isStream($uri): bool
     {
         try {
             list($scheme) = $this->normalize($uri, true, true);
@@ -540,13 +538,13 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @throws \BadMethodCallException
      *
-     * @return string The ressource path
+     * @return string|bool The ressource path, or false if not found resource
      */
     public function findResource($uri, $absolute = true, $first = false)
     {
         $resource = $this->getResource($uri, $first);
 
-        if (!$resource) {
+        if (!$resource instanceof ResourceInterface) {
             return false;
         }
 
@@ -591,15 +589,10 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param bool   $array Return an array or a single path
      * @param bool   $all   Whether to return all paths even if they don't exist.
      *
-     * @return array[ResourceInterface]|ResourceInterface The ressource path or an array of all the ressources path
+     * @return ResourceInterface[]|ResourceInterface|false The ressource path or an array of all the ressources path or false if not resource can be found
      */
-    protected function findCached($uri, $array, $all)
+    protected function findCached(string $uri, bool $array, bool $all)
     {
-        // Validate arguments until php7 comes around
-        if (!is_string($uri)) {
-            throw new \BadMethodCallException('Invalid parameter $uri.');
-        }
-
         // Local caching: make sure that the function gets only called at once for each file.
         // We create a key based on the submitted arguments
         $key = $uri.'@'.(int) $array.(int) $all;
@@ -623,9 +616,9 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @param ResourceStreamInterface $stream The stream to search for
      *
-     * @return array[ResourceLocationInterface] The search paths based on this stream and all available locations
+     * @return array[string]ResourceLocationInterface The search paths based on this stream and all available locations
      */
-    protected function searchPaths(ResourceStreamInterface $stream)
+    protected function searchPaths(ResourceStreamInterface $stream): array
     {
         // Stream is shared. We return it's value
         if ($stream->isShared()) {
@@ -651,9 +644,9 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @throws InvalidArgumentException
      *
-     * @return ResourceInterface|array[ResourceInterface]
+     * @return ResourceInterface|ResourceInterface[]
      */
-    protected function find($scheme, $file, $array, $all)
+    protected function find(string $scheme, string $file, bool $array, bool $all)
     {
         // Make sure stream exist
         if (!$this->schemeExists($scheme)) {
@@ -727,11 +720,11 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * @param string|null $basePath
+     * @param string $basePath
      *
      * @return static
      */
-    public function setBasePath($basePath)
+    public function setBasePath(string $basePath)
     {
         $this->basePath = $this->normalize($basePath);
 

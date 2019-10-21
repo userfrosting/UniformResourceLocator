@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [4.3.1]
 - Added `__tostring` to ResourceInterface
-- Misc code quality fix 
+- Added `__invoke` to ResourceLocatorInterface 
+- `ResourceLocationInterface::setPath` don't accept a `null` value anymore (produced an error anyway)
+- Added proper PHP7 type hints
+- Misc code quality and docblock fix 
 
 ## [4.3.0]
 - Dropping support for PHP 5.6 & 7.0
@@ -43,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Security
 -->
 
+[4.3.1]: https://github.com/userfrosting/uniformresourcelocator/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/userfrosting/uniformresourcelocator/compare/4.2.3...4.3.0
 [4.2.3]: https://github.com/userfrosting/uniformresourcelocator/compare/4.2.2...4.2.3
 [4.2.2]: https://github.com/userfrosting/uniformresourcelocator/compare/4.2.1...4.2.2

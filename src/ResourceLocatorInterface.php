@@ -60,7 +60,6 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      * Return information about a specfic stream.
      * Return value is an array of ResourceStreamInterface, for each prefix
      * For example :
-     *
      *   $array = array(
      *      ''       => ResourceStreamInterface,
      *      'prefix' => ResourceStreamInterface
@@ -78,7 +77,6 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      * Return information about a all registered stream.
      * Return value is an array of array of ResourceStreamInterface, for each prefix
      * For example :
-     *
      *   'bar' => array(
      *      ''       => ResourceStreamInterface,
      *      'prefix' => ResourceStreamInterface

@@ -84,7 +84,7 @@ interface ResourceInterface
      *
      * @return static
      */
-    public function setLocatorBasePath($locatorBasePath): ResourceInterface;
+    public function setLocatorBasePath($locatorBasePath): self;
 
     /**
      * @return string
@@ -96,7 +96,7 @@ interface ResourceInterface
      *
      * @return static
      */
-    public function setSeparator($separator): ResourceInterface;
+    public function setSeparator($separator): self;
 
     /**
      * @return ResourceStreamInterface

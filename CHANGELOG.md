@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [4.3.1]
 - Added `__tostring` to ResourceInterface
+- Misc code quality fix 
 
 ## [4.3.0]
 - Dropping support for PHP 5.6 & 7.0

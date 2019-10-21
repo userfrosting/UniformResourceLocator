@@ -187,7 +187,7 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * @expectedException \BadMethodCallException
+     * @expectedException \InvalidArgumentException
      */
     public function testGetResourceThrowExceptionOnInvalidParameterUri()
     {
@@ -288,7 +288,7 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * @expectedException \BadMethodCallException
+     * @expectedException \InvalidArgumentException
      */
     public function testFindResourceThrowExceptionOnBadUri()
     {
@@ -296,7 +296,7 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * @expectedException \BadMethodCallException
+     * @expectedException \InvalidArgumentException
      */
     public function testFindResourcesThrowExceptionOnBadUri()
     {
@@ -304,7 +304,7 @@ class BuildingLocatorTest extends TestCase
     }
 
     /**
-     * @expectedException \BadMethodCallException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvokeThrowExceptionOnBadUri()
     {

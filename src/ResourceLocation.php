@@ -40,7 +40,7 @@ class ResourceLocation implements ResourceLocationInterface
      * @param string      $name
      * @param string|null $path
      */
-    public function __construct($name, $path = null)
+    public function __construct(string $name, ?string $path = null)
     {
         if (is_null($path)) {
             $path = $name;
@@ -53,7 +53,7 @@ class ResourceLocation implements ResourceLocationInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -63,7 +63,7 @@ class ResourceLocation implements ResourceLocationInterface
      *
      * @return static
      */
-    public function setName($name)
+    public function setName(string $name): ResourceLocationInterface
     {
         $this->name = $name;
 
@@ -73,7 +73,7 @@ class ResourceLocation implements ResourceLocationInterface
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -83,9 +83,13 @@ class ResourceLocation implements ResourceLocationInterface
      *
      * @return static
      */
-    public function setPath($path = null)
+    public function setPath(?string $path = null): ResourceLocationInterface
     {
-        $this->path = rtrim($path, $this->separator);
+        if (is_null($path)) {
+            $this->path = $this->getName();
+        } else {
+            $this->path = rtrim($path, $this->separator);
+        }
 
         return $this;
     }

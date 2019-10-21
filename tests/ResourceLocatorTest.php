@@ -117,6 +117,26 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterStream
      */
+    public function testRegisterStreamWithPrefix()
+    {
+        $locator = new ResourceLocator();
+        $this->assertFalse($locator->schemeExists('bar'));
+
+        $locator->registerStream('bar', '', 'foo');
+        $locator->registerStream('bar', 'prefix', 'oof');
+
+        $this->assertTrue($locator->schemeExists('bar'));
+
+        $barStream = $locator->getStream('bar');
+        $this->assertInternalType('array', $barStream);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream['prefix'][0]);
+        $this->assertEquals('foo', $barStream[''][0]->getPath());
+        $this->assertEquals('oof', $barStream['prefix'][0]->getPath());
+    }
+
+    /**
+     * @depends testRegisterStream
+     */
     public function testRegisterStreamWithOutPath()
     {
         $locator = new ResourceLocator();

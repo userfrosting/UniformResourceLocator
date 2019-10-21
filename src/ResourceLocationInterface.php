@@ -20,24 +20,24 @@ interface ResourceLocationInterface
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @param string $name
      *
      * @return static
      */
-    public function setName($name);
+    public function setName(string $name): ResourceLocationInterface;
 
     /**
      * @return string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * @param string $path
      *
      * @return static
      */
-    public function setPath($path = null);
+    public function setPath(?string $path = null): ResourceLocationInterface;
 }

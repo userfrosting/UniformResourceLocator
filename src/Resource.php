@@ -27,7 +27,7 @@ namespace UserFrosting\UniformResourceLocator;
 class Resource implements ResourceInterface
 {
     /**
-     * @var ResourceLocationInterface
+     * @var ResourceLocationInterface|null
      */
     protected $location;
 
@@ -59,7 +59,7 @@ class Resource implements ResourceInterface
      * @param string                         $path            Resource path, relative to the locator base path, and containing the stream and location path
      * @param string                         $locatorBasePath Locator base Path (default to '')
      */
-    public function __construct(ResourceStreamInterface $stream, ResourceLocationInterface $location = null, $path, $locatorBasePath = '')
+    public function __construct(ResourceStreamInterface $stream, ResourceLocationInterface $location = null, string $path, string $locatorBasePath = '')
     {
         $this->stream = $stream;
         $this->location = $location;
@@ -74,7 +74,7 @@ class Resource implements ResourceInterface
      *
      * @return string
      */
-    public function getUri()
+    public function getUri(): string
     {
         // Using parts so the separator is added only if both parts are not empty
         $parts = [];
@@ -109,7 +109,7 @@ class Resource implements ResourceInterface
      *
      * @return string
      */
-    public function getBasePath()
+    public function getBasePath(): string
     {
         // Start with the stream relative path as a search path.
         $searchPattern = preg_replace('#^'.preg_quote($this->getLocatorBasePath()).'#', '', $this->stream->getPath());
@@ -137,7 +137,7 @@ class Resource implements ResourceInterface
      *
      * @return string
      */
-    public function getFilename()
+    public function getFilename(): string
     {
         return pathinfo($this->getPath(), PATHINFO_FILENAME);
     }
@@ -147,7 +147,7 @@ class Resource implements ResourceInterface
      *
      * @return string
      */
-    public function getBasename()
+    public function getBasename(): string
     {
         return pathinfo($this->getPath(), PATHINFO_BASENAME);
     }
@@ -157,15 +157,15 @@ class Resource implements ResourceInterface
      *
      * @return string
      */
-    public function getExtension()
+    public function getExtension(): string
     {
         return pathinfo($this->getPath(), PATHINFO_EXTENSION);
     }
 
     /**
-     * @return ResourceLocationInterface
+     * @return ResourceLocationInterface|null
      */
-    public function getLocation()
+    public function getLocation(): ?ResourceLocationInterface
     {
         return $this->location;
     }
@@ -173,7 +173,7 @@ class Resource implements ResourceInterface
     /**
      * @return string
      */
-    public function getAbsolutePath()
+    public function getAbsolutePath(): string
     {
         return $this->getLocatorBasePath().$this->getPath();
     }
@@ -183,7 +183,7 @@ class Resource implements ResourceInterface
      *
      * @return string The resource absolute path
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getAbsolutePath();
     }
@@ -191,7 +191,7 @@ class Resource implements ResourceInterface
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -199,7 +199,7 @@ class Resource implements ResourceInterface
     /**
      * @return string
      */
-    public function getLocatorBasePath()
+    public function getLocatorBasePath(): string
     {
         return $this->locatorBasePath;
     }
@@ -209,7 +209,7 @@ class Resource implements ResourceInterface
      *
      * @return static
      */
-    public function setLocatorBasePath($locatorBasePath)
+    public function setLocatorBasePath($locatorBasePath): ResourceInterface
     {
         $this->locatorBasePath = $locatorBasePath;
 
@@ -219,7 +219,7 @@ class Resource implements ResourceInterface
     /**
      * @return string
      */
-    public function getSeparator()
+    public function getSeparator(): string
     {
         return $this->separator;
     }
@@ -229,7 +229,7 @@ class Resource implements ResourceInterface
      *
      * @return static
      */
-    public function setSeparator($separator)
+    public function setSeparator($separator): ResourceInterface
     {
         $this->separator = $separator;
 
@@ -239,7 +239,7 @@ class Resource implements ResourceInterface
     /**
      * @return ResourceStreamInterface
      */
-    public function getStream()
+    public function getStream(): ResourceStreamInterface
     {
         return $this->stream;
     }

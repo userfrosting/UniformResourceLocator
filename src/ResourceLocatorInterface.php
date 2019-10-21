@@ -63,7 +63,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *   $array = array(
      *      ''       => ResourceStreamInterface,
      *      'prefix' => ResourceStreamInterface
-     *   );
+     *   );.
      *
      * @param string $scheme The stream scheme
      *
@@ -84,7 +84,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *   'foo' => array(
      *      ''       => ResourceStreamInterface,
      *      'blah'   => ResourceStreamInterface
-     *   );
+     *   );.
      *
      * @return array[][string]ResourceStreamInterface
      */

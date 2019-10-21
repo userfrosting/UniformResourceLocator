@@ -58,6 +58,13 @@ interface ResourceInterface
     public function getLocation();
 
     /**
+     * Magic function to convert the class into the resource absolute path.
+     *
+     * @return string The resource absolute path
+     */
+    public function __toString(): string;
+
+    /**
      * @return string
      */
     public function getAbsolutePath();

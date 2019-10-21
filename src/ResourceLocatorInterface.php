@@ -22,6 +22,15 @@ use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
 interface ResourceLocatorInterface extends BaseResourceLocatorInterface
 {
     /**
+     * @param string $uri
+     *
+     * @throws \BadMethodCallException
+     *
+     * @return string|bool
+     */
+    public function __invoke($uri);
+
+    /**
      * Add an exisitng ResourceStream to the stream list.
      *
      * @param ResourceStreamInterface $stream

@@ -182,6 +182,21 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
+     * Register a new shared stream.
+     * Shortcut for registerStream with $shared flag set to true
+     *
+     * @param string            $scheme
+     * @param string            $prefix (default '')
+     * @param string|array|null $paths  (default null). When using null path, the scheme will be used as a path
+     *
+     * @return static
+     */
+    public function registerSharedStream(string $scheme, string $prefix = '', $paths = null)
+    {
+        return $this->registerStream($scheme, $prefix, $paths, true);
+    }
+
+    /**
      * AddPath function. Used to preserve compatibility with RocketTheme/Toolbox.
      *
      * @param string       $scheme

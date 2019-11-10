@@ -89,7 +89,7 @@ class BuildingLocatorTest extends TestCase
         self::$locator->registerStream('files', 'data', 'upload/data/files', true);            // Search path -> Building/upload/data/files/ (Stream with prefix + shared)
         self::$locator->registerStream('conf', '', 'config');                                  // Search path -> Building/Floors/{floorX}/config (stream where scheme != path)
         self::$locator->registerStream('cars', '', 'Garage/cars/', true);                      // Search path -> Building/Garage/cars (Stream shared, no prefix)
-        self::$locator->registerStream('absCars', '', $this->getBasePath().'Garage/cars/', true); // Search path -> Building/Garage/cars (Stream shared, no prefix, using absolute path)
+        self::$locator->registerSharedStream('absCars', '', $this->getBasePath().'Garage/cars/'); // Search path -> Building/Garage/cars (Stream shared, no prefix, using absolute path)
     }
 
     /**

@@ -117,6 +117,44 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterStream
      */
+    public function testRegisterSharedStream()
+    {
+        $locator = new ResourceLocator();
+        $this->assertFalse($locator->schemeExists('bar'));
+
+        $locator->registerStream('bar', '', 'foo', true);
+
+        $this->assertTrue($locator->schemeExists('bar'));
+
+        $barStream = $locator->getStream('bar');
+        $this->assertInternalType('array', $barStream);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
+        $this->assertEquals('foo', $barStream[''][0]->getPath());
+        $this->assertTrue($barStream[''][0]->isShared());
+    }
+
+    /**
+     * @depends testRegisterSharedStream
+     */
+    public function testRegisterSharedStreamShort()
+    {
+        $locator = new ResourceLocator();
+        $this->assertFalse($locator->schemeExists('bar'));
+
+        $locator->registerSharedStream('bar', '', 'foo');
+
+        $this->assertTrue($locator->schemeExists('bar'));
+
+        $barStream = $locator->getStream('bar');
+        $this->assertInternalType('array', $barStream);
+        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
+        $this->assertEquals('foo', $barStream[''][0]->getPath());
+        $this->assertTrue($barStream[''][0]->isShared());
+    }
+
+    /**
+     * @depends testRegisterStream
+     */
     public function testRegisterStreamWithPrefix()
     {
         $locator = new ResourceLocator();

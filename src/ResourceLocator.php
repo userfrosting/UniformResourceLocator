@@ -183,7 +183,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * Register a new shared stream.
-     * Shortcut for registerStream with $shared flag set to true
+     * Shortcut for registerStream with $shared flag set to true.
      *
      * @param string            $scheme
      * @param string            $prefix (default '')

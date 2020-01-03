@@ -21,11 +21,12 @@ class Stream extends OriginalStream
      * Support for stream_set_option
      *  - stream_set_blocking()
      *  - stream_set_timeout()
-     *  - stream_set_write_buffer()
+     *  - stream_set_write_buffer().
      *
-     * @param  int  $option
-     * @param  int  $arg1
-     * @param  int  $arg2
+     * @param int $option
+     * @param int $arg1
+     * @param int $arg2
+     *
      * @return bool
      *
      * @see http://php.net/manual/streamwrapper.stream-set-option.php

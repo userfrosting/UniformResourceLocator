@@ -12,10 +12,10 @@ namespace UserFrosting\UniformResourceLocator;
 
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
-use RocketTheme\Toolbox\StreamWrapper\Stream;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
+use UserFrosting\UniformResourceLocator\Stream\Stream;
 
 /**
  * ResourceLocator Class.

@@ -23,8 +23,8 @@ class Stream extends OriginalStream
      *  - stream_set_timeout()
      *  - stream_set_write_buffer().
      *
-     * @param int $option
-     * @param int $arg1
+     * @param int      $option
+     * @param int      $arg1
      * @param int|null $arg2
      *
      * @return bool

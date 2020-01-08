@@ -500,8 +500,6 @@ class ResourceLocatorTest extends TestCase
         $locator->normalize('path/to/../../../file.txt', true);
     }
 
-    /**
-     */
     public function test_stream_set_option()
     {
         $locator = new ResourceLocator(__DIR__);

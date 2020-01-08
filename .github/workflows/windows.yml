@@ -2,7 +2,7 @@ name: Windows Build
 on: [push, pull_request]
 jobs:
   UniformResourceLocator:
-    name: Windows - PHP ${{ matrix.php-versions }}
+    name: PHP ${{ matrix.php-versions }}
     runs-on: windows-latest
     strategy:
       fail-fast: false

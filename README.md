@@ -26,8 +26,8 @@
 [URI-style]: https://github.styleci.io/repos/128138460
 [URI-windows-master-build]: https://github.com/userfrosting/UniformResourceLocator/actions?query=branch%3Amaster
 [URI-windows-develop-build]: https://github.com/userfrosting/UniformResourceLocator/actions?query=branch%3Adevelop
-[URI-windows-master]: https://img.shields.io/github/workflow/status/userfrosting/UniformResourceLocator/Windows&20Build
-[URI-windows-develop]: https://img.shields.io/github/workflow/status/userfrosting/UniformResourceLocator/Windows&20Build/develop
+[URI-windows-master]: https://img.shields.io/github/workflow/status/userfrosting/UniformResourceLocator/Windows%20Build
+[URI-windows-develop]: https://img.shields.io/github/workflow/status/userfrosting/UniformResourceLocator/Windows%20Build/develop
 
 Louis Charette 2018
 

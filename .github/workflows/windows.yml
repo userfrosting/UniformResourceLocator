@@ -1,4 +1,4 @@
-name: UniformResourceLocator
+name: Windows Build
 on: [push, pull_request]
 jobs:
   UniformResourceLocator:

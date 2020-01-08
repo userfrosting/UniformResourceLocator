@@ -7,8 +7,8 @@
 
 | Branch | Build | Windows Build | Coverage | Style |
 | ------ |:-----:|:-------------:|:--------:|:-----:|
-| [master][UniformResourceLocator] | [![][URI-master-build]][URI-travis] | [![][URI-appveyor-master]][URI-appveyor] | [![][URI-master-codecov]][URI-codecov] | [![][URI-style-master]][URI-style] |
-| [develop][URI-develop] | [![][URI-develop-build]][URI-travis] | [![][URI-appveyor-master]][URI-appveyor] | [![][URI-develop-codecov]][URI-codecov] | [![][URI-style-develop]][URI-style] |
+| [master][UniformResourceLocator] | [![][URI-master-build]][URI-travis] | [![][URI-windows-master]][URI-windows-master-build] | [![][URI-master-codecov]][URI-codecov] | [![][URI-style-master]][URI-style] |
+| [develop][URI-develop] | [![][URI-develop-build]][URI-travis] | [![][URI-windows-master]][URI-windows-develop-build] | [![][URI-develop-codecov]][URI-codecov] | [![][URI-style-develop]][URI-style] |
 
 <!-- Links -->
 [UniformResourceLocator]: https://github.com/userfrosting/uniformresourcelocator
@@ -24,9 +24,10 @@
 [URI-style-master]: https://github.styleci.io/repos/128138460/shield?branch=master&style=flat
 [URI-style-develop]: https://github.styleci.io/repos/128138460/shield?branch=develop&style=flat
 [URI-style]: https://github.styleci.io/repos/128138460
-[URI-appveyor]: https://ci.appveyor.com/project/userfrosting/uniformresourcelocator
-[URI-appveyor-master]: https://ci.appveyor.com/api/projects/status/cu1hfuar357788u1/branch/master?svg=true
-[URI-appveyor-develop]: https://ci.appveyor.com/api/projects/status/cu1hfuar357788u1/branch/develop?svg=true
+[URI-windows-master-build]: https://github.com/userfrosting/UniformResourceLocator/actions?query=branch%3Amaster
+[URI-windows-develop-build]: https://github.com/userfrosting/UniformResourceLocator/actions?query=branch%3Adevelop
+[URI-windows-master]: https://img.shields.io/github/workflow/status/userfrosting/UniformResourceLocator/Windows%20Build
+[URI-windows-develop]: https://img.shields.io/github/workflow/status/userfrosting/UniformResourceLocator/Windows%20Build/develop
 
 Louis Charette 2018
 

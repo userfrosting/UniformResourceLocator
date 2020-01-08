@@ -8,7 +8,7 @@
 | Branch | Build | Windows Build | Coverage | Style |
 | ------ |:-----:|:-------------:|:--------:|:-----:|
 | [master][UniformResourceLocator] | [![][URI-master-build]][URI-travis] | [![][URI-windows-master]][URI-windows-master-build] | [![][URI-master-codecov]][URI-codecov] | [![][URI-style-master]][URI-style] |
-| [develop][URI-develop] | [![][URI-develop-build]][URI-travis] | [![][URI-windows-master]][URI-windows-develop-build] | [![][URI-develop-codecov]][URI-codecov] | [![][URI-style-develop]][URI-style] |
+| [develop][URI-develop] | [![][URI-develop-build]][URI-travis] | [![][URI-windows-develop]][URI-windows-develop-build] | [![][URI-develop-codecov]][URI-codecov] | [![][URI-style-develop]][URI-style] |
 
 <!-- Links -->
 [UniformResourceLocator]: https://github.com/userfrosting/uniformresourcelocator

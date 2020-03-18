@@ -22,7 +22,7 @@ use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
  */
 class BuildingLocatorTest extends TestCase
 {
-    /** @var string $basePath */
+    /** @var string */
     protected $basePath = __DIR__.'/Building/';
 
     /** @var ResourceLocatorInterface */

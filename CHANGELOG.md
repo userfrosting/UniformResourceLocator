@@ -59,6 +59,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Security
 -->
 
+[4.4.1]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.0...4.4.1
 [4.4.0]: https://github.com/userfrosting/uniformresourcelocator/compare/4.3.3...4.4.0
 [4.3.3]: https://github.com/userfrosting/uniformresourcelocator/compare/4.3.2...4.3.3
 [4.3.2]: https://github.com/userfrosting/uniformresourcelocator/compare/4.3.1...4.3.2

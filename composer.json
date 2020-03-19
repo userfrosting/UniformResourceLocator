@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": ">=7.1",
-        "rockettheme/toolbox": "~1.4.0",
+        "rockettheme/toolbox": "~1.4.7",
         "illuminate/support": "^5.8",
         "illuminate/filesystem": "^5.8"
     },

@@ -15,7 +15,7 @@ use InvalidArgumentException;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
-use UserFrosting\UniformResourceLocator\Stream\Stream;
+use RocketTheme\Toolbox\StreamWrapper\Stream;
 
 /**
  * ResourceLocator Class.

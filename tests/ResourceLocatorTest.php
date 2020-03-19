@@ -499,12 +499,4 @@ class ResourceLocatorTest extends TestCase
         $locator = new ResourceLocator();
         $locator->normalize('path/to/../../../file.txt', true);
     }
-
-    public function test_stream_set_option()
-    {
-        $locator = new ResourceLocator(__DIR__);
-        $locator->registerStream('extra', '', 'extra', true);
-        $adjectives = include 'extra://adjectives.php';
-        $this->assertIsArray($adjectives);
-    }
 }

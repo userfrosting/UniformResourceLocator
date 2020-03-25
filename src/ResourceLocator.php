@@ -657,7 +657,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getBasePath()
     {

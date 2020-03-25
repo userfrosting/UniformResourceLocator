@@ -87,11 +87,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * @param string $uri
-     *
-     * @throws \BadMethodCallException
-     *
-     * @return string|bool
+     * {@inheritdoc}
      */
     public function __invoke($uri)
     {
@@ -99,11 +95,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Add an exisitng ResourceStream to the stream list.
-     *
-     * @param ResourceStreamInterface $stream
-     *
-     * @return static
+     * {@inheritdoc}
      */
     public function addStream(ResourceStreamInterface $stream)
     {
@@ -154,14 +146,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Register a new stream.
-     *
-     * @param string            $scheme
-     * @param string            $prefix (default '')
-     * @param string|array|null $paths  (default null). When using null path, the scheme will be used as a path
-     * @param bool              $shared (default false) Shared ressources are not affected by locations
-     *
-     * @return static
+     * {@inheritdoc}
      */
     public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false)
     {
@@ -213,11 +198,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Unregister the specified stream.
-     *
-     * @param string $scheme The stream scheme
-     *
-     * @return static
+     * {@inheritdoc}
      */
     public function removeStream(string $scheme)
     {
@@ -250,9 +231,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Return a list of all the stream scheme registered.
-     *
-     * @return string[] An array of registered scheme => location
+     * {@inheritdoc}
      */
     public function listStreams(): array
     {
@@ -260,11 +239,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Returns true if a stream has been defined.
-     *
-     * @param string $scheme The stream scheme
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function schemeExists(string $scheme): bool
     {
@@ -272,11 +247,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Add an existing RessourceLocation instance to the location list.
-     *
-     * @param ResourceLocationInterface $location
-     *
-     * @return static
+     * {@inheritdoc}
      */
     public function addLocation(ResourceLocationInterface $location)
     {
@@ -286,12 +257,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Register a new location.
-     *
-     * @param string $name The location name
-     * @param string $path The location base path (default null)
-     *
-     * @return static
+     * {@inheritdoc}
      */
     public function registerLocation(string $name, ?string $path = null)
     {
@@ -302,11 +268,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Unregister the specified location.
-     *
-     * @param string $name The location name
-     *
-     * @return static
+     * {@inheritdoc}
      */
     public function removeLocation(string $name)
     {
@@ -316,13 +278,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Get a location instance based on it's name.
-     *
-     * @param string $name The location name
-     *
-     * @throws LocationNotFoundException If location is not registered
-     *
-     * @return ResourceLocationInterface
+     * {@inheritdoc}
      */
     public function getLocation(string $name): ResourceLocationInterface
     {
@@ -334,9 +290,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Get a a list of all registered locations.
-     *
-     * @return ResourceLocationInterface[]
+     * {@inheritdoc}
      */
     public function getLocations(): array
     {
@@ -344,9 +298,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Return a list of all the locations registered by name.
-     *
-     * @return string[] An array of registered name => location
+     * {@inheritdoc}
      */
     public function listLocations(): array
     {
@@ -354,11 +306,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Returns true if a location has been defined.
-     *
-     * @param string $name The location name
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function locationExist(string $name): bool
     {
@@ -366,12 +314,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Return a resource instance.
-     *
-     * @param string $uri   Input URI to be searched (can be a file/path)
-     * @param bool   $first Whether to return first path even if it doesn't exist.
-     *
-     * @return ResourceInterface|bool Returns false if resource is not found
+     * {@inheritdoc}
      */
     public function getResource(string $uri, bool $first = false)
     {
@@ -379,12 +322,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Return a list of resources instances.
-     *
-     * @param string $uri Input URI to be searched (can be a file/path)
-     * @param bool   $all Whether to return all paths even if they don't exist.
-     *
-     * @return ResourceInterface[] Array of Resources
+     * {@inheritdoc}
      */
     public function getResources(string $uri, bool $all = false): array
     {
@@ -392,15 +330,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * List all ressources found at a given uri.
-     * Same as listing all file in a directory, except here all topmost
-     * ressources will be returned when considering all locations.
-     *
-     * @param string $uri  Input URI to be searched (can be a uri/path ONLY)
-     * @param bool   $all  If true, all resources will be returned, not only topmost ones
-     * @param bool   $sort Set to true to sort results alphabetically by absolute path. Set to false to sort by absolute priority, higest location first. Default to true.
-     *
-     * @return ResourceInterface[] The ressources list
+     * {@inheritdoc}
      */
     public function listResources(string $uri, bool $all = false, bool $sort = true): array
     {
@@ -727,7 +657,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getBasePath()
     {

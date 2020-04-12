@@ -510,11 +510,11 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('sprinkles', '', '');
         $locator->registerLocation('uploads', 'app/uploads/profile');
 
-        $result = $locator->findResource('sprinkles://'.'header.json');
+        $result = $locator->findResource('sprinkles://'.'header.json', false);
 
         //NB.: __DIR__ doesn't end with a '/'.
-        $this->assertSame(__DIR__.'/app/uploads/profile/header.json', $result);
-        $this->assertNotSame(__DIR__.'/app/uploads/profile//header.json', $result);
+        $this->assertSame('app/uploads/profile/header.json', $result);
+        $this->assertNotSame('app/uploads/profile//header.json', $result);
     }
 
     /**

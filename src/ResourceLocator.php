@@ -23,12 +23,20 @@ use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
  *
  * The locator is used to find resources.
  *
- * @author    Louis Charette
+ * @author Louis Charette
  */
 class ResourceLocator implements ResourceLocatorInterface
 {
     /**
-     * @var string[][string]ResourceStreamInterface The list of registered streams
+     * The list of registered streams ::
+     * [
+     *      'stream_name' => [
+     *          'prefix' => [
+     *              ResourceStreamInterface
+     *          ]
+     *      ]
+     * ]
+     * @var array<string,array<string,array<ResourceStreamInterface>>>
      */
     protected $streams = [];
 
@@ -510,7 +518,7 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param bool   $absolute Whether to return absolute path.
      * @param bool   $all      Whether to return all paths even if they don't exist.
      *
-     * @return array[string] An array of all the ressources path
+     * @return string[] An array of all the ressources path
      */
     public function findResources($uri, $absolute = true, $all = false)
     {
@@ -562,7 +570,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @param ResourceStreamInterface $stream The stream to search for
      *
-     * @return array[string]ResourceLocationInterface The search paths based on this stream and all available locations
+     * @return array<string,ResourceLocationInterface|null> The search paths based on this stream and all available locations
      */
     protected function searchPaths(ResourceStreamInterface $stream): array
     {

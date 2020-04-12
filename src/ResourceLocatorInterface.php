@@ -73,7 +73,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @throws StreamNotFoundException If stream is not registered
      *
-     * @return string[]ResourceStreamInterface
+     * @return array<string,array<ResourceStreamInterface>>
      */
     public function getStream(string $scheme): array;
 
@@ -90,7 +90,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *      'blah'   => ResourceStreamInterface
      *   );.
      *
-     * @return string[][string]ResourceStreamInterface
+     * @return array<string,array<string,array<ResourceStreamInterface>>>
      */
     public function getStreams(): array;
 

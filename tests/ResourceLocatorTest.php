@@ -508,11 +508,26 @@ class ResourceLocatorTest extends TestCase
     {
         $locator = new ResourceLocator(__DIR__);
         $locator->registerStream('sprinkles', '', '');
-        $locator->registerLocation('uploads', 'app/uploads');
+        $locator->registerLocation('uploads', 'app/uploads/profile');
 
-        $result = $locator->findResource('sprinkles://' . 'MyFile.txt');
+        $result = $locator->findResource('sprinkles://' . 'header.json');
 
         //NB.: __DIR__ doesn't end with a '/'.
-        $this->assertSame(__DIR__ . '/app/uploads/MyFile.txt', $result);
+        $this->assertSame(__DIR__ . '/app/uploads/profile/header.json', $result);
+        $this->assertNotSame(__DIR__ . '/app/uploads/profile//header.json', $result);
+    }
+
+    /**
+     * With stream poiting to `app/uploads/profile`, we make sure we can't access `app/uploads/MyFile.txt`
+     */
+    public function testFindResourceWithBackPath(): void
+    {
+        $locator = new ResourceLocator(__DIR__);
+        $locator->registerStream('sprinkles', '', '');
+        $locator->registerLocation('uploads', 'app/uploads/profile');
+
+        $result = $locator->findResource('sprinkles://' . '../MyFile.txt');
+
+        $this->assertFalse($result);
     }
 }

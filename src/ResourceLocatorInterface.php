@@ -34,16 +34,20 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      * Add an exisitng ResourceStream to the stream list.
      *
      * @param ResourceStreamInterface $stream
+     *
+     * @return static
      */
     public function addStream(ResourceStreamInterface $stream);
 
     /**
      * Register a new stream.
      *
-     * @param string            $scheme
-     * @param string            $prefix (default '')
-     * @param string|array|null $paths  (default null). When using null path, the scheme will be used as a path
-     * @param bool              $shared (default false) Shared resoureces are not affected by locations
+     * @param string               $scheme
+     * @param string               $prefix (default '')
+     * @param string|string[]|null $paths  (default null). When using null path, the scheme will be used as a path
+     * @param bool                 $shared (default false) Shared resoureces are not affected by locations
+     *
+     * @return static
      */
     public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false);
 
@@ -69,7 +73,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @throws StreamNotFoundException If stream is not registered
      *
-     * @return array[string]ResourceStreamInterface
+     * @return array<string,array<ResourceStreamInterface>>
      */
     public function getStream(string $scheme): array;
 
@@ -86,14 +90,14 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *      'blah'   => ResourceStreamInterface
      *   );.
      *
-     * @return array[][string]ResourceStreamInterface
+     * @return array<string,array<string,array<ResourceStreamInterface>>>
      */
     public function getStreams(): array;
 
     /**
      * Return a list of all the stream scheme registered.
      *
-     * @return array An array of registered scheme => location
+     * @return string[] An array of registered scheme => location
      */
     public function listStreams();
 
@@ -110,6 +114,8 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      * Add an existing RessourceLocation instance to the location list.
      *
      * @param ResourceLocationInterface $location
+     *
+     * @return static
      */
     public function addLocation(ResourceLocationInterface $location);
 
@@ -146,14 +152,14 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
     /**
      * Get a a list of all registered locations.
      *
-     * @return array
+     * @return ResourceLocationInterface[]
      */
     public function getLocations();
 
     /**
      * Return a list of all the locations registered by name.
      *
-     * @return array An array of registered name => location
+     * @return string[] An array of registered name => location
      */
     public function listLocations();
 
@@ -188,6 +194,8 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
 
     /**
      * List all ressources found at a given uri.
+     * Same as listing all file in a directory, except here all topmost
+     * ressources will be returned when considering all locations.
      *
      * @param string $uri  Input URI to be searched (can be a uri/path ONLY)
      * @param bool   $all  If true, all resources will be returned, not only topmost ones

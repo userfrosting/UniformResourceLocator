@@ -499,4 +499,35 @@ class ResourceLocatorTest extends TestCase
         $locator = new ResourceLocator();
         $locator->normalize('path/to/../../../file.txt', true);
     }
+
+    /**
+     * Test issue for stream with empty path adding an extra `/`
+     * Test for issue #16.
+     */
+    public function testStreamWithEmptyPath(): void
+    {
+        $locator = new ResourceLocator(__DIR__);
+        $locator->registerStream('sprinkles', '', '');
+        $locator->registerLocation('uploads', 'app/uploads/profile');
+
+        $result = $locator->findResource('sprinkles://'.'header.json', false);
+
+        //NB.: __DIR__ doesn't end with a '/'.
+        $this->assertSame('app/uploads/profile/header.json', $result);
+        $this->assertNotSame('app/uploads/profile//header.json', $result);
+    }
+
+    /**
+     * With stream poiting to `app/uploads/profile`, we make sure we can't access `app/uploads/MyFile.txt`.
+     */
+    public function testFindResourceWithBackPath(): void
+    {
+        $locator = new ResourceLocator(__DIR__);
+        $locator->registerStream('sprinkles', '', '');
+        $locator->registerLocation('uploads', 'app/uploads/profile');
+
+        $result = $locator->findResource('sprinkles://'.'../MyFile.txt');
+
+        $this->assertFalse($result);
+    }
 }

@@ -3,4 +3,5 @@ composer.lock
 .DS_Store
 *.komodoproject
 .php_cs.cache
+.vscode
 _meta

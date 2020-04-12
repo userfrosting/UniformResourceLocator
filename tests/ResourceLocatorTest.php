@@ -499,4 +499,20 @@ class ResourceLocatorTest extends TestCase
         $locator = new ResourceLocator();
         $locator->normalize('path/to/../../../file.txt', true);
     }
+
+    /**
+     * Test issue for stream with empty path adding an extra `/`
+     * Test for issue #16
+     */
+    public function testStreamWithEmptyPath(): void
+    {
+        $locator = new ResourceLocator(__DIR__);
+        $locator->registerStream('sprinkles', '', '');
+        $locator->registerLocation('uploads', 'app/uploads');
+
+        $result = $locator->findResource('sprinkles://' . 'MyFile.txt');
+
+        //NB.: __DIR__ doesn't end with a '/'.
+        $this->assertSame(__DIR__ . '/app/uploads/MyFile.txt', $result);
+    }
 }

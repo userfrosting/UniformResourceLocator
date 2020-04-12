@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [4.4.2]
 - Fix issue where extra `/` would be present in the calculated path for stream with empty ('') path ([#16]).
-- Update PHP7 type hinting
+- Update PHP7 type hinting & DocBloc
 
 ## [4.4.1]
 - Fix RocketTheme integration
@@ -63,6 +63,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Security
 -->
 
+[4.4.2]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.1...4.4.2
 [4.4.1]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.0...4.4.1
 [4.4.0]: https://github.com/userfrosting/uniformresourcelocator/compare/4.3.3...4.4.0
 [4.3.3]: https://github.com/userfrosting/uniformresourcelocator/compare/4.3.2...4.3.3

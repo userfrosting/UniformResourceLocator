@@ -11,6 +11,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use RocketTheme\Toolbox\StreamWrapper\Stream;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
@@ -27,17 +28,17 @@ use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
 class ResourceLocator implements ResourceLocatorInterface
 {
     /**
-     * @var array[][string]ResourceStreamInterface The list of registered streams
+     * @var string[][string]ResourceStreamInterface The list of registered streams
      */
     protected $streams = [];
 
     /**
-     * @var array[string]ResourceLocatorInterface The list of registered locations
+     * @var ResourceLocationInterface[] The list of registered locations
      */
     protected $locations = [];
 
     /**
-     * @var array Locale cache store of found resources
+     * @var array<ResourceInterface[]|ResourceInterface|false> Locale cache store of found resources
      */
     protected $cache = [];
 
@@ -117,7 +118,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @param string $scheme The stream scheme
      */
-    protected function setupStreamWrapper(string $scheme)
+    protected function setupStreamWrapper(string $scheme): void
     {
         // Make sure stream does not already exist
         if ($this->streamBuilder->isStream($scheme)) {
@@ -136,7 +137,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @param string $scheme The stream scheme
      */
-    protected function unsetStreamWrapper(string $scheme)
+    protected function unsetStreamWrapper(string $scheme): void
     {
         $this->streamBuilder->remove($scheme);
 
@@ -170,9 +171,9 @@ class ResourceLocator implements ResourceLocatorInterface
      * Register a new shared stream.
      * Shortcut for registerStream with $shared flag set to true.
      *
-     * @param string            $scheme
-     * @param string            $prefix (default '')
-     * @param string|array|null $paths  (default null). When using null path, the scheme will be used as a path
+     * @param string               $scheme
+     * @param string               $prefix (default '')
+     * @param string|string[]|null $paths  (default null). When using null path, the scheme will be used as a path
      *
      * @return static
      */
@@ -184,11 +185,11 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * AddPath function. Used to preserve compatibility with RocketTheme/Toolbox.
      *
-     * @param string       $scheme
-     * @param string       $prefix
-     * @param string|array $paths
-     * @param bool|string  $override True to add path as override, string
-     * @param bool         $force    True to add paths even if them do not exist.
+     * @param string          $scheme
+     * @param string          $prefix
+     * @param string|string[] $paths
+     * @param bool|string     $override Not used. Kept for backward compatibility.
+     * @param bool            $force    Not used. Kept for backward compatibility.
      *
      * @deprecated
      */
@@ -346,7 +347,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
             // Sort files. Filesystem can return inconsistant order sometime
             // Files will be sorted alphabetically inside a location even if don't resort later across all sprinkles
-            $files = array_sort($files, function ($resource) {
+            $files = Arr::sort($files, function ($resource) {
                 return $resource->getRealPath();
             });
 
@@ -376,7 +377,7 @@ class ResourceLocator implements ResourceLocatorInterface
         // Apply global sorting if required. This will return all resources sorted
         // alphabetically instead of by priority
         if ($sort) {
-            $list = array_sort($list, function ($resource) {
+            $list = Arr::sort($list, function ($resource) {
                 return $resource->getAbsolutePath();
             });
         }

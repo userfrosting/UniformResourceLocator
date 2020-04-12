@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [4.4.2]
 - Fix issue where extra `/` would be present in the calculated path for stream with empty ('') path ([#16]).
+- Update PHP7 type hinting
 
 ## [4.4.1]
 - Fix RocketTheme integration

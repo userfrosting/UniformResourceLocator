@@ -502,7 +502,7 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * Test issue for stream with empty path adding an extra `/`
-     * Test for issue #16
+     * Test for issue #16.
      */
     public function testStreamWithEmptyPath(): void
     {
@@ -510,15 +510,15 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('sprinkles', '', '');
         $locator->registerLocation('uploads', 'app/uploads/profile');
 
-        $result = $locator->findResource('sprinkles://' . 'header.json');
+        $result = $locator->findResource('sprinkles://'.'header.json');
 
         //NB.: __DIR__ doesn't end with a '/'.
-        $this->assertSame(__DIR__ . '/app/uploads/profile/header.json', $result);
-        $this->assertNotSame(__DIR__ . '/app/uploads/profile//header.json', $result);
+        $this->assertSame(__DIR__.'/app/uploads/profile/header.json', $result);
+        $this->assertNotSame(__DIR__.'/app/uploads/profile//header.json', $result);
     }
 
     /**
-     * With stream poiting to `app/uploads/profile`, we make sure we can't access `app/uploads/MyFile.txt`
+     * With stream poiting to `app/uploads/profile`, we make sure we can't access `app/uploads/MyFile.txt`.
      */
     public function testFindResourceWithBackPath(): void
     {
@@ -526,7 +526,7 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('sprinkles', '', '');
         $locator->registerLocation('uploads', 'app/uploads/profile');
 
-        $result = $locator->findResource('sprinkles://' . '../MyFile.txt');
+        $result = $locator->findResource('sprinkles://'.'../MyFile.txt');
 
         $this->assertFalse($result);
     }

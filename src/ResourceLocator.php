@@ -35,7 +35,8 @@ class ResourceLocator implements ResourceLocatorInterface
      *              ResourceStreamInterface
      *          ]
      *      ]
-     * ]
+     * ].
+     *
      * @var array<string,array<string,array<ResourceStreamInterface>>>
      */
     protected $streams = [];

@@ -17,8 +17,8 @@ jobs:
         php_versions: ['7.1', '7.2', '7.3', '7.4']
         laravel: ['5.8.*']
 
+    runs-on: [ubuntu-latest, windows-latest]
     name: PHPUnit Tests - ${{ matrix.php_versions }} - ${{ runner.os }} - ${{ matrix.laravel }}
-    runs-on: ['ubuntu-latest', 'windows-latest']
 
     steps:
     - uses: actions/checkout@v2

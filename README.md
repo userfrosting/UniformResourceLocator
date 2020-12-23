@@ -14,20 +14,20 @@
 [UniformResourceLocator]: https://github.com/userfrosting/uniformresourcelocator
 [URI-develop]: https://github.com/userfrosting/uniformresourcelocator/tree/develop
 [URI-version]: https://img.shields.io/github/release/userfrosting/UniformResourceLocator.svg
-[URI-master-build]: https://travis-ci.org/userfrosting/UniformResourceLocator.svg?branch=master
+[URI-master-build]: https://github.com/userfrosting/UniformResourceLocator/workflows/Build/badge.svg?branch=master
 [URI-master-codecov]: https://codecov.io/gh/userfrosting/UniformResourceLocator/branch/master/graph/badge.svg
-[URI-develop-build]: https://travis-ci.org/userfrosting/UniformResourceLocator.svg?branch=develop
+[URI-develop-build]: https://github.com/userfrosting/UniformResourceLocator/workflows/Build/badge.svg?branch=develop
 [URI-develop-codecov]: https://codecov.io/gh/userfrosting/UniformResourceLocator/branch/develop/graph/badge.svg
 [URI-releases]: https://github.com/userfrosting/UniformResourceLocator/releases
-[URI-travis]: https://travis-ci.org/userfrosting/UniformResourceLocator
+[URI-travis]: https://github.com/userfrosting/UniformResourceLocator/actions?query=workflow%3ABuild
 [URI-codecov]: https://codecov.io/gh/userfrosting/UniformResourceLocator
 [URI-style-master]: https://github.styleci.io/repos/128138460/shield?branch=master&style=flat
 [URI-style-develop]: https://github.styleci.io/repos/128138460/shield?branch=develop&style=flat
 [URI-style]: https://github.styleci.io/repos/128138460
 [URI-windows-master-build]: https://github.com/userfrosting/UniformResourceLocator/actions?query=branch%3Amaster
 [URI-windows-develop-build]: https://github.com/userfrosting/UniformResourceLocator/actions?query=branch%3Adevelop
-[URI-windows-master]: https://img.shields.io/github/workflow/status/userfrosting/UniformResourceLocator/Windows%20Build
-[URI-windows-develop]: https://img.shields.io/github/workflow/status/userfrosting/UniformResourceLocator/Windows%20Build/develop
+[URI-windows-master]: https://github.com/userfrosting/UniformResourceLocator/workflows/Windows%20Build/badge.svg?branch=master
+[URI-windows-develop]: https://github.com/userfrosting/UniformResourceLocator/workflows/Windows%20Build/badge.svg?branch=develop
 
 Louis Charette 2018
 

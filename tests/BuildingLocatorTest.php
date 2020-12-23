@@ -69,7 +69,7 @@ class BuildingLocatorTest extends TestCase
      *  - Floors/Floor1/test.json : Overwritten by Floor3 version
      *  - Garage/files/blah.json : Should never be found, because the Garage is not part of the file:// search path
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
 

@@ -13,6 +13,8 @@ namespace UserFrosting\UniformResourceLocator\Tests;
 use PHPUnit\Framework\TestCase;
 use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface as BaseResourceLocatorInterface;
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
+use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
+use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
@@ -91,7 +93,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertInternalType('array', $barStream);
+        $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
         $this->assertEquals('foo', $barStream[''][0]->getPath());
     }
@@ -109,7 +111,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertInternalType('array', $barStream);
+        $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
         $this->assertEquals('foo', $barStream[''][0]->getPath());
     }
@@ -127,7 +129,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertInternalType('array', $barStream);
+        $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
         $this->assertEquals('foo', $barStream[''][0]->getPath());
         $this->assertTrue($barStream[''][0]->isShared());
@@ -146,7 +148,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertInternalType('array', $barStream);
+        $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
         $this->assertEquals('foo', $barStream[''][0]->getPath());
         $this->assertTrue($barStream[''][0]->isShared());
@@ -166,7 +168,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertInternalType('array', $barStream);
+        $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream['prefix'][0]);
         $this->assertEquals('foo', $barStream[''][0]->getPath());
         $this->assertEquals('oof', $barStream['prefix'][0]->getPath());
@@ -185,28 +187,28 @@ class ResourceLocatorTest extends TestCase
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertInternalType('array', $barStream);
+        $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
         $this->assertEquals('bar', $barStream[''][0]->getPath());
     }
 
     /**
      * @depends testRegisterStream
-     * @expectedException \UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException
      */
     public function testStreamNotFoundException()
     {
         $locator = new ResourceLocator();
+        $this->expectException(StreamNotFoundException::class);
         $locator->getStream('etc');
     }
 
     /**
      * @depends testRegisterStream
-     * @expectedException \InvalidArgumentException
      */
     public function testAddStreamThrowExceptionOnRestrictedScheme()
     {
         $locator = new ResourceLocator();
+        $this->expectException(\InvalidArgumentException::class);
         $locator->registerStream('file');
     }
 
@@ -263,7 +265,7 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('foo');
 
         $streams = $locator->getStreams();
-        $this->assertInternalType('array', $streams);
+        $this->assertIsArray($streams);
         $this->assertCount(2, $streams);
         $this->assertInstanceOf(ResourceStreamInterface::class, $streams['bar'][''][0]);
         $this->assertEquals('bar', $streams['bar'][''][0]->getPath());
@@ -347,11 +349,11 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @depends testAddLocation
-     * @expectedException \UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException
      */
     public function testGetLocationThrowExceptionIfNotFound()
     {
         $locator = new ResourceLocator();
+        $this->expectException(LocationNotFoundException::class);
         $locator->getLocation('etc');
     }
 
@@ -365,7 +367,7 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('foo', '/bar');
 
         $locations = $locator->getLocations();
-        $this->assertInternalType('array', $locations);
+        $this->assertIsArray($locations);
         $this->assertCount(2, $locations);
         $this->assertInstanceOf(ResourceLocationInterface::class, $locations['bar']);
         $this->assertEquals('/foo', $locations['bar']->getPath());
@@ -482,21 +484,21 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @depends testNormalizeReturnFalseOnSuppressedException
-     * @expectedException \BadMethodCallException
      */
     public function testNormalizeThrowExceptionOnBadUri()
     {
         $locator = new ResourceLocator();
+        $this->expectException(\BadMethodCallException::class);
         $locator->normalize(123, true);
     }
 
     /**
      * @depends testNormalizeReturnFalseOnSuppressedException
-     * @expectedException \BadMethodCallException
      */
     public function testNormalizeThrowExceptionOnBadUriPart()
     {
         $locator = new ResourceLocator();
+        $this->expectException(\BadMethodCallException::class);
         $locator->normalize('path/to/../../../file.txt', true);
     }
 

@@ -5,8 +5,8 @@
 [![Join the chat at https://chat.userfrosting.com/channel/support](https://chat.userfrosting.com/api/v1/shield.svg?name=UserFrosting)](https://chat.userfrosting.com/channel/support)
 [![Donate](https://img.shields.io/badge/Open%20Collective-Donate-blue.svg)](https://opencollective.com/userfrosting#backer)
 
-| Branch | Build | Windows Build | Coverage | Style |
-| ------ |:-----:|:-------------:|:--------:|:-----:|
+| Branch | Build | Coverage | Style |
+| ------ |:-----:|:--------:|:-----:|
 | [master][UniformResourceLocator] | [![][URI-master-build]][URI-travis] | [![][URI-master-codecov]][URI-codecov] | [![][URI-style-master]][URI-style] |
 | [develop][URI-develop] | [![][URI-develop-build]][URI-travis] | [![][URI-develop-codecov]][URI-codecov] | [![][URI-style-develop]][URI-style] |
 

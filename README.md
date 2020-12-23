@@ -7,8 +7,8 @@
 
 | Branch | Build | Windows Build | Coverage | Style |
 | ------ |:-----:|:-------------:|:--------:|:-----:|
-| [master][UniformResourceLocator] | [![][URI-master-build]][URI-travis] | [![][URI-windows-master]][URI-windows-master-build] | [![][URI-master-codecov]][URI-codecov] | [![][URI-style-master]][URI-style] |
-| [develop][URI-develop] | [![][URI-develop-build]][URI-travis] | [![][URI-windows-develop]][URI-windows-develop-build] | [![][URI-develop-codecov]][URI-codecov] | [![][URI-style-develop]][URI-style] |
+| [master][UniformResourceLocator] | [![][URI-master-build]][URI-travis] | [![][URI-master-codecov]][URI-codecov] | [![][URI-style-master]][URI-style] |
+| [develop][URI-develop] | [![][URI-develop-build]][URI-travis] | [![][URI-develop-codecov]][URI-codecov] | [![][URI-style-develop]][URI-style] |
 
 <!-- Links -->
 [UniformResourceLocator]: https://github.com/userfrosting/uniformresourcelocator
@@ -24,10 +24,6 @@
 [URI-style-master]: https://github.styleci.io/repos/128138460/shield?branch=master&style=flat
 [URI-style-develop]: https://github.styleci.io/repos/128138460/shield?branch=develop&style=flat
 [URI-style]: https://github.styleci.io/repos/128138460
-[URI-windows-master-build]: https://github.com/userfrosting/UniformResourceLocator/actions?query=branch%3Amaster
-[URI-windows-develop-build]: https://github.com/userfrosting/UniformResourceLocator/actions?query=branch%3Adevelop
-[URI-windows-master]: https://github.com/userfrosting/UniformResourceLocator/workflows/Windows%20Build/badge.svg?branch=master
-[URI-windows-develop]: https://github.com/userfrosting/UniformResourceLocator/workflows/Windows%20Build/badge.svg?branch=develop
 
 Louis Charette 2018
 

@@ -36,7 +36,7 @@ class ResourceTest extends TestCase
     protected $locationName = 'bar';
     protected $locationPath = 'bar/';
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
 

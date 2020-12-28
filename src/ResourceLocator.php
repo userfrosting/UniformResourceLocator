@@ -613,7 +613,7 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         // Make sure stream exist
         if (!$this->schemeExists($scheme)) {
-            throw new InvalidArgumentException("Invalid resource {$scheme}://");
+            throw new InvalidArgumentException("Scheme {$scheme}:// doesn't exist.");
         }
 
         // Prepare result depending on $array parameter

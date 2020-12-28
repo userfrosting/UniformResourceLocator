@@ -69,7 +69,7 @@ class BuildingLocatorTest extends TestCase
      *  - Floors/Floor1/test.json : Overwritten by Floor3 version
      *  - Garage/files/blah.json : Should never be found, because the Garage is not part of the file:// search path
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
 
@@ -125,7 +125,7 @@ class BuildingLocatorTest extends TestCase
         // find($scheme, $file, $array, $all)
         $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, false]);
 
-        $this->assertInternalType('array', $resource);
+        $this->assertIsArray($resource);
         $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resource);
     }
 
@@ -165,32 +165,28 @@ class BuildingLocatorTest extends TestCase
         // find($scheme, $file, $array, $all)
         $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, true]);
 
-        $this->assertInternalType('array', $resource);
+        $this->assertIsArray($resource);
         $this->assertEquals($this->relativeToAbsolutePaths($expectedAllPaths), $resource);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @depends testFind
      */
     public function testFindThrowExceptionWhenSchemaDontExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->invokeMethod(self::$locator, 'find', ['foo', 'foo', false, false]);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetResourceThrowExceptionIfShemeNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
         self::$locator->getResource('foo://');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetResourceThrowExceptionOnInvalidParameterUri()
     {
+        $this->expectException(\InvalidArgumentException::class);
         self::$locator->getResource(123);
     }
 
@@ -243,7 +239,7 @@ class BuildingLocatorTest extends TestCase
         $uri = $scheme.'://'.$file;
 
         $resources = $locator->getResources($uri);
-        $this->assertInternalType('array', $resources);
+        $this->assertIsArray($resources);
         $this->assertCount(count($expectedPaths), $resources);
         $this->assertInstanceOf(ResourceInterface::class, $resources[0]);
         $this->assertEquals($this->getBasePath().$expectedPaths[0], $resources[0]);
@@ -258,7 +254,7 @@ class BuildingLocatorTest extends TestCase
         $locator = self::$locator;
 
         $resources = $locator->getResources('cars://idontExist.txt');
-        $this->assertInternalType('array', $resources);
+        $this->assertIsArray($resources);
         $this->assertCount(0, $resources);
     }
 
@@ -287,27 +283,21 @@ class BuildingLocatorTest extends TestCase
         $this->assertEquals($expectedPaths, $locator->findResources($uri, false));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testFindResourceThrowExceptionOnBadUri()
     {
+        $this->expectException(\InvalidArgumentException::class);
         self::$locator->findResource(123);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testFindResourcesThrowExceptionOnBadUri()
     {
+        $this->expectException(\InvalidArgumentException::class);
         self::$locator->findResources(123);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvokeThrowExceptionOnBadUri()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $locator = self::$locator;
         $locator(123);
     }
@@ -369,7 +359,7 @@ class BuildingLocatorTest extends TestCase
         $uri = $scheme.'://'.$file;
 
         $resources = $locator->getResources($uri);
-        $this->assertInternalType('array', $resources);
+        $this->assertIsArray($resources);
         $this->assertCount(count($expectedPaths), $resources);
         $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resources);
         $this->assertInstanceOf(ResourceInterface::class, $resources[0]);

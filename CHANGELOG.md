@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.4.3]
+- Replaced Travis with GitHub Action for build
+- Upgrade deprecation in tests
+- Provides better exception message when scheme doesn't exist
+
 ## [4.4.2]
 - Fix issue where extra `/` would be present in the calculated path for stream with empty ('') path ([#16]).
 - Update PHP7 type hinting & DocBloc
@@ -63,6 +68,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Security
 -->
 
+[4.4.3]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.2...4.4.3
 [4.4.2]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.1...4.4.2
 [4.4.1]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.0...4.4.1
 [4.4.0]: https://github.com/userfrosting/uniformresourcelocator/compare/4.3.3...4.4.0

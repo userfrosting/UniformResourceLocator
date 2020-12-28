@@ -5,3 +5,4 @@ composer.lock
 .php_cs.cache
 .vscode
 _meta
+.phpunit.result.cache

@@ -62,9 +62,10 @@ class ResourceLocator implements ResourceLocatorInterface
     protected $filesystem;
 
     /**
-     * @var string Directory separator
+     * @var string Directory separator.
+     *             N.B.: Will always be `/` regardless of the OS, as they are all added after normalization.
      */
-    protected $separator = DIRECTORY_SEPARATOR;
+    protected $separator = '/';
 
     /**
      * @var StreamBuilder
@@ -408,63 +409,6 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Returns the canonicalized URI on success.
-     * The resulting path will have no '/./' or '/../' components. Trailing delimiter `/` is kept.
-     * Can also split the `scheme` for the `path` part of the uri if $splitStream parameter is set to true
-     * By default (if $throwException parameter is not set to true) returns false on failure.
-     *
-     * @param string $uri
-     * @param bool   $throwException
-     * @param bool   $splitStream
-     *
-     * @throws \BadMethodCallException
-     *
-     * @return string|array|bool
-     */
-    public function normalize($uri, $throwException = false, $splitStream = false)
-    {
-        if (!is_string($uri)) {
-            if ($throwException) {
-                throw new \BadMethodCallException("Invalid parameter $uri.");
-            } else {
-                return false;
-            }
-        }
-
-        $uri = preg_replace('|\\\|u', $this->separator, $uri);
-        $segments = explode('://', $uri, 2);
-        $path = array_pop($segments);
-        $scheme = array_pop($segments) ?: '';
-        if ($path) {
-            $path = preg_replace('|\\\|u', $this->separator, $path);
-            $parts = explode($this->separator, $path);
-            $list = [];
-            foreach ($parts as $i => $part) {
-                if ($part === '..') {
-                    $part = array_pop($list);
-                    if ($part === null || $part === '' || (!$list && strpos($part, ':'))) {
-                        if ($throwException) {
-                            throw new \BadMethodCallException('Invalid parameter $uri.');
-                        } else {
-                            return false;
-                        }
-                    }
-                } elseif (($i && $part === '') || $part === '.') {
-                    continue;
-                } else {
-                    $list[] = $part;
-                }
-            }
-            if (($l = end($parts)) === '' || $l === '.' || $l === '..') {
-                $list[] = '';
-            }
-            $path = implode($this->separator, $list);
-        }
-
-        return $splitStream ? [$scheme, $path] : ($scheme !== '' ? "{$scheme}://{$path}" : $path);
-    }
-
-    /**
      * Returns true if uri is resolvable by using locator.
      *
      * @param string $uri URI to test
@@ -474,7 +418,7 @@ class ResourceLocator implements ResourceLocatorInterface
     public function isStream($uri): bool
     {
         try {
-            list($scheme) = $this->normalize($uri, true, true);
+            list($scheme) = Normalizer::normalize($uri, true, true);
         } catch (\Exception $e) {
             return false;
         }
@@ -554,7 +498,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
         if (!isset($this->cache[$key])) {
             try {
-                list($scheme, $file) = $this->normalize($uri, true, true);
+                list($scheme, $file) = Normalizer::normalize($uri, true, true);
                 $this->cache[$key] = $this->find($scheme, $file, $array, $all);
             } catch (\BadMethodCallException $e) {
                 // If something couldn't be found, return false or empty array
@@ -689,7 +633,7 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function setBasePath(string $basePath)
     {
-        $this->basePath = $this->normalize($basePath);
+        $this->basePath = Normalizer::normalize($basePath);
 
         return $this;
     }

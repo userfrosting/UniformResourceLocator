@@ -421,86 +421,6 @@ class ResourceLocatorTest extends TestCase
     }
 
     /**
-     * @param string $uri
-     * @param string $path
-     * @dataProvider normalizeProvider
-     */
-    public function testNormalize($uri, $path)
-    {
-        $locator = new ResourceLocator();
-        $this->assertEquals($path, $locator->normalize($uri));
-    }
-
-    /**
-     * Data provider for testNormalize.
-     */
-    public function normalizeProvider()
-    {
-        return [
-            ['', ''],
-            ['./', ''],
-            ['././/./', ''],
-            ['././/../', false],
-            ['/', '/'],
-            ['//', '/'],
-            ['///', '/'],
-            ['/././', '/'],
-            ['foo', 'foo'],
-            ['/foo', '/foo'],
-            ['//foo', '/foo'],
-            ['/foo/', '/foo/'],
-            ['//foo//', '/foo/'],
-            ['path/to/file.txt', 'path/to/file.txt'],
-            ['path/to/../file.txt', 'path/file.txt'],
-            ['path/to/../../file.txt', 'file.txt'],
-            ['path/to/../../../file.txt', false],
-            ['/path/to/file.txt', '/path/to/file.txt'],
-            ['/path/to/../file.txt', '/path/file.txt'],
-            ['/path/to/../../file.txt', '/file.txt'],
-            ['/path/to/../../../file.txt', false],
-            ['c:\\', 'c:/'],
-            ['c:\\path\\to\file.txt', 'c:/path/to/file.txt'],
-            ['c:\\path\\to\../file.txt', 'c:/path/file.txt'],
-            ['c:\\path\\to\../../file.txt', 'c:/file.txt'],
-            ['c:\\path\\to\../../../file.txt', false],
-            ['stream://path/to/file.txt', 'stream://path/to/file.txt'],
-            ['stream://path/to/../file.txt', 'stream://path/file.txt'],
-            ['stream://path/to/../../file.txt', 'stream://file.txt'],
-            ['stream://path/to/../../../file.txt', false],
-
-        ];
-    }
-
-    /**
-     * @depends testNormalize
-     */
-    public function testNormalizeReturnFalseOnSuppressedException()
-    {
-        $locator = new ResourceLocator();
-        $this->assertFalse($locator->normalize(123));
-    }
-
-    /**
-     * @depends testNormalizeReturnFalseOnSuppressedException
-     */
-    public function testNormalizeThrowExceptionOnBadUri()
-    {
-        $locator = new ResourceLocator();
-        $this->expectException(\BadMethodCallException::class);
-        $locator->normalize(123, true);
-    }
-
-    /**
-     * @depends testNormalizeReturnFalseOnSuppressedException
-     */
-    public function testNormalizeThrowExceptionOnBadUriPart()
-    {
-        $locator = new ResourceLocator();
-        $this->expectException(\BadMethodCallException::class);
-        $locator->normalize('path/to/../../../file.txt', true);
-    }
-
-    /**
      * Test issue for stream with empty path adding an extra `/`
      * Test for issue #16.
      */
@@ -510,7 +430,7 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('sprinkles', '', '');
         $locator->registerLocation('uploads', 'app/uploads/profile');
 
-        $result = $locator->findResource('sprinkles://'.'header.json', false);
+        $result = $locator->findResource('sprinkles://header.json', false);
 
         //NB.: __DIR__ doesn't end with a '/'.
         $this->assertSame('app/uploads/profile/header.json', $result);

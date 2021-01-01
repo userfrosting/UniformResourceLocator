@@ -40,11 +40,6 @@ class ResourceStream implements ResourceStreamInterface
     protected $shared;
 
     /**
-     * @var string Directory separator
-     */
-    protected $separator = DIRECTORY_SEPARATOR;
-
-    /**
      * Constructor.
      *
      * @param string $scheme
@@ -99,7 +94,7 @@ class ResourceStream implements ResourceStreamInterface
      */
     public function setPath($path)
     {
-        $this->path = rtrim($path, $this->separator);
+        $this->path = rtrim(Normalizer::normalize($path), '/');
 
         return $this;
     }

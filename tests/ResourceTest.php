@@ -71,18 +71,6 @@ class ResourceTest extends TestCase
      *
      * @param ResourceInterface $resource
      */
-    public function testGetSetSeparator(ResourceInterface $resource)
-    {
-        $this->assertSame(DIRECTORY_SEPARATOR, $resource->getSeparator());
-        $resource->setSeparator('&');
-        $this->assertSame('&', $resource->getSeparator());
-    }
-
-    /**
-     * @depends testConstructor
-     *
-     * @param ResourceInterface $resource
-     */
     public function testGetSetLocatorBasePath(ResourceInterface $resource)
     {
         $this->assertSame('basePath/', $resource->getLocatorBasePath());

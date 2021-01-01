@@ -11,6 +11,7 @@
 namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
+use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
@@ -151,8 +152,6 @@ class DocTest extends TestCase
 
     protected function getBasePath()
     {
-        $locator = new ResourceLocator();
-
-        return $locator->normalize(__DIR__);
+        return Normalizer::normalize(__DIR__);
     }
 }

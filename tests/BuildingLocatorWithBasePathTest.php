@@ -17,12 +17,4 @@ class BuildingLocatorWithBasePathTest extends BuildingLocatorTest
 {
     /** @var string */
     protected $basePath = __DIR__.'/Building';
-
-    /**
-     * @return string
-     */
-    protected function getBasePath()
-    {
-        return self::$locator->normalize($this->basePath).DIRECTORY_SEPARATOR;
-    }
 }

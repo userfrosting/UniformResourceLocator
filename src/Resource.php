@@ -42,11 +42,6 @@ class Resource implements ResourceInterface
     protected $locatorBasePath;
 
     /**
-     * @var string Directory separator
-     */
-    protected $separator = DIRECTORY_SEPARATOR;
-
-    /**
      * @var ResourceStreamInterface
      */
     protected $stream;
@@ -61,10 +56,10 @@ class Resource implements ResourceInterface
      */
     public function __construct(ResourceStreamInterface $stream, ResourceLocationInterface $location = null, string $path, string $locatorBasePath = '')
     {
-        $this->stream = $stream;
-        $this->location = $location;
-        $this->path = str_replace('\\', $this->separator, $path);
-        $this->locatorBasePath = $locatorBasePath;
+        $this->setStream($stream);
+        $this->setLocation($location);
+        $this->setPath($path);
+        $this->setLocatorBasePath($locatorBasePath);
     }
 
     /**
@@ -89,7 +84,7 @@ class Resource implements ResourceInterface
         }
 
         // Glue parts togeter.
-        $path = implode($this->getSeparator(), $parts);
+        $path = implode('/', $parts);
 
         return $this->stream->getScheme().'://'.$path;
     }
@@ -119,7 +114,7 @@ class Resource implements ResourceInterface
             // We'll also need to remove the locator base path from the locator path
             // as it won't be removed by the previous attempt
             $locatorPath = preg_replace('#^'.preg_quote($this->getLocatorBasePath()).'#', '', $this->getLocation()->getPath());
-            $searchPattern = $locatorPath.$this->getSeparator().$searchPattern;
+            $searchPattern = Normalizer::normalize($locatorPath.'/'.$searchPattern);
         }
 
         // Remove the search path from the beginning of the resource path
@@ -170,6 +165,16 @@ class Resource implements ResourceInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setLocation(?ResourceLocationInterface $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getAbsolutePath(): string
@@ -196,6 +201,16 @@ class Resource implements ResourceInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setPath(string $path): self
+    {
+        $this->path = Normalizer::normalize($path);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getLocatorBasePath(): string
@@ -216,30 +231,20 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * @return string
-     */
-    public function getSeparator(): string
-    {
-        return $this->separator;
-    }
-
-    /**
-     * @param string $separator
-     *
-     * @return static
-     */
-    public function setSeparator($separator): ResourceInterface
-    {
-        $this->separator = $separator;
-
-        return $this;
-    }
-
-    /**
      * @return ResourceStreamInterface
      */
     public function getStream(): ResourceStreamInterface
     {
         return $this->stream;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStream(ResourceStreamInterface $stream): self
+    {
+        $this->stream = $stream;
+
+        return $this;
     }
 }

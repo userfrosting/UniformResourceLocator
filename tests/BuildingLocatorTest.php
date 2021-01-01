@@ -11,6 +11,7 @@
 namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
+use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\Resource;
 use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
@@ -711,6 +712,6 @@ class BuildingLocatorTest extends TestCase
      */
     protected function getBasePath()
     {
-        return self::$locator->normalize($this->basePath);
+        return rtrim(Normalizer::normalize($this->basePath), '/').'/';
     }
 }

@@ -165,7 +165,11 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set the value of location
+     *
+     * @param ResourceLocationInterface|null $location
+     *
+     * @return self
      */
     public function setLocation(?ResourceLocationInterface $location): self
     {
@@ -201,7 +205,11 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set relative path to the resource, above the locator base path
+     *
+     * @param string $path Relative path to the resource, above the locator base path
+     *
+     * @return self
      */
     public function setPath(string $path): self
     {
@@ -223,7 +231,7 @@ class Resource implements ResourceInterface
      *
      * @return static
      */
-    public function setLocatorBasePath($locatorBasePath): ResourceInterface
+    public function setLocatorBasePath(string $locatorBasePath): ResourceInterface
     {
         $this->locatorBasePath = $locatorBasePath;
 
@@ -239,7 +247,11 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set the value of stream
+     *
+     * @param ResourceStreamInterface $stream
+     *
+     * @return self
      */
     public function setStream(ResourceStreamInterface $stream): self
     {

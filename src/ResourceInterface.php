@@ -58,15 +58,6 @@ interface ResourceInterface
     public function getLocation(): ?ResourceLocationInterface;
 
     /**
-     * Set the value of location
-     *
-     * @param ResourceLocationInterface|null $location
-     *
-     * @return self
-     */
-    public function setLocation(?ResourceLocationInterface $location): self;
-
-    /**
      * Magic function to convert the class into the resource absolute path.
      *
      * @return string The resource absolute path
@@ -84,37 +75,12 @@ interface ResourceInterface
     public function getPath(): string;
 
     /**
-     * Set relative path to the resource, above the locator base path
-     *
-     * @param string $path Relative path to the resource, above the locator base path
-     *
-     * @return self
-     */
-    public function setPath(string $path): self;
-
-    /**
      * @return string
      */
     public function getLocatorBasePath(): string;
 
     /**
-     * @param string $locatorBasePath
-     *
-     * @return static
-     */
-    public function setLocatorBasePath($locatorBasePath): self;
-
-    /**
      * @return ResourceStreamInterface
      */
     public function getStream(): ResourceStreamInterface;
-
-    /**
-     * Set the value of stream
-     *
-     * @param ResourceStreamInterface $stream
-     *
-     * @return self
-     */
-    public function setStream(ResourceStreamInterface $stream): self;
 }

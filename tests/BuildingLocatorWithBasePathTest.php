@@ -23,6 +23,6 @@ class BuildingLocatorWithBasePathTest extends BuildingLocatorTest
      */
     protected function getBasePath()
     {
-        return self::$locator->normalize($this->basePath).'/';
+        return self::$locator->normalize($this->basePath).DIRECTORY_SEPARATOR;
     }
 }

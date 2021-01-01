@@ -44,7 +44,7 @@ class Resource implements ResourceInterface
     /**
      * @var string Directory separator
      */
-    protected $separator = '/';
+    protected $separator = DIRECTORY_SEPARATOR;
 
     /**
      * @var ResourceStreamInterface
@@ -63,8 +63,7 @@ class Resource implements ResourceInterface
     {
         $this->stream = $stream;
         $this->location = $location;
-        // Normalise to unix-style path separator (for backwards compatibility)
-        $this->path = str_replace('\\', '/', $path);
+        $this->path = str_replace('\\', $this->separator, $path);
         $this->locatorBasePath = $locatorBasePath;
     }
 

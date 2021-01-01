@@ -73,7 +73,7 @@ class ResourceTest extends TestCase
      */
     public function testGetSetSeparator(ResourceInterface $resource)
     {
-        $this->assertSame('/', $resource->getSeparator());
+        $this->assertSame(DIRECTORY_SEPARATOR, $resource->getSeparator());
         $resource->setSeparator('&');
         $this->assertSame('&', $resource->getSeparator());
     }
@@ -149,6 +149,7 @@ class ResourceTest extends TestCase
         $basePaths = [
             '',
             '/',
+            '\\',
             'BasePath/',
             '/BasePath/',
         ];

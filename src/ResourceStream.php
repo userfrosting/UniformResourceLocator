@@ -42,7 +42,7 @@ class ResourceStream implements ResourceStreamInterface
     /**
      * @var string Directory separator
      */
-    protected $separator = '/';
+    protected $separator = DIRECTORY_SEPARATOR;
 
     /**
      * Constructor.

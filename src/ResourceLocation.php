@@ -32,7 +32,7 @@ class ResourceLocation implements ResourceLocationInterface
     /**
      * @var string Directory separator
      */
-    protected $separator = '/';
+    protected $separator = DIRECTORY_SEPARATOR;
 
     /**
      * Constructor.

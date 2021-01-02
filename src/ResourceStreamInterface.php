@@ -27,7 +27,7 @@ interface ResourceStreamInterface
      *
      * @return static
      */
-    public function setScheme($scheme): self;
+    public function setScheme($scheme);
 
     /**
      * @return string
@@ -39,7 +39,7 @@ interface ResourceStreamInterface
      *
      * @return static
      */
-    public function setPath($path): self;
+    public function setPath($path);
 
     /**
      * @return string
@@ -51,7 +51,7 @@ interface ResourceStreamInterface
      *
      * @return static
      */
-    public function setPrefix($prefix): self;
+    public function setPrefix($prefix);
 
     /**
      * @return bool
@@ -63,5 +63,5 @@ interface ResourceStreamInterface
      *
      * @return static
      */
-    public function setShared($shared): self;
+    public function setShared($shared);
 }

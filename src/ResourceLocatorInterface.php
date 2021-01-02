@@ -37,7 +37,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function addStream(ResourceStreamInterface $stream): self;
+    public function addStream(ResourceStreamInterface $stream);
 
     /**
      * Register a new stream.
@@ -49,7 +49,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false): self;
+    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false);
 
     /**
      * Unregister the specified stream.
@@ -58,7 +58,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function removeStream(string $scheme): self;
+    public function removeStream(string $scheme);
 
     /**
      * Return information about a specfic stream.
@@ -117,7 +117,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function addLocation(ResourceLocationInterface $location): self;
+    public function addLocation(ResourceLocationInterface $location);
 
     /**
      * Register a new location.
@@ -127,7 +127,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function registerLocation(string $name, ?string $path = null): self;
+    public function registerLocation(string $name, ?string $path = null);
 
     /**
      * Unregister the specified location.
@@ -136,7 +136,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function removeLocation(string $name): self;
+    public function removeLocation(string $name);
 
     /**
      * Get a location instance based on it's name.

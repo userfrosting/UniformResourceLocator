@@ -46,7 +46,7 @@ class ResourceTest extends TestCase
     }
 
     /**
-     * @return Resource
+     * @return \UserFrosting\UniformResourceLocator\Resource
      */
     public function testConstructor(): Resource
     {
@@ -59,7 +59,7 @@ class ResourceTest extends TestCase
     /**
      * @depends testConstructor
      *
-     * @param Resource $resource
+     * @param \UserFrosting\UniformResourceLocator\Resource $resource
      */
     public function testGetStreamAndGetLocation(Resource $resource): void
     {
@@ -70,7 +70,7 @@ class ResourceTest extends TestCase
     /**
      * @depends testConstructor
      *
-     * @param Resource $resource
+     * @param \UserFrosting\UniformResourceLocator\Resource $resource
      */
     public function testGetSetLocatorBasePath(Resource $resource): void
     {

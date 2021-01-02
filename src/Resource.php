@@ -167,7 +167,7 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Set the value of location
+     * Set the value of location.
      *
      * @param ResourceLocationInterface|null $location
      *
@@ -249,7 +249,7 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Set the value of stream
+     * Set the value of stream.
      *
      * @param ResourceStreamInterface $stream
      *

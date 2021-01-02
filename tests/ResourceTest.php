@@ -51,7 +51,7 @@ class ResourceTest extends TestCase
     public function testConstructor(): Resource
     {
         $resource = new Resource($this->stream, $this->location, $this->streamPath.'test.txt', 'basePath/');
-        $this->assertInstanceOf(ResourceInterface::class, $resource);   
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
 
         return $resource;
     }

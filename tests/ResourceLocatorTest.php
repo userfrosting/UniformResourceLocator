@@ -30,7 +30,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * Test instance & default values.
      */
-    public function testConstructor()
+    public function testConstructor(): ResourceLocator
     {
         $locator = new ResourceLocator();
         $this->assertInstanceOf(ResourceLocatorInterface::class, $locator);
@@ -42,7 +42,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testGetStreamBuilder()
+    public function testGetStreamBuilder(): void
     {
         $locator = new ResourceLocator();
         $streamBuilder = $locator->getStreamBuilder();
@@ -52,7 +52,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testGetBasePathWithEmptyConstructorArgument()
+    public function testGetBasePathWithEmptyConstructorArgument(): void
     {
         $locator = new ResourceLocator();
         $this->assertEquals('', $locator->getBasePath());
@@ -61,7 +61,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testSetBasePathWithConstructorArgument()
+    public function testSetBasePathWithConstructorArgument(): void
     {
         $locator = new ResourceLocator(__DIR__.'/Building');
         $this->assertEquals(__DIR__.'/Building/', $locator->getBasePath());
@@ -70,7 +70,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testSetBasePath()
+    public function testSetBasePath(): void
     {
         $locator = new ResourceLocator();
         $locator->setBasePath(__DIR__.'/Building');
@@ -80,7 +80,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testAddStream()
+    public function testAddStream(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
@@ -99,7 +99,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testRegisterStream()
+    public function testRegisterStream(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
@@ -117,7 +117,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterStream
      */
-    public function testRegisterSharedStream()
+    public function testRegisterSharedStream(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
@@ -136,7 +136,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterSharedStream
      */
-    public function testRegisterSharedStreamShort()
+    public function testRegisterSharedStreamShort(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
@@ -155,7 +155,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterStream
      */
-    public function testRegisterStreamWithPrefix()
+    public function testRegisterStreamWithPrefix(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
@@ -175,7 +175,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterStream
      */
-    public function testRegisterStreamWithOutPath()
+    public function testRegisterStreamWithOutPath(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
@@ -193,7 +193,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterStream
      */
-    public function testStreamNotFoundException()
+    public function testStreamNotFoundException(): void
     {
         $locator = new ResourceLocator();
         $this->expectException(StreamNotFoundException::class);
@@ -203,7 +203,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterStream
      */
-    public function testAddStreamThrowExceptionOnRestrictedScheme()
+    public function testAddStreamThrowExceptionOnRestrictedScheme(): void
     {
         $locator = new ResourceLocator();
         $this->expectException(\InvalidArgumentException::class);
@@ -213,7 +213,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterStream
      */
-    public function testRemoveStream()
+    public function testRemoveStream(): void
     {
         $locator = new ResourceLocator();
         $locator->registerStream('bar');
@@ -229,7 +229,7 @@ class ResourceLocatorTest extends TestCase
      * @param string       $path
      * @param string|array $lookup
      */
-    public function testAddPath($scheme, $path, $lookup)
+    public function testAddPath($scheme, $path, $lookup): void
     {
         $locator = new ResourceLocator();
 
@@ -243,7 +243,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * Data provider for testAddPath.
      */
-    public function addPathProvider()
+    public function addPathProvider(): array
     {
         return [
             ['base', '', 'base'],
@@ -256,7 +256,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testGetStreams()
+    public function testGetStreams(): void
     {
         $locator = new ResourceLocator();
         $locator->registerStream('bar');
@@ -272,7 +272,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testListStreams()
+    public function testListStreams(): void
     {
         $locator = new ResourceLocator();
         $locator->registerStream('bar');
@@ -284,7 +284,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testIsStream()
+    public function testIsStream(): void
     {
         $locator = new ResourceLocator();
         $locator->registerStream('foo');
@@ -296,7 +296,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testIsStream
      */
-    public function testIsStreamReturnFalseOnBadUri()
+    public function testIsStreamReturnFalseOnBadUri(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->isStream('path/to/../../../file.txt'));
@@ -305,7 +305,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testAddLocation()
+    public function testAddLocation(): void
     {
         $locator = new ResourceLocator();
 
@@ -320,7 +320,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testAddLocation
      */
-    public function testRegisterLocation()
+    public function testRegisterLocation(): void
     {
         $locator = new ResourceLocator();
 
@@ -334,7 +334,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testAddLocation
      */
-    public function testRegisterLocationWithNoPath()
+    public function testRegisterLocationWithNoPath(): void
     {
         $locator = new ResourceLocator();
 
@@ -348,7 +348,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testAddLocation
      */
-    public function testGetLocationThrowExceptionIfNotFound()
+    public function testGetLocationThrowExceptionIfNotFound(): void
     {
         $locator = new ResourceLocator();
         $this->expectException(LocationNotFoundException::class);
@@ -358,7 +358,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterLocation
      */
-    public function testGetLocations()
+    public function testGetLocations(): void
     {
         $locator = new ResourceLocator();
         $locator->registerLocation('bar', '/foo');
@@ -374,7 +374,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterLocation
      */
-    public function testListLocations()
+    public function testListLocations(): void
     {
         $locator = new ResourceLocator();
         $locator->registerLocation('bar', '/foo');
@@ -387,7 +387,7 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterLocation
      */
-    public function testRemoveLocation()
+    public function testRemoveLocation(): void
     {
         $locator = new ResourceLocator();
         $locator->registerLocation('bar', '/foo/');
@@ -403,7 +403,7 @@ class ResourceLocatorTest extends TestCase
      * @depends testGetLocations
      * @depends testGetStreams
      */
-    public function testResourceLocator_reset()
+    public function testResourceLocator_reset(): void
     {
         $locator = new ResourceLocator();
         $locator->registerLocation('bar');

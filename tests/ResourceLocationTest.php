@@ -22,7 +22,7 @@ class ResourceLocationTest extends TestCase
     /**
      * Test ResourceLocation class.
      */
-    public function testResourceLocation()
+    public function testResourceLocation(): void
     {
         // Test instance & default values
         $location = new ResourceLocation('');
@@ -41,7 +41,7 @@ class ResourceLocationTest extends TestCase
     /**
      * Now try again with the info in the constructor.
      */
-    public function testResourceLocation_ctor()
+    public function testResourceLocation_ctor(): void
     {
         $location = new ResourceLocation('bar', '/foo');
         $this->assertEquals('bar', $location->getName());
@@ -51,7 +51,7 @@ class ResourceLocationTest extends TestCase
     /**
      * @depends testResourceLocation_ctor
      */
-    public function testResourceLocation_ctorWithSupressesRightSlashe()
+    public function testResourceLocation_ctorWithSupressesRightSlashe(): void
     {
         $location = new ResourceLocation('bar', '/foo/');
         $this->assertEquals('bar', $location->getName());
@@ -61,7 +61,7 @@ class ResourceLocationTest extends TestCase
     /**
      * @depends testResourceLocation_ctor
      */
-    public function testResourceLocation_ctoOmittedPathEqualsName()
+    public function testResourceLocation_ctoOmittedPathEqualsName(): void
     {
         $location = new ResourceLocation('bar');
         $this->assertEquals('bar', $location->getName());

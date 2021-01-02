@@ -22,7 +22,7 @@ class ResourceStreamTest extends TestCase
     /**
      * Test ResourceStream Class.
      */
-    public function testResourceStream()
+    public function testResourceStream(): void
     {
         // Test instance & default values
         $stream = new ResourceStream('');
@@ -45,7 +45,7 @@ class ResourceStreamTest extends TestCase
     /**
      * Now try again with the info in the constructor.
      */
-    public function testResourceStream_ctor()
+    public function testResourceStream_ctor(): void
     {
         $stream = new ResourceStream('bar', '', '/foo', true);
         $this->assertEquals('bar', $stream->getScheme());
@@ -56,7 +56,7 @@ class ResourceStreamTest extends TestCase
     /**
      * When no path is defined, the name should be used.
      */
-    public function testResourceStream_noPath()
+    public function testResourceStream_noPath(): void
     {
         $stream = new ResourceStream('etc');
         $this->assertEquals('etc', $stream->getScheme());

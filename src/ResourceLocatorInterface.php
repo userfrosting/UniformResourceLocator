@@ -37,7 +37,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function addStream(ResourceStreamInterface $stream);
+    public function addStream(ResourceStreamInterface $stream): self;
 
     /**
      * Register a new stream.
@@ -49,7 +49,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false);
+    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false): self;
 
     /**
      * Unregister the specified stream.
@@ -58,7 +58,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function removeStream(string $scheme);
+    public function removeStream(string $scheme): self;
 
     /**
      * Return information about a specfic stream.
@@ -108,7 +108,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return bool
      */
-    public function schemeExists(string $scheme);
+    public function schemeExists(string $scheme): bool;
 
     /**
      * Add an existing RessourceLocation instance to the location list.
@@ -117,7 +117,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function addLocation(ResourceLocationInterface $location);
+    public function addLocation(ResourceLocationInterface $location): self;
 
     /**
      * Register a new location.
@@ -127,7 +127,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function registerLocation(string $name, ?string $path = null);
+    public function registerLocation(string $name, ?string $path = null): self;
 
     /**
      * Unregister the specified location.
@@ -136,7 +136,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function removeLocation(string $name);
+    public function removeLocation(string $name): self;
 
     /**
      * Get a location instance based on it's name.
@@ -208,5 +208,5 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
     /**
      * @return string
      */
-    public function getBasePath();
+    public function getBasePath(): string;
 }

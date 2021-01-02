@@ -31,7 +31,7 @@ class NormalizerTest extends TestCase
     /**
      * Data provider for testNormalize.
      */
-    public function normalizeProvider()
+    public function normalizeProvider(): array
     {
         return [
             ['', ''],
@@ -101,7 +101,7 @@ class NormalizerTest extends TestCase
     /**
      * Data provider for testNormalize.
      */
-    public function normalizePathProvider()
+    public function normalizePathProvider(): array
     {
         return [
             ['', ''],

@@ -108,7 +108,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function addStream(ResourceStreamInterface $stream)
+    public function addStream(ResourceStreamInterface $stream): self
     {
         if (in_array($stream->getScheme(), $this->reservedStreams)) {
             throw new InvalidArgumentException("Can't add restricted stream scheme {$stream->getScheme()}.");
@@ -159,7 +159,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false)
+    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false): self
     {
         if (is_null($paths)) {
             $stream = new ResourceStream($scheme, $prefix, null, $shared);
@@ -187,7 +187,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function registerSharedStream(string $scheme, string $prefix = '', $paths = null)
+    public function registerSharedStream(string $scheme, string $prefix = '', $paths = null): self
     {
         return $this->registerStream($scheme, $prefix, $paths, true);
     }
@@ -211,7 +211,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function removeStream(string $scheme)
+    public function removeStream(string $scheme): self
     {
         if (isset($this->streams[$scheme])) {
             $this->unsetStreamWrapper($scheme);
@@ -260,7 +260,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function addLocation(ResourceLocationInterface $location)
+    public function addLocation(ResourceLocationInterface $location): self
     {
         $this->locations[$location->getName()] = $location;
 
@@ -270,7 +270,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function registerLocation(string $name, ?string $path = null)
+    public function registerLocation(string $name, ?string $path = null): self
     {
         $location = new ResourceLocation($name, $path);
         $this->addLocation($location);
@@ -281,7 +281,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function removeLocation(string $name)
+    public function removeLocation(string $name): self
     {
         unset($this->locations[$name]);
 
@@ -400,7 +400,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function reset()
+    public function reset(): self
     {
         $this->streams = [];
         $this->locations = [];
@@ -613,7 +613,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * @return StreamBuilder
      */
-    public function getStreamBuilder()
+    public function getStreamBuilder(): StreamBuilder
     {
         return $this->streamBuilder;
     }
@@ -621,7 +621,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getBasePath()
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
@@ -631,7 +631,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function setBasePath(string $basePath)
+    public function setBasePath(string $basePath): self
     {
         $this->basePath = Normalizer::normalizePath($basePath);
 

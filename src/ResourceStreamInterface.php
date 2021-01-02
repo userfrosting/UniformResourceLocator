@@ -20,48 +20,48 @@ interface ResourceStreamInterface
     /**
      * @return string
      */
-    public function getScheme();
+    public function getScheme(): string;
 
     /**
      * @param string $scheme
      *
      * @return static
      */
-    public function setScheme($scheme);
+    public function setScheme($scheme): self;
 
     /**
      * @return string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * @param string $path (default null)
      *
      * @return static
      */
-    public function setPath($path);
+    public function setPath($path): self;
 
     /**
      * @return string
      */
-    public function getPrefix();
+    public function getPrefix(): string;
 
     /**
      * @param string $prefix
      *
      * @return static
      */
-    public function setPrefix($prefix);
+    public function setPrefix($prefix): self;
 
     /**
      * @return bool
      */
-    public function isShared();
+    public function isShared(): bool;
 
     /**
      * @param bool $shared
      *
      * @return static
      */
-    public function setShared($shared);
+    public function setShared($shared): self;
 }

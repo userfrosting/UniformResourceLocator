@@ -25,7 +25,7 @@ class DocTest extends TestCase
     /**
      * Setup the shared locator.
      */
-    public function testDocExample()
+    public function testDocExample(): void
     {
         // Create Locator
         $locator = new ResourceLocator(__DIR__.'/app/');
@@ -150,7 +150,7 @@ class DocTest extends TestCase
         ], $locations);
     }
 
-    protected function getBasePath()
+    protected function getBasePath(): string
     {
         return Normalizer::normalizePath(__DIR__);
     }

@@ -15,6 +15,7 @@ use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface as BaseResource
 use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
+use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
@@ -64,7 +65,7 @@ class ResourceLocatorTest extends TestCase
     public function testSetBasePathWithConstructorArgument(): void
     {
         $locator = new ResourceLocator(__DIR__.'/Building');
-        $this->assertEquals(__DIR__.'/Building/', $locator->getBasePath());
+        $this->assertEquals(Normalizer::normalizePath(__DIR__.'/Building'), $locator->getBasePath());
     }
 
     /**
@@ -74,7 +75,7 @@ class ResourceLocatorTest extends TestCase
     {
         $locator = new ResourceLocator();
         $locator->setBasePath(__DIR__.'/Building');
-        $this->assertEquals(__DIR__.'/Building/', $locator->getBasePath());
+        $this->assertEquals(Normalizer::normalizePath(__DIR__.'/Building'), $locator->getBasePath());
     }
 
     /**

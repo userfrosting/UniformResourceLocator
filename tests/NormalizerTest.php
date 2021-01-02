@@ -56,6 +56,8 @@ class NormalizerTest extends TestCase
             ['/path/to/../../file.txt', '/file.txt'],
             ['/path/to/../../../file.txt', false],
             ['c:\\', 'c:/'],
+            ['c:\\bar\\foo', 'c:/bar/foo'],
+            ['c:\\bar/foo', 'c:/bar/foo'],
             ['c:\\path\\to\file.txt', 'c:/path/to/file.txt'],
             ['c:\\path\\to\../file.txt', 'c:/path/file.txt'],
             ['c:\\path\\to\../../file.txt', 'c:/file.txt'],
@@ -84,5 +86,37 @@ class NormalizerTest extends TestCase
     {
         $this->expectException(\BadMethodCallException::class);
         Normalizer::normalize('path/to/../../../file.txt', true);
+    }
+
+    /**
+     * @param string      $uri
+     * @param string|bool $path Expected result
+     * @dataProvider normalizePathProvider
+     */
+    public function testNormalizePath(string $uri, $path): void
+    {
+        $this->assertEquals($path, Normalizer::normalizePath($uri));
+    }
+
+    /**
+     * Data provider for testNormalize.
+     */
+    public function normalizePathProvider()
+    {
+        return [
+            ['', ''],
+            ['./', ''],
+            ['/', '/'],
+            ['//', '/'],
+            ['///', '/'],
+            ['foo', 'foo/'],
+            ['/foo', '/foo/'],
+            ['//foo', '/foo/'],
+            ['/foo/', '/foo/'],
+            ['//foo//', '/foo/'],
+            ['c:\\', 'c:/'],
+            ['c:\\bar\\foo', 'c:/bar/foo/'],
+            ['c:\\bar/foo', 'c:/bar/foo/'],
+        ];
     }
 }

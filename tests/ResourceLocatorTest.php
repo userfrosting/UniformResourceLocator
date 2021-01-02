@@ -64,7 +64,7 @@ class ResourceLocatorTest extends TestCase
     public function testSetBasePathWithConstructorArgument()
     {
         $locator = new ResourceLocator(__DIR__.'/Building');
-        $this->assertEquals(__DIR__.'/Building', $locator->getBasePath());
+        $this->assertEquals(__DIR__.'/Building/', $locator->getBasePath());
     }
 
     /**
@@ -74,7 +74,7 @@ class ResourceLocatorTest extends TestCase
     {
         $locator = new ResourceLocator();
         $locator->setBasePath(__DIR__.'/Building');
-        $this->assertEquals(__DIR__.'/Building', $locator->getBasePath());
+        $this->assertEquals(__DIR__.'/Building/', $locator->getBasePath());
     }
 
     /**
@@ -93,7 +93,7 @@ class ResourceLocatorTest extends TestCase
         $barStream = $locator->getStream('bar');
         $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('foo', $barStream[''][0]->getPath());
+        $this->assertEquals('foo/', $barStream[''][0]->getPath());
     }
 
     /**
@@ -111,7 +111,7 @@ class ResourceLocatorTest extends TestCase
         $barStream = $locator->getStream('bar');
         $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('foo', $barStream[''][0]->getPath());
+        $this->assertEquals('foo/', $barStream[''][0]->getPath());
     }
 
     /**
@@ -129,7 +129,7 @@ class ResourceLocatorTest extends TestCase
         $barStream = $locator->getStream('bar');
         $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('foo', $barStream[''][0]->getPath());
+        $this->assertEquals('foo/', $barStream[''][0]->getPath());
         $this->assertTrue($barStream[''][0]->isShared());
     }
 
@@ -148,7 +148,7 @@ class ResourceLocatorTest extends TestCase
         $barStream = $locator->getStream('bar');
         $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('foo', $barStream[''][0]->getPath());
+        $this->assertEquals('foo/', $barStream[''][0]->getPath());
         $this->assertTrue($barStream[''][0]->isShared());
     }
 
@@ -168,8 +168,8 @@ class ResourceLocatorTest extends TestCase
         $barStream = $locator->getStream('bar');
         $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream['prefix'][0]);
-        $this->assertEquals('foo', $barStream[''][0]->getPath());
-        $this->assertEquals('oof', $barStream['prefix'][0]->getPath());
+        $this->assertEquals('foo/', $barStream[''][0]->getPath());
+        $this->assertEquals('oof/', $barStream['prefix'][0]->getPath());
     }
 
     /**
@@ -187,7 +187,7 @@ class ResourceLocatorTest extends TestCase
         $barStream = $locator->getStream('bar');
         $this->assertIsArray($barStream);
         $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('bar', $barStream[''][0]->getPath());
+        $this->assertEquals('bar/', $barStream[''][0]->getPath());
     }
 
     /**
@@ -266,7 +266,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertIsArray($streams);
         $this->assertCount(2, $streams);
         $this->assertInstanceOf(ResourceStreamInterface::class, $streams['bar'][''][0]);
-        $this->assertEquals('bar', $streams['bar'][''][0]->getPath());
+        $this->assertEquals('bar/', $streams['bar'][''][0]->getPath());
     }
 
     /**
@@ -314,7 +314,7 @@ class ResourceLocatorTest extends TestCase
 
         $barLocation = $locator->getLocation('bar');
         $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
-        $this->assertEquals('/foo', $barLocation->getPath());
+        $this->assertEquals('/foo/', $barLocation->getPath());
     }
 
     /**
@@ -328,7 +328,7 @@ class ResourceLocatorTest extends TestCase
 
         $barLocation = $locator->getLocation('bar');
         $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
-        $this->assertEquals('/foo', $barLocation->getPath());
+        $this->assertEquals('/foo/', $barLocation->getPath());
     }
 
     /**
@@ -342,7 +342,7 @@ class ResourceLocatorTest extends TestCase
 
         $barLocation = $locator->getLocation('blah');
         $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
-        $this->assertEquals('blah', $barLocation->getPath());
+        $this->assertEquals('blah/', $barLocation->getPath());
     }
 
     /**
@@ -368,7 +368,7 @@ class ResourceLocatorTest extends TestCase
         $this->assertIsArray($locations);
         $this->assertCount(2, $locations);
         $this->assertInstanceOf(ResourceLocationInterface::class, $locations['bar']);
-        $this->assertEquals('/foo', $locations['bar']->getPath());
+        $this->assertEquals('/foo/', $locations['bar']->getPath());
     }
 
     /**
@@ -378,7 +378,7 @@ class ResourceLocatorTest extends TestCase
     {
         $locator = new ResourceLocator();
         $locator->registerLocation('bar', '/foo');
-        $locator->registerLocation('foo', '/bar');
+        $locator->registerLocation('foo', '/bar/');
 
         // N.B.: Locations are list with the latest one (top priority) first
         $this->assertEquals(['foo', 'bar'], $locator->listLocations());
@@ -390,7 +390,7 @@ class ResourceLocatorTest extends TestCase
     public function testRemoveLocation()
     {
         $locator = new ResourceLocator();
-        $locator->registerLocation('bar', '/foo');
+        $locator->registerLocation('bar', '/foo/');
         $locator->registerLocation('foo', '/bar');
 
         $locator->removeLocation('bar');

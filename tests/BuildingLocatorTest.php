@@ -712,6 +712,6 @@ class BuildingLocatorTest extends TestCase
      */
     protected function getBasePath()
     {
-        return rtrim(Normalizer::normalize($this->basePath), '/').'/';
+        return Normalizer::normalizePath($this->basePath);
     }
 }

@@ -94,7 +94,7 @@ class ResourceStream implements ResourceStreamInterface
      */
     public function setPath($path)
     {
-        $this->path = rtrim(Normalizer::normalize($path), '/');
+        $this->path = Normalizer::normalizePath($path);
 
         return $this;
     }

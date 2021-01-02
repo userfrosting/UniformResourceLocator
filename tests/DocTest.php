@@ -41,13 +41,13 @@ class DocTest extends TestCase
         // Finding Files
         // 1) Find Resource
         $default = $locator->findResource('config://default.json');
-        $this->assertSame($this->getBasePath().'/app/floors/Floor2/config/default.json', $default);
+        $this->assertSame($this->getBasePath().'app/floors/Floor2/config/default.json', $default);
 
         // 2) getRerouce
         $defaultResource = $locator->getResource('config://default.json');
         $this->assertInstanceOf(ResourceInterface::class, $defaultResource);
 
-        $this->assertSame($this->getBasePath().'/app/floors/Floor2/config/default.json', $defaultResource->getAbsolutePath());
+        $this->assertSame($this->getBasePath().'app/floors/Floor2/config/default.json', $defaultResource->getAbsolutePath());
         $this->assertSame('floors/Floor2/config/default.json', $defaultResource->getPath());
         $this->assertSame('default.json', $defaultResource->getBasePath());
         $this->assertSame('default.json', $defaultResource->getBasename());
@@ -60,13 +60,13 @@ class DocTest extends TestCase
         $this->assertInstanceOf(ResourceLocationInterface::class, $defaultResourceLocation);
 
         $this->assertSame('Floor2', $defaultResourceLocation->getName());
-        $this->assertSame('floors/Floor2', $defaultResourceLocation->getPath());
+        $this->assertSame('floors/Floor2/', $defaultResourceLocation->getPath());
 
         // 4) GetStream
         $defaultResourceStream = $defaultResource->getStream();
         $this->assertInstanceOf(ResourceStreamInterface::class, $defaultResourceStream);
 
-        $this->assertSame('config', $defaultResourceStream->getPath());
+        $this->assertSame('config/', $defaultResourceStream->getPath());
         $this->assertSame('', $defaultResourceStream->getPrefix());
         $this->assertSame('config', $defaultResourceStream->getScheme());
         $this->assertSame(false, $defaultResourceStream->isShared());
@@ -74,21 +74,21 @@ class DocTest extends TestCase
         // 5) FindResources
         $defaults = $locator->findResources('config://default.json');
         $this->assertSame([
-            $this->getBasePath().'/app/floors/Floor2/config/default.json',
-            $this->getBasePath().'/app/floors/Floor1/config/default.json',
+            $this->getBasePath().'app/floors/Floor2/config/default.json',
+            $this->getBasePath().'app/floors/Floor1/config/default.json',
         ], $defaults);
 
         // Finding Files - upload://profile
         // 1) Find Resource
         $upload = $locator->findResource('upload://profile');
-        $this->assertSame($this->getBasePath().'/app/uploads/profile', $upload);
+        $this->assertSame($this->getBasePath().'app/uploads/profile', $upload);
 
         // 2) getRerouce
         $uploadResource = $locator->getResource('upload://profile');
         $this->assertInstanceOf(ResourceInterface::class, $uploadResource);
 
-        $this->assertSame($this->getBasePath().'/app/uploads/profile', $uploadResource->getAbsolutePath());
-        $this->assertSame('uploads/profile', $uploadResource->getPath());
+        $this->assertSame($this->getBasePath().'app/uploads/profile', $uploadResource->getAbsolutePath());
+        $this->assertSame('uploads/profile', $uploadResource->getPath()); // N.B.: No `/` at the end, because we didn't ask for it in `findResource`
         $this->assertSame('profile', $uploadResource->getBasePath());
         $this->assertSame('profile', $uploadResource->getBasename());
         $this->assertSame('', $uploadResource->getExtension());
@@ -98,41 +98,41 @@ class DocTest extends TestCase
         // 3) FindResources
         $defaults = $locator->findResources('upload://profile');
         $this->assertSame([
-            $this->getBasePath().'/app/uploads/profile',
+            $this->getBasePath().'app/uploads/profile',
         ], $defaults);
 
         // ListResources
         $list = $locator->listResources('config://');
         $this->assertEquals([
-            $this->getBasePath().'/app/floors/Floor1/config/debug.json',
-            $this->getBasePath().'/app/floors/Floor2/config/default.json',
-            $this->getBasePath().'/app/floors/Floor2/config/foo/bar.json',
-            $this->getBasePath().'/app/floors/Floor2/config/production.json',
+            $this->getBasePath().'app/floors/Floor1/config/debug.json',
+            $this->getBasePath().'app/floors/Floor2/config/default.json',
+            $this->getBasePath().'app/floors/Floor2/config/foo/bar.json',
+            $this->getBasePath().'app/floors/Floor2/config/production.json',
         ], $list);
 
         // ListResources - All
         $list = $locator->listResources('config://', true);
         $this->assertEquals([
-            $this->getBasePath().'/app/floors/Floor1/config/debug.json',
-            $this->getBasePath().'/app/floors/Floor1/config/default.json',
-            $this->getBasePath().'/app/floors/Floor2/config/default.json',
-            $this->getBasePath().'/app/floors/Floor2/config/foo/bar.json',
-            $this->getBasePath().'/app/floors/Floor2/config/production.json',
+            $this->getBasePath().'app/floors/Floor1/config/debug.json',
+            $this->getBasePath().'app/floors/Floor1/config/default.json',
+            $this->getBasePath().'app/floors/Floor2/config/default.json',
+            $this->getBasePath().'app/floors/Floor2/config/foo/bar.json',
+            $this->getBasePath().'app/floors/Floor2/config/production.json',
         ], $list);
 
         // ListResources - Sort
         $list = $locator->listResources('config://', false, false);
         $this->assertEquals([
-            $this->getBasePath().'/app/floors/Floor2/config/default.json',
-            $this->getBasePath().'/app/floors/Floor2/config/foo/bar.json',
-            $this->getBasePath().'/app/floors/Floor2/config/production.json',
-            $this->getBasePath().'/app/floors/Floor1/config/debug.json',
+            $this->getBasePath().'app/floors/Floor2/config/default.json',
+            $this->getBasePath().'app/floors/Floor2/config/foo/bar.json',
+            $this->getBasePath().'app/floors/Floor2/config/production.json',
+            $this->getBasePath().'app/floors/Floor1/config/debug.json',
         ], $list);
 
         // ListReources - Folder
         $list = $locator->listResources('config://foo/', true);
         $this->assertEquals([
-            $this->getBasePath().'/app/floors/Floor2/config/foo/bar.json',
+            $this->getBasePath().'app/floors/Floor2/config/foo/bar.json',
         ], $list);
 
         // listStreams
@@ -152,6 +152,6 @@ class DocTest extends TestCase
 
     protected function getBasePath()
     {
-        return Normalizer::normalize(__DIR__);
+        return Normalizer::normalizePath(__DIR__);
     }
 }

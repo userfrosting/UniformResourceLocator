@@ -35,7 +35,7 @@ class ResourceLocationTest extends TestCase
         $this->assertEquals('foo', $location->getName());
 
         $location->setPath('/bar');
-        $this->assertEquals('/bar', $location->getPath());
+        $this->assertEquals('/bar/', $location->getPath());
     }
 
     /**
@@ -45,7 +45,7 @@ class ResourceLocationTest extends TestCase
     {
         $location = new ResourceLocation('bar', '/foo');
         $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('/foo', $location->getPath());
+        $this->assertEquals('/foo/', $location->getPath());
     }
 
     /**
@@ -55,7 +55,7 @@ class ResourceLocationTest extends TestCase
     {
         $location = new ResourceLocation('bar', '/foo/');
         $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('/foo', $location->getPath());
+        $this->assertEquals('/foo/', $location->getPath());
     }
 
     /**
@@ -65,6 +65,6 @@ class ResourceLocationTest extends TestCase
     {
         $location = new ResourceLocation('bar');
         $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('bar', $location->getPath());
+        $this->assertEquals('bar/', $location->getPath());
     }
 }

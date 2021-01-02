@@ -80,7 +80,7 @@ class ResourceLocation implements ResourceLocationInterface
      */
     public function setPath(string $path): ResourceLocationInterface
     {
-        $this->path = rtrim(Normalizer::normalize($path), '/');
+        $this->path = Normalizer::normalizePath($path);
 
         return $this;
     }

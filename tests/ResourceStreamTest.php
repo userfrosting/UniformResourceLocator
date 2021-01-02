@@ -36,7 +36,7 @@ class ResourceStreamTest extends TestCase
         $this->assertEquals('foo', $stream->getScheme());
 
         $stream->setPath('/bar');
-        $this->assertEquals('/bar', $stream->getPath());
+        $this->assertEquals('/bar/', $stream->getPath());
 
         $stream->setShared(true);
         $this->assertTrue($stream->isShared());
@@ -49,7 +49,7 @@ class ResourceStreamTest extends TestCase
     {
         $stream = new ResourceStream('bar', '', '/foo', true);
         $this->assertEquals('bar', $stream->getScheme());
-        $this->assertEquals('/foo', $stream->getPath());
+        $this->assertEquals('/foo/', $stream->getPath());
         $this->assertTrue($stream->isShared());
     }
 
@@ -60,6 +60,6 @@ class ResourceStreamTest extends TestCase
     {
         $stream = new ResourceStream('etc');
         $this->assertEquals('etc', $stream->getScheme());
-        $this->assertEquals('etc', $stream->getPath());
+        $this->assertEquals('etc/', $stream->getPath());
     }
 }

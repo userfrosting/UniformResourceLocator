@@ -11,6 +11,7 @@
 namespace UserFrosting\UniformResourceLocator\Tests;
 
 use PHPUnit\Framework\TestCase;
+use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\Resource;
 use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
@@ -105,6 +106,7 @@ class ResourceTest extends TestCase
         $this->assertSame($this->streamScheme.'://'.$path, $resource->getUri());
 
         // Test `getAbsolutePath` and `__toString`
+        $basePath = Normalizer::normalizePath($basePath);
         $this->assertSame($basePath.$locationPath.$this->streamPath.$path, $resource->getAbsolutePath());
         $this->assertSame($resource->getAbsolutePath(), (string) $resource);
     }
@@ -138,8 +140,12 @@ class ResourceTest extends TestCase
             '',
             '/',
             '\\',
+            'C:\\',
+            'C:\\BasePath\\',
+            'C:\\BasePath',
             'BasePath/',
             '/BasePath/',
+            '/BasePath',
         ];
 
         $data = [];
@@ -187,6 +193,8 @@ class ResourceTest extends TestCase
             ['Garage/'],
             ['/Garage/cars'],
             ['/Garage/cars/'],
+            ['/'],
+            [''],
         ];
     }
 
@@ -220,6 +228,7 @@ class ResourceTest extends TestCase
             // RelPath, basename, filename, extension
             ['test.txt', 'test.txt', 'test', 'txt'],
             ['/foo/test.txt', 'test.txt', 'test', 'txt'],
+            ['C:\\foo\\test.txt', 'test.txt', 'test', 'txt'],
             ['foo/test.txt', 'test.txt', 'test', 'txt'],
             ['/test.txt', 'test.txt', 'test', 'txt'],
             ['lib.inc.php', 'lib.inc.php', 'lib.inc', 'php'],

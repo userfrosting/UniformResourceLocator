@@ -117,11 +117,13 @@ class Resource implements ResourceInterface
             $searchPattern = Normalizer::normalize($locatorPath.'/'.$searchPattern);
         }
 
+        // Remove any `/` from the search pattern, as any locator/stream path will have a trailling slash
+        $searchPattern = rtrim($searchPattern, '/');
+
         // Remove the search path from the beginning of the resource path
         // then trim any beginning slashes from the resulting path
         $result = preg_replace('#^'.preg_quote($searchPattern).'#', '', $this->getPath());
         $result = ltrim($result, '/');
-        $result = ltrim($result, '\\');
 
         return $result;
     }
@@ -205,9 +207,9 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Set relative path to the resource, above the locator base path
+     * Set relative path to the resource, above the locator base path.
      *
-     * @param string $path Relative path to the resource, above the locator base path
+     * @param string $path Relative path to the resource, above the locator base path. Can be a directory or a file.
      *
      * @return self
      */
@@ -227,13 +229,13 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * @param string $locatorBasePath
+     * @param string $locatorBasePath Path to the locator. Will be a directory.
      *
      * @return static
      */
     public function setLocatorBasePath(string $locatorBasePath): ResourceInterface
     {
-        $this->locatorBasePath = $locatorBasePath;
+        $this->locatorBasePath = Normalizer::normalizePath($locatorBasePath);
 
         return $this;
     }

@@ -17,6 +17,13 @@ jobs:
         php_versions: ['7.1', '7.2', '7.3', '7.4', '8.0']
         laravel: ['5.8.*', '8.12.*']
         os: [ubuntu-latest, windows-latest]
+        exclude:
+          - php_versions: '7.1'
+            laravel: '8.12.*'
+          - php_versions: '7.2'
+            laravel: '8.12.*'
+          - php_versions: '8.0'
+            laravel: '5.8.*'
 
     runs-on: ${{ matrix.os }}
     name: PHPUnit Tests - ${{ matrix.php_versions }} - ${{ matrix.os }} - ${{ matrix.laravel }}

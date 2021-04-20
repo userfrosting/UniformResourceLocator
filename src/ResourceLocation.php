@@ -30,11 +30,6 @@ class ResourceLocation implements ResourceLocationInterface
     protected $path;
 
     /**
-     * @var string Directory separator
-     */
-    protected $separator = '/';
-
-    /**
      * Constructor.
      *
      * @param string      $name
@@ -85,7 +80,7 @@ class ResourceLocation implements ResourceLocationInterface
      */
     public function setPath(string $path): ResourceLocationInterface
     {
-        $this->path = rtrim($path, $this->separator);
+        $this->path = Normalizer::normalizePath($path);
 
         return $this;
     }

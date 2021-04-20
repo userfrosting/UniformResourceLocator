@@ -20,7 +20,7 @@ interface ResourceStreamInterface
     /**
      * @return string
      */
-    public function getScheme();
+    public function getScheme(): string;
 
     /**
      * @param string $scheme
@@ -32,7 +32,7 @@ interface ResourceStreamInterface
     /**
      * @return string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * @param string $path (default null)
@@ -44,7 +44,7 @@ interface ResourceStreamInterface
     /**
      * @return string
      */
-    public function getPrefix();
+    public function getPrefix(): string;
 
     /**
      * @param string $prefix
@@ -56,7 +56,7 @@ interface ResourceStreamInterface
     /**
      * @return bool
      */
-    public function isShared();
+    public function isShared(): bool;
 
     /**
      * @param bool $shared

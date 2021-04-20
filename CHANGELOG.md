@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.5.0]
+- Fix path issue on Windows
+- Added new `Normalizer::normalize` static class to help with path normalization. All paths are now transmormed to `/` to make comparison easier when OS pass path contains `\` or `C:\`.
+- Reworked `Resource` class : 
+  - Added `setPath`, `setLocation` & `setStream` methods
+  - Removed `getSeparator` & `setSeparator`
+- Removed `setLocatorBasePath`, `getSeparator` and `setSeparator` from `ResourceInterface` 
+- Removed `normalize` from `ResourceLocator`. Replaced by `Normalizer::normalize`
+- Added type hint across code
+
 ## [4.4.3]
 - Replaced Travis with GitHub Action for build
 - Upgrade deprecation in tests
@@ -68,6 +78,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Security
 -->
 
+[4.4.3]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.3...4.5.0
 [4.4.3]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.2...4.4.3
 [4.4.2]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.1...4.4.2
 [4.4.1]: https://github.com/userfrosting/uniformresourcelocator/compare/4.4.0...4.4.1

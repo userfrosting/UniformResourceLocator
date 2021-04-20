@@ -108,7 +108,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return bool
      */
-    public function schemeExists(string $scheme);
+    public function schemeExists(string $scheme): bool;
 
     /**
      * Add an existing RessourceLocation instance to the location list.
@@ -208,5 +208,5 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
     /**
      * @return string
      */
-    public function getBasePath();
+    public function getBasePath(): string;
 }

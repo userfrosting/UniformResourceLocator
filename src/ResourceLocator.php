@@ -62,7 +62,8 @@ class ResourceLocator implements ResourceLocatorInterface
     protected $filesystem;
 
     /**
-     * @var string Directory separator
+     * @var string Directory separator.
+     *             N.B.: Will always be `/` regardless of the OS, as they are all added after normalization.
      */
     protected $separator = '/';
 
@@ -107,7 +108,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function addStream(ResourceStreamInterface $stream)
+    public function addStream(ResourceStreamInterface $stream): self
     {
         if (in_array($stream->getScheme(), $this->reservedStreams)) {
             throw new InvalidArgumentException("Can't add restricted stream scheme {$stream->getScheme()}.");
@@ -158,7 +159,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false)
+    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false): self
     {
         if (is_null($paths)) {
             $stream = new ResourceStream($scheme, $prefix, null, $shared);
@@ -186,7 +187,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function registerSharedStream(string $scheme, string $prefix = '', $paths = null)
+    public function registerSharedStream(string $scheme, string $prefix = '', $paths = null): self
     {
         return $this->registerStream($scheme, $prefix, $paths, true);
     }
@@ -210,7 +211,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function removeStream(string $scheme)
+    public function removeStream(string $scheme): self
     {
         if (isset($this->streams[$scheme])) {
             $this->unsetStreamWrapper($scheme);
@@ -259,7 +260,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function addLocation(ResourceLocationInterface $location)
+    public function addLocation(ResourceLocationInterface $location): self
     {
         $this->locations[$location->getName()] = $location;
 
@@ -269,7 +270,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function registerLocation(string $name, ?string $path = null)
+    public function registerLocation(string $name, ?string $path = null): self
     {
         $location = new ResourceLocation($name, $path);
         $this->addLocation($location);
@@ -280,7 +281,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function removeLocation(string $name)
+    public function removeLocation(string $name): self
     {
         unset($this->locations[$name]);
 
@@ -399,69 +400,12 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function reset()
+    public function reset(): self
     {
         $this->streams = [];
         $this->locations = [];
 
         return $this;
-    }
-
-    /**
-     * Returns the canonicalized URI on success.
-     * The resulting path will have no '/./' or '/../' components. Trailing delimiter `/` is kept.
-     * Can also split the `scheme` for the `path` part of the uri if $splitStream parameter is set to true
-     * By default (if $throwException parameter is not set to true) returns false on failure.
-     *
-     * @param string $uri
-     * @param bool   $throwException
-     * @param bool   $splitStream
-     *
-     * @throws \BadMethodCallException
-     *
-     * @return string|array|bool
-     */
-    public function normalize($uri, $throwException = false, $splitStream = false)
-    {
-        if (!is_string($uri)) {
-            if ($throwException) {
-                throw new \BadMethodCallException("Invalid parameter $uri.");
-            } else {
-                return false;
-            }
-        }
-
-        $uri = preg_replace('|\\\|u', $this->separator, $uri);
-        $segments = explode('://', $uri, 2);
-        $path = array_pop($segments);
-        $scheme = array_pop($segments) ?: '';
-        if ($path) {
-            $path = preg_replace('|\\\|u', $this->separator, $path);
-            $parts = explode($this->separator, $path);
-            $list = [];
-            foreach ($parts as $i => $part) {
-                if ($part === '..') {
-                    $part = array_pop($list);
-                    if ($part === null || $part === '' || (!$list && strpos($part, ':'))) {
-                        if ($throwException) {
-                            throw new \BadMethodCallException('Invalid parameter $uri.');
-                        } else {
-                            return false;
-                        }
-                    }
-                } elseif (($i && $part === '') || $part === '.') {
-                    continue;
-                } else {
-                    $list[] = $part;
-                }
-            }
-            if (($l = end($parts)) === '' || $l === '.' || $l === '..') {
-                $list[] = '';
-            }
-            $path = implode($this->separator, $list);
-        }
-
-        return $splitStream ? [$scheme, $path] : ($scheme !== '' ? "{$scheme}://{$path}" : $path);
     }
 
     /**
@@ -474,7 +418,7 @@ class ResourceLocator implements ResourceLocatorInterface
     public function isStream($uri): bool
     {
         try {
-            list($scheme) = $this->normalize($uri, true, true);
+            list($scheme) = Normalizer::normalize($uri, true, true);
         } catch (\Exception $e) {
             return false;
         }
@@ -554,7 +498,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
         if (!isset($this->cache[$key])) {
             try {
-                list($scheme, $file) = $this->normalize($uri, true, true);
+                list($scheme, $file) = Normalizer::normalize($uri, true, true);
                 $this->cache[$key] = $this->find($scheme, $file, $array, $all);
             } catch (\BadMethodCallException $e) {
                 // If something couldn't be found, return false or empty array
@@ -669,7 +613,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * @return StreamBuilder
      */
-    public function getStreamBuilder()
+    public function getStreamBuilder(): StreamBuilder
     {
         return $this->streamBuilder;
     }
@@ -677,7 +621,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getBasePath()
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
@@ -687,9 +631,9 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function setBasePath(string $basePath)
+    public function setBasePath(string $basePath): self
     {
-        $this->basePath = $this->normalize($basePath);
+        $this->basePath = Normalizer::normalizePath($basePath);
 
         return $this;
     }

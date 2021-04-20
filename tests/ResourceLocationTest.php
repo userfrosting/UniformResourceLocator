@@ -22,7 +22,7 @@ class ResourceLocationTest extends TestCase
     /**
      * Test ResourceLocation class.
      */
-    public function testResourceLocation()
+    public function testResourceLocation(): void
     {
         // Test instance & default values
         $location = new ResourceLocation('');
@@ -35,36 +35,36 @@ class ResourceLocationTest extends TestCase
         $this->assertEquals('foo', $location->getName());
 
         $location->setPath('/bar');
-        $this->assertEquals('/bar', $location->getPath());
+        $this->assertEquals('/bar/', $location->getPath());
     }
 
     /**
      * Now try again with the info in the constructor.
      */
-    public function testResourceLocation_ctor()
+    public function testResourceLocation_ctor(): void
     {
         $location = new ResourceLocation('bar', '/foo');
         $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('/foo', $location->getPath());
+        $this->assertEquals('/foo/', $location->getPath());
     }
 
     /**
      * @depends testResourceLocation_ctor
      */
-    public function testResourceLocation_ctorWithSupressesRightSlashe()
+    public function testResourceLocation_ctorWithSupressesRightSlashe(): void
     {
         $location = new ResourceLocation('bar', '/foo/');
         $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('/foo', $location->getPath());
+        $this->assertEquals('/foo/', $location->getPath());
     }
 
     /**
      * @depends testResourceLocation_ctor
      */
-    public function testResourceLocation_ctoOmittedPathEqualsName()
+    public function testResourceLocation_ctoOmittedPathEqualsName(): void
     {
         $location = new ResourceLocation('bar');
         $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('bar', $location->getPath());
+        $this->assertEquals('bar/', $location->getPath());
     }
 }

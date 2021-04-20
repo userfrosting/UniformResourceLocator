@@ -22,7 +22,7 @@ class ResourceStreamTest extends TestCase
     /**
      * Test ResourceStream Class.
      */
-    public function testResourceStream()
+    public function testResourceStream(): void
     {
         // Test instance & default values
         $stream = new ResourceStream('');
@@ -36,7 +36,7 @@ class ResourceStreamTest extends TestCase
         $this->assertEquals('foo', $stream->getScheme());
 
         $stream->setPath('/bar');
-        $this->assertEquals('/bar', $stream->getPath());
+        $this->assertEquals('/bar/', $stream->getPath());
 
         $stream->setShared(true);
         $this->assertTrue($stream->isShared());
@@ -45,21 +45,21 @@ class ResourceStreamTest extends TestCase
     /**
      * Now try again with the info in the constructor.
      */
-    public function testResourceStream_ctor()
+    public function testResourceStream_ctor(): void
     {
         $stream = new ResourceStream('bar', '', '/foo', true);
         $this->assertEquals('bar', $stream->getScheme());
-        $this->assertEquals('/foo', $stream->getPath());
+        $this->assertEquals('/foo/', $stream->getPath());
         $this->assertTrue($stream->isShared());
     }
 
     /**
      * When no path is defined, the name should be used.
      */
-    public function testResourceStream_noPath()
+    public function testResourceStream_noPath(): void
     {
         $stream = new ResourceStream('etc');
         $this->assertEquals('etc', $stream->getScheme());
-        $this->assertEquals('etc', $stream->getPath());
+        $this->assertEquals('etc/', $stream->getPath());
     }
 }

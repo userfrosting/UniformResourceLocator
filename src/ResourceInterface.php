@@ -80,25 +80,6 @@ interface ResourceInterface
     public function getLocatorBasePath(): string;
 
     /**
-     * @param string $locatorBasePath
-     *
-     * @return static
-     */
-    public function setLocatorBasePath($locatorBasePath): self;
-
-    /**
-     * @return string
-     */
-    public function getSeparator(): string;
-
-    /**
-     * @param string $separator
-     *
-     * @return static
-     */
-    public function setSeparator($separator): self;
-
-    /**
      * @return ResourceStreamInterface
      */
     public function getStream(): ResourceStreamInterface;

@@ -40,11 +40,6 @@ class ResourceStream implements ResourceStreamInterface
     protected $shared;
 
     /**
-     * @var string Directory separator
-     */
-    protected $separator = '/';
-
-    /**
      * Constructor.
      *
      * @param string $scheme
@@ -67,7 +62,7 @@ class ResourceStream implements ResourceStreamInterface
     /**
      * @return string
      */
-    public function getScheme()
+    public function getScheme(): string
     {
         return $this->scheme;
     }
@@ -77,7 +72,7 @@ class ResourceStream implements ResourceStreamInterface
      *
      * @return static
      */
-    public function setScheme($scheme)
+    public function setScheme($scheme): self
     {
         $this->scheme = $scheme;
 
@@ -87,7 +82,7 @@ class ResourceStream implements ResourceStreamInterface
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -97,9 +92,9 @@ class ResourceStream implements ResourceStreamInterface
      *
      * @return static
      */
-    public function setPath($path)
+    public function setPath($path): self
     {
-        $this->path = rtrim($path, $this->separator);
+        $this->path = Normalizer::normalizePath($path);
 
         return $this;
     }
@@ -107,7 +102,7 @@ class ResourceStream implements ResourceStreamInterface
     /**
      * @return string
      */
-    public function getPrefix()
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
@@ -117,7 +112,7 @@ class ResourceStream implements ResourceStreamInterface
      *
      * @return static
      */
-    public function setPrefix($prefix)
+    public function setPrefix($prefix): self
     {
         $this->prefix = $prefix;
 
@@ -127,7 +122,7 @@ class ResourceStream implements ResourceStreamInterface
     /**
      * @return bool
      */
-    public function isShared()
+    public function isShared(): bool
     {
         return $this->shared;
     }
@@ -137,7 +132,7 @@ class ResourceStream implements ResourceStreamInterface
      *
      * @return static
      */
-    public function setShared($shared)
+    public function setShared($shared): self
     {
         $this->shared = $shared;
 

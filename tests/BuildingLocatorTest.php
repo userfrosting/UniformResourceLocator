@@ -371,16 +371,16 @@ class BuildingLocatorTest extends TestCase
     /**
      * Test when a location is outside the scope of the main locator path.
      * Could cause issue with absolute pathparsing.
-     * 
+     *
      * @depends testGetResources
      */
     public function testGetResourcesWithLocationOutsideMain(): void
     {
         $expectedPaths = [
             __DIR__.'/Poolhouse/files/test.json',
-            $this->getBasePath() . 'Floors/Floor3/files/test.json',
-            $this->getBasePath() . 'Floors/Floor2/files/test.json',
-            $this->getBasePath() . 'Floors/Floor/files/test.json',
+            $this->getBasePath().'Floors/Floor3/files/test.json',
+            $this->getBasePath().'Floors/Floor2/files/test.json',
+            $this->getBasePath().'Floors/Floor/files/test.json',
         ];
 
         $locator = self::$locator;
@@ -393,7 +393,6 @@ class BuildingLocatorTest extends TestCase
         $this->assertIsArray($resources);
         $this->assertCount(count($expectedPaths), $resources);
         $this->assertEquals($expectedPaths, array_map('strval', $resources));
-
     }
 
     /**

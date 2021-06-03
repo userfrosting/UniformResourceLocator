@@ -377,7 +377,7 @@ class BuildingLocatorTest extends TestCase
     public function testGetResourcesWithLocationOutsideMain(): void
     {
         $expectedPaths = [
-            __DIR__.'/Poolhouse/files/test.json',
+            Normalizer::normalizePath(__DIR__).'Poolhouse/files/test.json',
             $this->getBasePath().'Floors/Floor3/files/test.json',
             $this->getBasePath().'Floors/Floor2/files/test.json',
             $this->getBasePath().'Floors/Floor/files/test.json',

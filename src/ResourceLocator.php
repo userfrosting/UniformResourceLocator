@@ -597,7 +597,15 @@ class ResourceLocator implements ResourceLocatorInterface
 
                     // Add the result to the list if the path exist, unless we want all results
                     if ($all || $this->filesystem->exists($fullPath)) {
-                        $currentResource = new Resource($stream, $location, $relPath, $basePath);
+
+                        // Handle relpath that is an absolute outside the basePath
+                        // This can happen when the location has an absolute path outside the locator base path.
+                        if ($fullPath == $relPath) {
+                            $currentResource = new Resource($stream, $location, $fullPath);
+                        } else {
+                            $currentResource = new Resource($stream, $location, $relPath, $basePath);
+                        }
+
                         if (!$array) {
                             return $currentResource;
                         }

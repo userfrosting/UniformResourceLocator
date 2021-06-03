@@ -16,5 +16,5 @@ namespace UserFrosting\UniformResourceLocator\Tests;
 class BuildingLocatorWithBasePathTest extends BuildingLocatorTest
 {
     /** @var string */
-    protected $basePath = __DIR__.'/Building';
+    protected $basePath = __DIR__.'/Building'; // No trailling slash
 }
